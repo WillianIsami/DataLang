@@ -1,0 +1,263 @@
+# ENTREGA DA SEMANA 4: ESPECIFICAÇÃO LÉXICA COM EXPRESSÕES REGULARES
+
+## 1. INTRODUÇÃO
+
+Com base na definição formal dos elementos básicos da linguagem (Semana 2) e na gramática formal (Semana 3), refinamos a especificação léxica utilizando expressões regulares. Este documento servirá como base para a implementação do analisador léxico nas próximas semanas.
+
+
+
+## 2. EXPRESSÕES REGULARES PARA TOKENS
+
+
+
+Abaixo, definimos cada categoria de token com sua expressão regular correspondente, seguindo a hierarquia de precedência para evitar ambiguidades.
+
+
+
+### 2.1 Palavras-Chave
+
+```regex
+
+\b(let|fn|data|filter|map|reduce|import|export|if|else|for|in|return|load|save|select|groupby|sum|mean|count|min|max|as|true|false)\b
+
+```
+
+
+
+### 2.2 Tipos de Dados
+
+```regex
+
+\b(Int|Float|String|Bool|DataFrame|Vector|Series)\b
+
+```
+
+
+
+### 2.3 Operadores
+
+```regex
+
+(\+|\-|\*|\/|\%|\=\=|\!\=|\<|\>|\<\=|\>\=|\&\&|\|\||\=)
+
+```
+
+
+
+### 2.4 Delimitadores e Símbolos
+
+```regex
+
+(\(|\)|\[|\]|\{|\}|\;|\,|\.|\:|\|\>|\=\>|\||\.\.)
+
+```
+
+
+
+### 2.5 Identificadores
+
+```regex
+
+[a-zA-Z_][a-zA-Z0-9_]*
+
+```
+
+
+
+### 2.6 Literais Numéricos
+
+```regex
+
+- Inteiro: `[+-]?\d+`
+
+- Decimal: `[+-]?(\d+\.\d*|\.\d+)`
+
+- Notação Científica: `[+-]?(\d+\.\d*|\.\d+|\d+)([eE][+-]?\d+)?`
+
+
+
+### 2.7 Literais String
+
+```regex
+
+"([^"\\]|\\.)*"
+
+```
+
+
+
+### 2.8 Literais Booleanos
+
+```regex
+
+\b(true|false)\b
+
+```
+
+
+
+### 2.9 Comentários
+
+- Linha: `//.*`
+
+- Bloco: `/\*[\s\S]*?\*/`
+
+
+
+### 2.10 Whitespace
+
+```regex
+
+[ \t\n\r]+
+
+```
+
+
+
+## 3. ANÁLISE DE AMBIGUIDADES E REGRAS DE RESOLUÇÃO
+
+
+
+### 3.1 Identificadores vs. Palavras-Chave
+
+**Problema**: `let` pode ser tanto palavra-chave quanto identificador.
+
+**Solução**: Usar a regra do **maior match** e priorizar palavras-chave.
+
+
+
+### 3.2 Operadores Compostos
+
+**Problema**: `==` vs `=`, `<=` vs `<`.
+
+**Solução**: Ordenar os operadores da maior para a menor sequência.
+
+
+
+### 3.3 Números vs. Pontuação
+
+**Problema**: `.5` pode ser interpretado como decimal ou como ponto seguido de número.
+
+**Solução**: Priorizar a interpretação como decimal.
+
+
+
+## 4. ESTRATÉGIA PARA TRATAMENTO DE ERROS LÉXICOS
+
+
+
+### 4.1 Caracteres Inválidos
+
+Se um caractere não pertencer a nenhum token válido, o analisador deve:
+
+- Reportar erro com linha e coluna
+
+- Sugerir caracteres válidos similares (se aplicável)
+
+- Continuar a análise após o erro
+
+
+
+### 4.2 Strings Não Fechadas
+
+Detectar strings que não foram fechadas até o final da linha:
+
+```
+
+Erro: String não fechada na linha X
+
+```
+
+
+
+### 4.3 Comentários Não Fechados
+
+Comentários de bloco não fechados devem gerar erro:
+
+```
+
+Erro: Comentário de bloco não fechado
+
+```
+
+
+
+## 5. MENSAGENS DE ERRO AMIGÁVEIS
+
+
+
+### 5.1 Exemplos de Mensagens
+
+- `"Caractere inválido '#' na linha 10, coluna 5"`
+
+- `"String não fechada. Esperava '\"'"`
+
+- `"Número malformatado: '123.'"`
+
+- `"Operador desconhecido: '=>='. Talvez você quisesse '=>'?"`
+
+
+
+### 5.2 Sugestões de Correção
+
+Incluir sugestões contextuais sempre que possível:
+
+- `"Você esqueceu de fechar o parêntese?"`
+
+- `"Identificador inválido: '2var'. Use 'var2' em vez disso."`
+
+
+
+## 6. CONSIDERAÇÕES DE IMPLEMENTAÇÃO
+
+
+
+### 6.1 Ordem de Avaliação
+
+1. Palavras-chave e tipos
+
+2. Operadores e delimitadores
+
+3. Literais
+
+4. Identificadores
+
+
+
+### 6.2 Internacionalização
+
+Por enquanto, a linguagem suporta apenas ASCII para identificadores.
+
+
+
+### 6.3 Performance
+
+As expressões foram otimizadas para:
+
+- Evitar backtracking excessivo
+
+- Usar âncoras quando apropriado
+
+- Priorizar padrões mais frequentes
+
+
+
+## 7. EXEMPLO DE USO PRÁTICO
+
+
+
+```rust
+
+// Programa de exemplo
+
+let data = data.load("file.csv")
+
+let result = data 
+
+    |> filter(|x| x["age"] > 18)
+
+    |> groupby("department")
+
+    |> mean("salary")
+
+```
