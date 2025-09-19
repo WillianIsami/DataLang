@@ -61,7 +61,7 @@ static const char* booleans[] = {
     "true", "false", NULL
 };
 
-// Safe string duplication function (replacement for strndup)
+// Safe string duplication function
 char* safe_strndup(const char* s, size_t n) {
     if (!s) return NULL;
     
@@ -530,7 +530,7 @@ Token* tokenize(const char* input) {
         token.line = line;
         token.column = column;
         
-        // Try block comment first
+        // block comment first
         if (run_afd(block_comment_afd, &input[pos], &chars_consumed) && chars_consumed > 0) {
             token.type = TOKEN_COMMENT_BLOCK;
             token.value = safe_strndup(&input[pos], chars_consumed);
@@ -550,7 +550,7 @@ Token* tokenize(const char* input) {
             continue;
         }
         
-        // Try line comment
+        // line comment
         if (run_afd(line_comment_afd, &input[pos], &chars_consumed) && chars_consumed > 0) {
             token.type = TOKEN_COMMENT_LINE;
             token.value = safe_strndup(&input[pos], chars_consumed);
@@ -568,7 +568,7 @@ Token* tokenize(const char* input) {
             continue;
         }
         
-        // Try whitespace
+        // whitespace
         if (run_afd(ws_afd, &input[pos], &chars_consumed) && chars_consumed > 0) {
             token.type = TOKEN_WHITESPACE;
             token.value = safe_strndup(&input[pos], chars_consumed);
@@ -588,7 +588,7 @@ Token* tokenize(const char* input) {
             continue;
         }
         
-        // Try string
+        // string
         if (run_afd(str_afd, &input[pos], &chars_consumed) && chars_consumed > 0) {
             token.type = TOKEN_STRING;
             token.value = safe_strndup(&input[pos], chars_consumed);
@@ -598,7 +598,7 @@ Token* tokenize(const char* input) {
             continue;
         }
         
-        // Try number
+        // number
         if (run_afd(num_afd, &input[pos], &chars_consumed) && chars_consumed > 0) {
             char* temp_str = safe_strndup(&input[pos], chars_consumed);
             if (temp_str && (strchr(temp_str, '.') || strchr(temp_str, 'e') || strchr(temp_str, 'E'))) {
@@ -613,7 +613,7 @@ Token* tokenize(const char* input) {
             continue;
         }
         
-        // Try operator
+        // operator
         if (run_afd(op_afd, &input[pos], &chars_consumed) && chars_consumed > 0) {
             token.type = TOKEN_OPERATOR;
             token.value = safe_strndup(&input[pos], chars_consumed);
@@ -623,7 +623,7 @@ Token* tokenize(const char* input) {
             continue;
         }
         
-        // Try delimiter
+        // delimiter
         if (run_afd(del_afd, &input[pos], &chars_consumed) && chars_consumed > 0) {
             token.type = TOKEN_DELIMITER;
             token.value = safe_strndup(&input[pos], chars_consumed);
@@ -633,7 +633,7 @@ Token* tokenize(const char* input) {
             continue;
         }
         
-        // Try identifier/keyword (last to give precedence to operators)
+        // identifier/keyword (last to give precedence to operators)
         if (run_afd(id_afd, &input[pos], &chars_consumed) && chars_consumed > 0) {
             token.value = safe_strndup(&input[pos], chars_consumed);
             
