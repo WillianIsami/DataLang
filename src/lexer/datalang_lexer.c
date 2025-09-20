@@ -328,43 +328,112 @@ AFD* create_block_comment_afd() {
 
 // AFD for operators
 AFD* create_operator_afd() {
-    AFD* afd = create_afd(20, 256);
+    AFD* afd = create_afd(22, 256);
     if (!afd) return NULL;
     
+    // Error state (not final state)
+    int error_state = 20;
+    
     // Simple operators (immediate final states)
-    afd->transition_table[0]['+'] = 1;
-    afd->transition_table[0]['-'] = 2;
-    afd->transition_table[0]['*'] = 3;
-    afd->transition_table[0]['/'] = 4;
-    afd->transition_table[0]['%'] = 5;
+    afd->transition_table[0]['+'] = 1;  // +
+    afd->transition_table[0]['-'] = 2;  // -
+    afd->transition_table[0]['*'] = 3;  // *
+    afd->transition_table[0]['/'] = 4;  // /
+    afd->transition_table[0]['%'] = 5;  // %
     
     // Operator '=' and compounds
-    afd->transition_table[0]['='] = 6;
-    afd->transition_table[6]['='] = 7; // ==
-    afd->transition_table[6]['>'] = 8; // =>
+    afd->transition_table[0]['='] = 6;  // =
+    afd->transition_table[6]['='] = 7;  // ==
+    afd->transition_table[6]['>'] = 8;  // =>
     
-    // Operator '!' and compounds
-    afd->transition_table[0]['!'] = 9;
+    // // Operator '!' and compounds
+    afd->transition_table[0]['!'] = 9;  // !
     afd->transition_table[9]['='] = 10; // !=
     
     // Operator '<' and compounds
-    afd->transition_table[0]['<'] = 11;
+    afd->transition_table[0]['<'] = 11; // <
     afd->transition_table[11]['='] = 12; // <=
     
     // Operator '>' and compounds
-    afd->transition_table[0]['>'] = 13;
+    afd->transition_table[0]['>'] = 13; // >
     afd->transition_table[13]['='] = 14; // >=
     
     // Operator '&' and compounds
-    afd->transition_table[0]['&'] = 15;
+    afd->transition_table[0]['&'] = 15; // &
     afd->transition_table[15]['&'] = 16; // &&
     
     // Operator '|' and compounds
-    afd->transition_table[0]['|'] = 17;
+    afd->transition_table[0]['|'] = 17; // |
     afd->transition_table[17]['|'] = 18; // ||
     afd->transition_table[17]['>'] = 19; // |>
     
-    // Mark final states
+    // --- Errors  ---
+
+    // After '+', X '++', '+='
+    afd->transition_table[1]['+'] = error_state;
+    afd->transition_table[1]['='] = error_state;
+
+    // After '-', X '--', '-=', '->'
+    afd->transition_table[2]['-'] = error_state;
+    afd->transition_table[2]['='] = error_state;
+    afd->transition_table[2]['>'] = error_state;
+
+    // After '*', X '**', '*='
+    afd->transition_table[3]['*'] = error_state;
+    afd->transition_table[3]['='] = error_state;
+
+    // After '/', X '//', '/='
+    afd->transition_table[4]['/'] = error_state;
+    afd->transition_table[4]['='] = error_state;
+
+    // After '%', X '%%', '%='
+    afd->transition_table[5]['%'] = error_state;
+    afd->transition_table[5]['='] = error_state;
+    
+    // After '==', X '==='
+    afd->transition_table[7]['='] = error_state;
+
+    // After '=>', X extensão óbvia é um erro comum, mas podemos proibir '='
+    afd->transition_table[8]['='] = error_state;
+
+    // After '!', X '!!' (se não for um operador válido)
+    afd->transition_table[9]['!'] = error_state;
+    
+    // After '!=', X '!=='
+    afd->transition_table[10]['='] = error_state;
+
+    // After '<', X '<<' (shift), '<-' (atribuição)
+    afd->transition_table[11]['<'] = error_state;
+    afd->transition_table[11]['-'] = error_state;
+
+    // After '<=', X '<=='
+    afd->transition_table[12]['='] = error_state;
+
+    // After '>', X '>>' (shift)
+    afd->transition_table[13]['>'] = error_state;
+
+    // After '>=', X '>=='
+    afd->transition_table[14]['='] = error_state;
+
+    // After '&', X '&=' (bitwise AND assign)
+    afd->transition_table[15]['='] = error_state;
+    
+    // After '&&', X '&&&', '&&='
+    afd->transition_table[16]['&'] = error_state;
+    afd->transition_table[16]['='] = error_state;
+
+    // After '|', X '|='
+    afd->transition_table[17]['='] = error_state;
+
+    // After '||', X '|||', '||='
+    afd->transition_table[18]['|'] = error_state;
+    afd->transition_table[18]['='] = error_state;
+
+    // After '|>', X extensão óbvia é um erro comum, mas podemos proibir '='
+    afd->transition_table[19]['='] = error_state;
+    
+    // --- Marcar Estados Finais ---
+    // O estado de erro (20) não é incluído aqui, permanecendo como não final.
     for (int i = 1; i <= 19; i++) {
         afd->final_states[i] = true;
     }
@@ -985,6 +1054,7 @@ void test_operator_afd() {
         {"*", true, "Multiplicação"},
         {"/", true, "Divisão"},
         {"%", true, "Módulo"},
+        {"%%", false, "Módulo"},
         {"=", true, "Atribuição"},
         {"==", true, "Igualdade"},
         {"!=", true, "Diferença"},
@@ -993,7 +1063,9 @@ void test_operator_afd() {
         {">", true, "Maior que"},
         {">=", true, "Maior igual"},
         {"&&", true, "E lógico"},
+        {"&&&", false, "E lógico"},
         {"||", true, "Ou lógico"},
+        {"|||", false, "Ou lógico"},
         {"|>", true, "Pipe"},
         {"=>", true, "Arrow"},
         {"!", true, "Negação"},
@@ -1007,8 +1079,12 @@ void test_operator_afd() {
     
     int passed = 0, total = 0;
     for (int i = 0; test_cases[i].input != NULL; i++) {
-        int chars_consumed;
-        bool result = run_afd(afd, test_cases[i].input, &chars_consumed);
+        int chars_consumed = 0;
+        bool accepted_by_afd = run_afd(afd, test_cases[i].input, &chars_consumed);
+        
+        size_t input_len = strlen(test_cases[i].input);
+        bool result = accepted_by_afd && (chars_consumed == input_len);
+        
         bool test_passed = (result == test_cases[i].expected);
         
         printf("'%s': %s (esperado: %s) - %s - %s\n", 
