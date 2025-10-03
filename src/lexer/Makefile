@@ -1,230 +1,214 @@
-# Makefile para DataLang AFDs
+# Makefile para DataLang
+# Analisador Léxico com AFNs e Tratamento de Erros
+
+# Compilador e flags
 CC = gcc
-CFLAGS = -Wall -Wextra -std=c99 -pedantic -g
-LDFLAGS = 
+CFLAGS = -Wall -Wextra -std=c11 -O2 -g
+LDFLAGS = -lm
 
-# Arquivos fonte
-LEXER_SRC = datalang_lexer.c
-TEST_SRC = datalang_test.c
+# Diretórios
+SRC_DIR = src/lexer
+BUILD_DIR = build
+BIN_DIR = bin
+TEST_DIR = tests
 
-# Arquivos objeto
-LEXER_OBJ = $(LEXER_SRC:.c=.o)
-LEXER_LIB_OBJ = datalang_lexer_lib.o
-TEST_OBJ = $(TEST_SRC:.c=.o)
+# Arquivos
+DATALANG_AFN = datalang_afn.c
+LEXER_SRC = datalang_lexer_integrated.c
+TEST_AFN = test_afn_conversion.c
+LEGACY_LEXER = datalang_lexer.c
+LEGACY_TEST = datalang_test.c
 
 # Executáveis
-LEXER_EXEC = datalang_lexer
-TEST_EXEC = datalang_test
+LEXER_BIN = $(BIN_DIR)/datalang_lexer
+TEST_AFN_BIN = $(BIN_DIR)/test_afn
+LEGACY_BIN = $(BIN_DIR)/datalang_legacy
 
-.PHONY: all clean test run help static-analysis coverage install uninstall test-only lexer-only
+# Cores para output
+RED = \033[0;31m
+GREEN = \033[0;32m
+YELLOW = \033[1;33m
+BLUE = \033[0;34m
+NC = \033[0m # No Color
 
-# Target padrão - compila ambos
-all: $(LEXER_EXEC) $(TEST_EXEC)
+# Regras principais
+.PHONY: all clean test run help setup legacy
 
-# Compilar apenas o lexer
-lexer-only: $(LEXER_EXEC)
+all: setup $(LEXER_BIN) $(TEST_AFN_BIN)
+	@echo "$(GREEN)✓ Compilação concluída com sucesso!$(NC)"
 
-# Compilar apenas os testes
-test-only: $(TEST_EXEC)
+# Cria diretórios necessários
+setup:
+	@echo "$(BLUE)Criando estrutura de diretórios...$(NC)"
+	@mkdir -p $(BUILD_DIR)
+	@mkdir -p $(BIN_DIR)
+	@mkdir -p $(TEST_DIR)
 
-# Compilar executável do lexer (com main integrado)
-$(LEXER_EXEC): $(LEXER_OBJ)
-	$(CC) $(LDFLAGS) -o $@ $^
+# Compila analisador léxico integrado
+$(LEXER_BIN): $(LEXER_SRC) $(DATALANG_AFN)
+	@echo "$(YELLOW)Compilando analisador léxico integrado...$(NC)"
+	$(CC) $(CFLAGS) -o $@ $(LEXER_SRC) $(LDFLAGS)
+	@echo "$(GREEN)✓ Analisador léxico compilado$(NC)"
 
-# Compilar versão biblioteca do lexer (sem main)
-$(LEXER_LIB_OBJ): $(LEXER_SRC)
-	$(CC) $(CFLAGS) -DLIB_BUILD -c $< -o $@
+# Compila testes de conversão AFN→AFD
+$(TEST_AFN_BIN): $(TEST_AFN)
+	@echo "$(YELLOW)Compilando testes de AFN...$(NC)"
+	$(CC) $(CFLAGS) -o $@ $(TEST_AFN) $(LDFLAGS)
+	@echo "$(GREEN)✓ Testes de AFN compilados$(NC)"
 
-# Compilar executável de testes (usando versão biblioteca)
-$(TEST_EXEC): $(TEST_OBJ) $(LEXER_LIB_OBJ)
-	$(CC) $(LDFLAGS) -o $@ $^
+# Compila versão legada (compatibilidade)
+legacy: setup $(LEGACY_LEXER) $(LEGACY_TEST)
+	@echo "$(YELLOW)Compilando versão legada...$(NC)"
+	$(CC) $(CFLAGS) -o $(LEGACY_BIN) $(LEGACY_LEXER) $(LDFLAGS)
+	@echo "$(GREEN)✓ Versão legada compilada$(NC)"
 
-# Compilar arquivos objeto
-%.o: %.c
-	$(CC) $(CFLAGS) -c $< -o $@
+# Executa o analisador léxico
+run: $(LEXER_BIN)
+	@echo "$(BLUE)════════════════════════════════════════════════$(NC)"
+	@echo "$(BLUE)    DATALANG - ANALISADOR LÉXICO INTEGRADO    $(NC)"
+	@echo "$(BLUE)════════════════════════════════════════════════$(NC)"
+	@./$(LEXER_BIN)
 
-# Executar programa principal (lexer com testes integrados)
-run: $(LEXER_EXEC)
-	./$(LEXER_EXEC)
+# Executa testes de AFN
+test-afn: $(TEST_AFN_BIN)
+	@echo "$(BLUE)════════════════════════════════════════════════$(NC)"
+	@echo "$(BLUE)       TESTES DE CONVERSÃO AFN → AFD          $(NC)"
+	@echo "$(BLUE)════════════════════════════════════════════════$(NC)"
+	@./$(TEST_AFN_BIN)
 
-# Executar testes estendidos
-test: $(TEST_EXEC)
-	./$(TEST_EXEC)
-
-# Executar ambos os programas
-run-all: $(LEXER_EXEC) $(TEST_EXEC)
-	@echo "=== Executando lexer com testes integrados ==="
-	./$(LEXER_EXEC)
+# Executa todos os testes
+test: $(LEXER_BIN) $(TEST_AFN_BIN)
+	@echo "$(BLUE)════════════════════════════════════════════════$(NC)"
+	@echo "$(BLUE)         EXECUTANDO SUITE COMPLETA             $(NC)"
+	@echo "$(BLUE)════════════════════════════════════════════════$(NC)"
 	@echo ""
-	@echo "=== Executando suite estendida de testes ==="
-	./$(TEST_EXEC)
+	@echo "$(YELLOW)1/2 - Testes do Analisador Léxico$(NC)"
+	@./$(LEXER_BIN)
+	@echo ""
+	@echo "$(YELLOW)2/2 - Testes de Conversão AFN$(NC)"
+	@./$(TEST_AFN_BIN)
+	@echo ""
+	@echo "$(GREEN)✓ Todos os testes concluídos!$(NC)"
 
-# Executar testes com valgrind (se disponível)
-memcheck: $(TEST_EXEC)
-	@if command -v valgrind > /dev/null 2>&1; then \
-		echo "Executando verificação de memória com valgrind..."; \
-		valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./$(TEST_EXEC); \
+# Testa com arquivo de entrada customizado
+test-file: $(LEXER_BIN)
+	@if [ -z "$(FILE)" ]; then \
+		echo "$(RED)Erro: Especifique um arquivo com FILE=caminho$(NC)"; \
+		exit 1; \
+	fi
+	@echo "$(BLUE)Analisando arquivo: $(FILE)$(NC)"
+	@./$(LEXER_BIN) $(FILE)
+
+# Benchmark de performance
+benchmark: $(LEXER_BIN)
+	@echo "$(BLUE)════════════════════════════════════════════════$(NC)"
+	@echo "$(BLUE)           BENCHMARK DE PERFORMANCE            $(NC)"
+	@echo "$(BLUE)════════════════════════════════════════════════$(NC)"
+	@time ./$(LEXER_BIN)
+	@echo "$(GREEN)✓ Benchmark concluído$(NC)"
+
+# Análise de memória com Valgrind (se disponível)
+memcheck: $(LEXER_BIN)
+	@echo "$(BLUE)Executando análise de memória com Valgrind...$(NC)"
+	@if command -v valgrind >/dev/null 2>&1; then \
+		valgrind --leak-check=full --show-leak-kinds=all \
+		--track-origins=yes --verbose \
+		./$(LEXER_BIN); \
 	else \
-		echo "Valgrind não encontrado. Executando testes normalmente..."; \
-		./$(TEST_EXEC); \
+		echo "$(RED)Valgrind não encontrado$(NC)"; \
 	fi
 
-# Executar verificação de memória no lexer também
-memcheck-lexer: $(LEXER_EXEC)
-	@if command -v valgrind > /dev/null 2>&1; then \
-		echo "Executando verificação de memória no lexer..."; \
-		valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./$(LEXER_EXEC); \
-	else \
-		echo "Valgrind não encontrado. Executando lexer normalmente..."; \
-		./$(LEXER_EXEC); \
-	fi
-
-# Compilar com otimizações para produção
-release: CFLAGS += -O2 -DNDEBUG
-release: clean all
-
-# Compilar com informações de debug
-debug: CFLAGS += -O0 -g3 -DDEBUG
-debug: clean all
-
-# Executar análise estática (se disponível)
+# Análise estática com cppcheck (se disponível)
 static-analysis:
-	@echo "Executando análise estática..."
-	@if command -v cppcheck > /dev/null 2>&1; then \
-		echo "Usando cppcheck:"; \
-		cppcheck --enable=all --std=c99 --suppress=missingIncludeSystem $(LEXER_SRC) $(TEST_SRC); \
+	@echo "$(BLUE)Executando análise estática com cppcheck...$(NC)"
+	@if command -v cppcheck >/dev/null 2>&1; then \
+		cppcheck --enable=all --suppress=missingIncludeSystem \
+		--std=c11 $(LEXER_SRC); \
 	else \
-		echo "cppcheck não encontrado."; \
-	fi
-	@if command -v clang-tidy > /dev/null 2>&1; then \
-		echo "Usando clang-tidy:"; \
-		clang-tidy $(LEXER_SRC) $(TEST_SRC) -- $(CFLAGS); \
-	else \
-		echo "clang-tidy não encontrado."; \
+		echo "$(RED)cppcheck não encontrado$(NC)"; \
 	fi
 
-# Gerar relatório de cobertura (se gcov disponível)
-coverage: CFLAGS += --coverage -fprofile-arcs -ftest-coverage
-coverage: LDFLAGS += --coverage
-coverage: clean $(TEST_EXEC)
-	@echo "Executando testes para cobertura..."
-	./$(TEST_EXEC)
-	@if command -v gcov > /dev/null 2>&1; then \
-		echo "Gerando relatório de cobertura..."; \
-		gcov $(LEXER_SRC) $(TEST_SRC); \
-		echo "Arquivos de cobertura gerados:"; \
-		ls -la *.gcov; \
+# Gera documentação
+docs:
+	@echo "$(BLUE)Gerando documentação...$(NC)"
+	@if command -v doxygen >/dev/null 2>&1; then \
+		doxygen Doxyfile; \
+		echo "$(GREEN)✓ Documentação gerada em docs/$(NC)"; \
 	else \
-		echo "gcov não encontrado."; \
-	fi
-	@if command -v lcov > /dev/null 2>&1; then \
-		echo "Gerando relatório HTML com lcov..."; \
-		lcov --capture --directory . --output-file coverage.info; \
-		genhtml coverage.info --output-directory coverage_html; \
-		echo "Relatório HTML gerado em coverage_html/index.html"; \
+		echo "$(RED)doxygen não encontrado$(NC)"; \
 	fi
 
-# Verificar sintaxe sem compilar
-check-syntax:
-	@echo "Verificando sintaxe..."
-	$(CC) $(CFLAGS) -fsyntax-only $(LEXER_SRC)
-	$(CC) $(CFLAGS) -fsyntax-only $(TEST_SRC)
-	@echo "Sintaxe OK!"
-
-# Limpar arquivos gerados
+# Limpa arquivos compilados
 clean:
-	@echo "Limpando arquivos gerados..."
-	rm -f $(LEXER_OBJ) $(TEST_OBJ) $(LEXER_LIB_OBJ)
-	rm -f $(LEXER_EXEC) $(TEST_EXEC)
-	rm -f *.gcov *.gcda *.gcno coverage.info
-	rm -rf coverage_html
-	rm -f core vgcore.* *.core
-	@echo "Limpeza concluída!"
+	@echo "$(YELLOW)Limpando arquivos compilados...$(NC)"
+	@rm -rf $(BUILD_DIR)
+	@rm -rf $(BIN_DIR)
+	@echo "$(GREEN)✓ Limpeza concluída$(NC)"
 
-# Limpar tudo incluindo backups
+# Limpa tudo incluindo documentação
 distclean: clean
-	rm -f *~ *.bak *.swp
-	rm -f .*.swp
+	@echo "$(YELLOW)Limpeza completa...$(NC)"
+	@rm -rf docs/html docs/latex
+	@echo "$(GREEN)✓ Limpeza completa concluída$(NC)"
 
-# Instalar (copia para /usr/local/bin)
-install: $(LEXER_EXEC) $(TEST_EXEC)
-	@echo "Instalando executáveis em /usr/local/bin/"
-	@if [ ! -d "/usr/local/bin" ]; then \
-		echo "Criando diretório /usr/local/bin/"; \
-		sudo mkdir -p /usr/local/bin; \
-	fi
-	@sudo cp $(LEXER_EXEC) /usr/local/bin/
-	@sudo cp $(TEST_EXEC) /usr/local/bin/
-	@sudo chmod +x /usr/local/bin/$(LEXER_EXEC)
-	@sudo chmod +x /usr/local/bin/$(TEST_EXEC)
-	@echo "Instalação concluída!"
+# Instala dependências (Ubuntu/Debian)
+install-deps:
+	@echo "$(BLUE)Instalando dependências...$(NC)"
+	@sudo apt-get update
+	@sudo apt-get install -y gcc make valgrind cppcheck doxygen graphviz
+	@echo "$(GREEN)✓ Dependências instaladas$(NC)"
 
-# Desinstalar
-uninstall:
-	@echo "Removendo executáveis de /usr/local/bin/"
-	@sudo rm -f /usr/local/bin/$(LEXER_EXEC)
-	@sudo rm -f /usr/local/bin/$(TEST_EXEC)
-	@echo "Desinstalação concluída!"
-
-# Verificar dependências do sistema
-check-deps:
-	@echo "Verificando dependências do sistema..."
-	@command -v $(CC) > /dev/null 2>&1 || (echo "ERRO: $(CC) não encontrado!" && exit 1)
-	@echo "✓ $(CC) encontrado: $$($(CC) --version | head -n1)"
-	@command -v make > /dev/null 2>&1 && echo "✓ make encontrado: $$(make --version | head -n1)" || echo "⚠ make não encontrado"
-	@command -v valgrind > /dev/null 2>&1 && echo "✓ valgrind encontrado" || echo "⚠ valgrind não encontrado (opcional)"
-	@command -v cppcheck > /dev/null 2>&1 && echo "✓ cppcheck encontrado" || echo "⚠ cppcheck não encontrado (opcional)"
-	@command -v gcov > /dev/null 2>&1 && echo "✓ gcov encontrado" || echo "⚠ gcov não encontrado (opcional)"
-
-# Mostrar informações do projeto
+# Mostra informações do sistema
 info:
-	@echo "Informações do Projeto DataLang AFDs"
-	@echo "===================================="
-	@echo "Arquivos fonte: $(LEXER_SRC) $(TEST_SRC)"
-	@echo "Executáveis: $(LEXER_EXEC) $(TEST_EXEC)"
+	@echo "$(BLUE)════════════════════════════════════════════════$(NC)"
+	@echo "$(BLUE)           INFORMAÇÕES DO SISTEMA              $(NC)"
+	@echo "$(BLUE)════════════════════════════════════════════════$(NC)"
 	@echo "Compilador: $(CC)"
-	@echo "Flags: $(CFLAGS)"
-	@echo "Tamanho dos arquivos fonte:"
-	@wc -l $(LEXER_SRC) $(TEST_SRC) 2>/dev/null || echo "Arquivos não encontrados"
+	@$(CC) --version | head -n 1
+	@echo ""
+	@echo "Flags de compilação: $(CFLAGS)"
+	@echo ""
+	@echo "Diretórios:"
+	@echo "  - Código fonte: $(SRC_DIR)"
+	@echo "  - Build: $(BUILD_DIR)"
+	@echo "  - Binários: $(BIN_DIR)"
+	@echo ""
+	@echo "Executáveis:"
+	@echo "  - Lexer integrado: $(LEXER_BIN)"
+	@echo "  - Testes AFN: $(TEST_AFN_BIN)"
 
 # Ajuda
 help:
-	@echo "DataLang AFDs - Makefile"
-	@echo "========================"
+	@echo "$(BLUE)════════════════════════════════════════════════$(NC)"
+	@echo "$(BLUE)         DATALANG - MAKEFILE HELP              $(NC)"
+	@echo "$(BLUE)════════════════════════════════════════════════$(NC)"
 	@echo ""
-	@echo "Targets principais:"
-	@echo "  all           - Compilar todos os executáveis (padrão)"
-	@echo "  lexer-only    - Compilar apenas o lexer"
-	@echo "  test-only     - Compilar apenas os testes"
-	@echo "  run           - Executar lexer com testes integrados"
-	@echo "  test          - Executar suite estendida de testes"
-	@echo "  run-all       - Executar ambos os programas"
+	@echo "$(YELLOW)Comandos de Compilação:$(NC)"
+	@echo "  make              - Compila todos os componentes"
+	@echo "  make legacy       - Compila versão legada"
+	@echo "  make clean        - Remove arquivos compilados"
+	@echo "  make distclean    - Limpeza completa"
 	@echo ""
-	@echo "Targets de qualidade:"
-	@echo "  check-syntax  - Verificar sintaxe sem compilar"
-	@echo "  memcheck      - Executar com verificação de memória (valgrind)"
-	@echo "  memcheck-lexer- Verificar memória do lexer"
-	@echo "  static-analysis- Executar análise estática (cppcheck, clang-tidy)"
-	@echo "  coverage      - Gerar relatório de cobertura de código"
+	@echo "$(YELLOW)Comandos de Teste:$(NC)"
+	@echo "  make run          - Executa analisador léxico"
+	@echo "  make test         - Executa todos os testes"
+	@echo "  make test-afn     - Testa conversão AFN→AFD"
+	@echo "  make test-file FILE=<arquivo> - Testa arquivo específico"
 	@echo ""
-	@echo "Targets de build:"
-	@echo "  debug         - Compilar com informações de debug"
-	@echo "  release       - Compilar otimizado para produção"
+	@echo "$(YELLOW)Comandos de Análise:$(NC)"
+	@echo "  make benchmark    - Benchmark de performance"
+	@echo "  make memcheck     - Análise de memória (Valgrind)"
+	@echo "  make static-analysis - Análise estática (cppcheck)"
 	@echo ""
-	@echo "Targets de manutenção:"
-	@echo "  clean         - Limpar arquivos gerados"
-	@echo "  distclean     - Limpeza completa (inclui backups)"
-	@echo "  install       - Instalar em /usr/local/bin"
-	@echo "  uninstall     - Remover de /usr/local/bin"
+	@echo "$(YELLOW)Outros Comandos:$(NC)"
+	@echo "  make docs         - Gera documentação"
+	@echo "  make info         - Mostra informações do sistema"
+	@echo "  make install-deps - Instala dependências (Ubuntu/Debian)"
+	@echo "  make help         - Mostra esta ajuda"
 	@echo ""
-	@echo "Targets informativos:"
-	@echo "  check-deps    - Verificar dependências do sistema"
-	@echo "  info          - Mostrar informações do projeto"
-	@echo "  help          - Mostrar esta ajuda"
+	@echo "$(GREEN)Exemplo de uso:$(NC)"
+	@echo "  make && make test"
 	@echo ""
-	@echo "Exemplos de uso:"
-	@echo "  make              # Compilar tudo"
-	@echo "  make test         # Executar testes estendidos"
-	@echo "  make memcheck     # Verificar vazamentos de memória"
-	@echo "  make coverage     # Gerar relatório de cobertura"
-	@echo "  make clean all    # Limpar e recompilar"
+
+# Regra padrão
+.DEFAULT_GOAL := help

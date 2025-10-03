@@ -23,9 +23,10 @@ DataLang/
 ├── .gitignore
 │
 ├── docs/                                 # Documentação
-│   ├── 1_proposta_inicial.md             # Proposta inicial
-│   ├── 2_definicao_formal_linguagem.md   # Proposta inicial
-│   ├── especificacao-linguagem.md        # Definição completa da sua Linguagem
+│   ├── 1_proposta_inicial.md
+│   ├── 2_definicao_formal_linguagem.md
+│   ├── 4_expressoes_regulares_.md
+│   ├── gramatica_formal.md
 │   └── diagramas/                        # Diagramas
 │       ├── afd_comentarios.md
 │       ├── afd_delimitadores.md
@@ -37,13 +38,15 @@ DataLang/
 │       ├── afd_tipos_dados.md
 │       └── afd_whitespace.md
 │
-├── src/                               # Código fonte principal (src)
-│   ├── lexer/                         # Análise léxica
-│   │   ├── datalang_lexer.c       # Implementação principal dos AFDs
-│   │   ├── datalang_lexer.h       # Arquivo de cabeçalho
-│   │   ├── datalang_tests.c       # Testes unitários abrangentes
-│   │   ├── Makefile               # Sistema de build
-│   │   └── README.md              # Este arquivo
+├── src/lexer/
+│   ├── datalang_afn.h                    # Implementação de AFNs
+│   ├── datalang_lexer_integrated.c       # Analisador léxico completo
+│   ├── test_afn_conversion.c             # Testes de conversão AFN→AFD
+│   ├── datalang_lexer.h                  # Header legado
+│   ├── datalang_lexer.c                  # Implementação legada
+│   ├── datalang_tests.c                  # Testes legados
+│   ├── Makefile                          # Sistema de build
+│   └── README.md                         # Este arquivo
 ```
 
 ## 🚀 Compilação e Execução
@@ -53,6 +56,15 @@ DataLang/
 - GCC (GNU Compiler Collection)
 - Make (opcional, mas recomendado)
 - Valgrind (opcional, para verificação de memória)
+
+### Execução rápida
+```bash
+# Execução rápida, setup do projeto (criação das pastas)
+make setup
+
+# Rodar o projeto
+make run
+```
 
 ### Compilação
 

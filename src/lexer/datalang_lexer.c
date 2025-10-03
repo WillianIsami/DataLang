@@ -39,11 +39,12 @@ typedef enum {
 
 // AFD structure
 typedef struct {
+    int** transition_table;
     int num_states;
     int alphabet_size;
-    int** transition_table;
-    bool* final_states;
     int start_state;
+    bool* final_states;
+    TokenType* final_state_types; 
 } AFD;
 
 // Keywords, types, and booleans
