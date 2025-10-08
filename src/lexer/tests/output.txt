@@ -1,0 +1,320 @@
+[0;34m════════════════════════════════════════════════[0m 
+[0;34m    DATALANG - ANALISADOR LÉXICO INTEGRADO    [0m 
+[0;34m════════════════════════════════════════════════[0m 
+
+-=-=-=-=-=-=-DATA LANG-=-=-=-=-=-=-
+
+=== Analisador Léxico Integrado ===
+Com suporte a AFNs, conversão AFN → AFD e tratamento de erros.
+
+
+╔════════════════════════════════════════════════════════════╗
+║         TESTE: PROGRAMA COMPLETO EM DATALANG               ║
+╚════════════════════════════════════════════════════════════╝
+
+Código fonte:
+─────────────────────────────────────────────────────────────
+// Pipeline de análise de vendas
+import "data_utils"
+
+fn analyze_sales(data: DataFrame) -> DataFrame {
+  let filtered = data
+    |> filter(|row| row["amount"] > 100.0)
+    |> groupby("category")
+    |> map(|group| {
+      let total = group |> sum("amount")
+      let avg = group |> mean("amount")
+      return {"total": total, "average": avg}
+    })
+  
+  return filtered
+}
+
+let sales_data = load("sales.csv")
+let result = analyze_sales(sales_data)
+save(result, "output.csv")
+─────────────────────────────────────────────────────────────
+
+✓ Nenhum erro léxico encontrado!
+
+
+╔════════════════════════════════════════════════════════════╗
+║              ANÁLISE LÉXICA - TOKENS GERADOS              ║
+╚════════════════════════════════════════════════════════════╝
+
+[  0] L001:C001  COMMENT_LINE    '// Pipeline de análise de vendas
+'
+[  1] L002:C001  KEYWORD         'import'
+[  3] L002:C008  STRING          ""data_utils""
+[  5] L004:C001  KEYWORD         'fn'
+[  7] L004:C004  IDENTIFIER      'analyze_sales'
+[  8] L004:C017  DELIMITER       '('
+[  9] L004:C018  KEYWORD         'data'
+[ 10] L004:C022  DELIMITER       ':'
+[ 12] L004:C024  TYPE            'DataFrame'
+[ 13] L004:C033  DELIMITER       ')'
+[ 15] L004:C035  INTEGER         '-'
+[ 16] L004:C036  OPERATOR        '>'
+[ 18] L004:C038  TYPE            'DataFrame'
+[ 20] L004:C048  DELIMITER       '{'
+[ 22] L005:C003  KEYWORD         'let'
+[ 24] L005:C007  IDENTIFIER      'filtered'
+[ 26] L005:C016  OPERATOR        '='
+[ 28] L005:C018  KEYWORD         'data'
+[ 30] L006:C005  OPERATOR        '|>'
+[ 32] L006:C008  KEYWORD         'filter'
+[ 33] L006:C014  DELIMITER       '('
+[ 34] L006:C015  OPERATOR        '|'
+[ 35] L006:C016  IDENTIFIER      'row'
+[ 36] L006:C019  OPERATOR        '|'
+[ 38] L006:C021  IDENTIFIER      'row'
+[ 39] L006:C024  DELIMITER       '['
+[ 40] L006:C025  STRING          ""amount""
+[ 41] L006:C033  DELIMITER       ']'
+[ 43] L006:C035  OPERATOR        '>'
+[ 45] L006:C037  FLOAT           '100.0'
+[ 46] L006:C042  DELIMITER       ')'
+[ 48] L007:C005  OPERATOR        '|>'
+[ 50] L007:C008  KEYWORD         'groupby'
+[ 51] L007:C015  DELIMITER       '('
+[ 52] L007:C016  STRING          ""category""
+[ 53] L007:C026  DELIMITER       ')'
+[ 55] L008:C005  OPERATOR        '|>'
+[ 57] L008:C008  KEYWORD         'map'
+[ 58] L008:C011  DELIMITER       '('
+[ 59] L008:C012  OPERATOR        '|'
+[ 60] L008:C013  IDENTIFIER      'group'
+[ 61] L008:C018  OPERATOR        '|'
+[ 63] L008:C020  DELIMITER       '{'
+[ 65] L009:C007  KEYWORD         'let'
+[ 67] L009:C011  IDENTIFIER      'total'
+[ 69] L009:C017  OPERATOR        '='
+[ 71] L009:C019  IDENTIFIER      'group'
+[ 73] L009:C025  OPERATOR        '|>'
+[ 75] L009:C028  KEYWORD         'sum'
+[ 76] L009:C031  DELIMITER       '('
+[ 77] L009:C032  STRING          ""amount""
+[ 78] L009:C040  DELIMITER       ')'
+[ 80] L010:C007  KEYWORD         'let'
+[ 82] L010:C011  IDENTIFIER      'avg'
+[ 84] L010:C015  OPERATOR        '='
+[ 86] L010:C017  IDENTIFIER      'group'
+[ 88] L010:C023  OPERATOR        '|>'
+[ 90] L010:C026  KEYWORD         'mean'
+[ 91] L010:C030  DELIMITER       '('
+[ 92] L010:C031  STRING          ""amount""
+[ 93] L010:C039  DELIMITER       ')'
+[ 95] L011:C007  KEYWORD         'return'
+[ 97] L011:C014  DELIMITER       '{'
+[ 98] L011:C015  STRING          ""total""
+[ 99] L011:C022  DELIMITER       ':'
+[101] L011:C024  IDENTIFIER      'total'
+[102] L011:C029  DELIMITER       ','
+[104] L011:C031  STRING          ""average""
+[105] L011:C040  DELIMITER       ':'
+[107] L011:C042  IDENTIFIER      'avg'
+[108] L011:C045  DELIMITER       '}'
+[110] L012:C005  DELIMITER       '}'
+[111] L012:C006  DELIMITER       ')'
+[113] L014:C003  KEYWORD         'return'
+[115] L014:C010  IDENTIFIER      'filtered'
+[117] L015:C001  DELIMITER       '}'
+[119] L017:C001  KEYWORD         'let'
+[121] L017:C005  IDENTIFIER      'sales_data'
+[123] L017:C016  OPERATOR        '='
+[125] L017:C018  KEYWORD         'load'
+[126] L017:C022  DELIMITER       '('
+[127] L017:C023  STRING          ""sales.csv""
+[128] L017:C034  DELIMITER       ')'
+[130] L018:C001  KEYWORD         'let'
+[132] L018:C005  IDENTIFIER      'result'
+[134] L018:C012  OPERATOR        '='
+[136] L018:C014  IDENTIFIER      'analyze_sales'
+[137] L018:C027  DELIMITER       '('
+[138] L018:C028  IDENTIFIER      'sales_data'
+[139] L018:C038  DELIMITER       ')'
+[141] L019:C001  KEYWORD         'save'
+[142] L019:C005  DELIMITER       '('
+[143] L019:C006  IDENTIFIER      'result'
+[144] L019:C012  DELIMITER       ','
+[146] L019:C014  STRING          ""output.csv""
+[147] L019:C026  DELIMITER       ')'
+[148] L019:C027  EOF            
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Total de tokens: 149 (significativos: 96)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+╔════════════════════════════════════════════════════════════╗
+║         TESTE: RECUPERAÇÃO DE ERROS                        ║
+╚════════════════════════════════════════════════════════════╝
+
+Código com erros:
+─────────────────────────────────────────────────────────────
+let x = 42
+let name = "unclosed string
+let y = @invalid
+let z = 3.14.15.92
+/* comentário não fechado
+let a = 123
+─────────────────────────────────────────────────────────────
+
+
+╔════════════════════════════════════════════════════════════╗
+║           ERROS LÉXICOS ENCONTRADOS: 4                    ║
+╚════════════════════════════════════════════════════════════╝
+
+❌ Erro 1:
+   Mensagem: String não fechada antes do fim da linha
+   Posição:  Linha 2, Coluna 12
+   Contexto: let name = "unclosed string
+                        ^
+   💡 Sugestão: Adicione " para fechar a string
+
+❌ Erro 2:
+   Mensagem: Caractere inválido '"' (código 34)
+   Posição:  Linha 2, Coluna 12
+   Contexto: let name = "unclosed string
+                        ^
+
+❌ Erro 3:
+   Mensagem: Caractere inválido '@' (não suportado em DataLang)
+   Posição:  Linha 3, Coluna 9
+   Contexto: let y = @invalid
+                     ^
+   💡 Sugestão: Use identificadores válidos sem caracteres especiais
+
+❌ Erro 4:
+   Mensagem: Comentário de bloco não fechado
+   Posição:  Linha 5, Coluna 1
+   Contexto: /* comentário não fechado
+             ^
+   💡 Sugestão: Adicione */ para fechar o comentário
+
+
+╔════════════════════════════════════════════════════════════╗
+║              ANÁLISE LÉXICA - TOKENS GERADOS              ║
+╚════════════════════════════════════════════════════════════╝
+
+[  0] L001:C001  KEYWORD         'let'
+[  2] L001:C005  IDENTIFIER      'x'
+[  4] L001:C007  OPERATOR        '='
+[  6] L001:C009  INTEGER         '42'
+[  8] L002:C001  KEYWORD         'let'
+[ 10] L002:C005  IDENTIFIER      'name'
+[ 12] L002:C010  OPERATOR        '='
+[ 14] L002:C012  ERROR           '"' [Caractere inválido '"' (código 34)]
+[ 15] L002:C013  IDENTIFIER      'unclosed'
+[ 17] L002:C022  IDENTIFIER      'string'
+[ 19] L003:C001  KEYWORD         'let'
+[ 21] L003:C005  IDENTIFIER      'y'
+[ 23] L003:C007  OPERATOR        '='
+[ 25] L003:C009  ERROR           '@' [Caractere inválido '@' (não suportado em DataLang)]
+[ 26] L003:C010  IDENTIFIER      'invalid'
+[ 28] L004:C001  KEYWORD         'let'
+[ 30] L004:C005  IDENTIFIER      'z'
+[ 32] L004:C007  OPERATOR        '='
+[ 34] L004:C009  FLOAT           '3.14'
+[ 35] L004:C013  FLOAT           '.15'
+[ 36] L004:C016  FLOAT           '.92'
+[ 38] L005:C001  EOF            
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Total de tokens: 39 (significativos: 21)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+╔════════════════════════════════════════════════════════════╗
+║         TESTE: PADRÕES COMPLEXOS                           ║
+╚════════════════════════════════════════════════════════════╝
+
+Código com padrões complexos:
+─────────────────────────────────────────────────────────────
+let pi = 3.14159e-10
+let scientific = 2.998e8
+let negative = -42.5
+let range = 0..100
+let lambda = |x| => x * 2
+let pipeline = data |> filter |> map |> reduce
+let comparison = (x >= 10) && (y <= 20) || (z != 0)
+let string = "escape: \"quotes\" and \n newlines"
+─────────────────────────────────────────────────────────────
+
+✓ Todos os padrões reconhecidos corretamente!
+
+
+╔════════════════════════════════════════════════════════════╗
+║              ANÁLISE LÉXICA - TOKENS GERADOS              ║
+╚════════════════════════════════════════════════════════════╝
+
+[  0] L001:C001  KEYWORD         'let'
+[  2] L001:C005  IDENTIFIER      'pi'
+[  4] L001:C008  OPERATOR        '='
+[  6] L001:C010  FLOAT           '3.14159e-10'
+[  8] L002:C001  KEYWORD         'let'
+[ 10] L002:C005  IDENTIFIER      'scientific'
+[ 12] L002:C016  OPERATOR        '='
+[ 14] L002:C018  FLOAT           '2.998e8'
+[ 16] L003:C001  KEYWORD         'let'
+[ 18] L003:C005  IDENTIFIER      'negative'
+[ 20] L003:C014  OPERATOR        '='
+[ 22] L003:C016  FLOAT           '-42.5'
+[ 24] L004:C001  KEYWORD         'let'
+[ 26] L004:C005  IDENTIFIER      'range'
+[ 28] L004:C011  OPERATOR        '='
+[ 30] L004:C013  FLOAT           '0.'
+[ 31] L004:C015  FLOAT           '.100'
+[ 33] L005:C001  KEYWORD         'let'
+[ 35] L005:C005  IDENTIFIER      'lambda'
+[ 37] L005:C012  OPERATOR        '='
+[ 39] L005:C014  OPERATOR        '|'
+[ 40] L005:C015  IDENTIFIER      'x'
+[ 41] L005:C016  OPERATOR        '|'
+[ 43] L005:C018  OPERATOR        '=>'
+[ 45] L005:C021  IDENTIFIER      'x'
+[ 47] L005:C023  OPERATOR        '*'
+[ 49] L005:C025  INTEGER         '2'
+[ 51] L006:C001  KEYWORD         'let'
+[ 53] L006:C005  IDENTIFIER      'pipeline'
+[ 55] L006:C014  OPERATOR        '='
+[ 57] L006:C016  KEYWORD         'data'
+[ 59] L006:C021  OPERATOR        '|>'
+[ 61] L006:C024  KEYWORD         'filter'
+[ 63] L006:C031  OPERATOR        '|>'
+[ 65] L006:C034  KEYWORD         'map'
+[ 67] L006:C038  OPERATOR        '|>'
+[ 69] L006:C041  KEYWORD         'reduce'
+[ 71] L007:C001  KEYWORD         'let'
+[ 73] L007:C005  IDENTIFIER      'comparison'
+[ 75] L007:C016  OPERATOR        '='
+[ 77] L007:C018  DELIMITER       '('
+[ 78] L007:C019  IDENTIFIER      'x'
+[ 80] L007:C021  OPERATOR        '>='
+[ 82] L007:C024  INTEGER         '10'
+[ 83] L007:C026  DELIMITER       ')'
+[ 85] L007:C028  OPERATOR        '&&'
+[ 87] L007:C031  DELIMITER       '('
+[ 88] L007:C032  IDENTIFIER      'y'
+[ 90] L007:C034  OPERATOR        '<='
+[ 92] L007:C037  INTEGER         '20'
+[ 93] L007:C039  DELIMITER       ')'
+[ 95] L007:C041  OPERATOR        '||'
+[ 97] L007:C044  DELIMITER       '('
+[ 98] L007:C045  IDENTIFIER      'z'
+[100] L007:C047  OPERATOR        '!='
+[102] L007:C050  INTEGER         '0'
+[103] L007:C051  DELIMITER       ')'
+[105] L008:C001  KEYWORD         'let'
+[107] L008:C005  IDENTIFIER      'string'
+[109] L008:C012  OPERATOR        '='
+[111] L008:C014  STRING          ""escape: \"quotes\" and \n newlines""
+[112] L008:C050  EOF            
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Total de tokens: 113 (significativos: 61)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+--- Testes concluídos com sucesso ---
+

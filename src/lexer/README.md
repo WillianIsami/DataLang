@@ -36,15 +36,20 @@ DataLang/
 │       ├── afd_operadores.md
 │       ├── afd_palavra_chave.md
 │       ├── afd_tipos_dados.md
-│       └── afd_whitespace.md
+│       ├── afd_whitespace.md
+│       └── afd_final.md
 │
 ├── src/lexer/
+│   ├── afn_to_afd.c
+│   ├── afn_to_afd.h
+│   ├── datalang_afn.c                    # Implementação de AFNs
 │   ├── datalang_afn.h                    # Implementação de AFNs
-│   ├── datalang_lexer_integrated.c       # Analisador léxico completo
+│   ├── datalang_lexer_integrated.c
 │   ├── test_afn_conversion.c             # Testes de conversão AFN→AFD
-│   ├── datalang_lexer.h                  # Header legado
-│   ├── datalang_lexer.c                  # Implementação legada
-│   ├── datalang_tests.c                  # Testes legados
+│   ├── lexer.c
+│   ├── datalang_lexer.h                  # Header dos vários AFDs
+│   ├── datalang_lexer.c                  # Implementação de vários AFDs
+│   ├── datalang_tests.c                  # Testes dos vários AFDs
 │   ├── Makefile                          # Sistema de build
 │   └── README.md                         # Este arquivo
 ```
@@ -57,100 +62,14 @@ DataLang/
 - Make (opcional, mas recomendado)
 - Valgrind (opcional, para verificação de memória)
 
-### Execução rápida
-```bash
-# Execução rápida, setup do projeto (criação das pastas)
-make setup
-
-# Rodar o projeto
-make run
-```
-
-### Compilação
+### Compilar e Executar
 
 ```bash
-# Compilar tudo
-make
+# compilar o lexer.c
+make lexer
 
-# Ou compilar componentes individuais
-make lexer-only    # Apenas o lexer
-make test-only     # Apenas os testes
-
-# Compilação manual
-gcc -Wall -Wextra -std=c99 -o datalang_lexer datalang_lexer.c
-gcc -Wall -Wextra -std=c99 -o datalang_test datalang_test.c datalang_lexer.c
-```
-
-### Execução
-
-```bash
-# Executar lexer com testes integrados
-make run
-# ou
-./datalang_lexer
-
-# Executar suite estendida de testes
-make test
-# ou
-./datalang_test
-
-# Executar ambos
-make run-all
-```
-
-### Targets do Makefile
-
-```bash
-make all              # Compilar todos os executáveis
-make lexer-only       # Compilar apenas o lexer
-make test-only        # Compilar apenas os testes
-make run              # Executar lexer com testes integrados
-make test             # Executar suite estendida de testes
-make run-all          # Executar ambos os programas
-make debug            # Compilar com informações de debug
-make release          # Compilar otimizado para produção
-make memcheck         # Verificar vazamentos de memória
-make memcheck-lexer   # Verificar memória do lexer
-make static-analysis  # Análise estática (cppcheck, clang-tidy)
-make coverage         # Gerar relatório de cobertura
-make clean            # Limpar arquivos gerados
-make check-deps       # Verificar dependências do sistema
-make help             # Mostrar ajuda completa
-```
-
-## 🧪 Testes
-
-O projeto inclui duas suites de testes:
-
-### 1. Testes Integrados (datalang_lexer.c)
-- Testes unitários de cada AFD individual
-- Testes de integração do analisador completo
-- Validação de palavras-chave e tipos
-- Teste do algoritmo de minimização
-- Tratamento de erros
-
-### 2. Suite Estendida (datalang_test.c)
-- Teste de padrões específicos do DataLang
-- Casos extremos e edge cases
-- Teste de consistência
-- Gerenciamento de memória
-- Stress test com entradas grandes
-- Benchmark de performance
-
-### Executando Testes
-
-```bash
-# Testes básicos integrados
-make run
-
-# Suite estendida completa
-make test
-
-# Testes com verificação de memória
-make memcheck
-
-# Verificar dependências antes dos testes
-make check-deps
+# executar o programa
+./lexer
 ```
 
 ## 🔧 Funcionalidades Implementadas

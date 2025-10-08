@@ -1,48 +1,6 @@
-#ifndef DATALANG_AFN_H
-#define DATALANG_AFN_H
+#include "datalang_afn.h"
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdbool.h>
-
-#define MAX_TRANSITIONS 256
-#define EPSILON -1  // Representa transição epsilon
-
-// Estrutura para conjunto de estados
-typedef struct {
-    int* states;
-    int size;
-    int capacity;
-} StateSet;
-
-// Estrutura para transição do AFN
-typedef struct {
-    int from_state;
-    int input;  // EPSILON para ε-transições
-    StateSet* to_states;
-} AFNTransition;
-
-// Estrutura para AFN
-typedef struct {
-    int num_states;
-    int alphabet_size;
-    AFNTransition** transitions;  // Array de listas de transições
-    int* transition_counts;       // Contador de transições por estado
-    bool* final_states;
-    int start_state;
-} AFN;
-
-// Estrutura para AFD (compatível com a implementação anterior)
-typedef struct {
-    int num_states;
-    int alphabet_size;
-    int** transition_table;
-    bool* final_states;
-    int start_state;
-} AFD;
-
-// ==================== FUNÇÕES DE GERENCIAMENTO DE CONJUNTOS ====================
+// -=-=-=-FUNÇÕES DE GERENCIAMENTO DE CONJUNTOS-=-=-=-
 
 StateSet* create_state_set() {
     StateSet* set = (StateSet*)malloc(sizeof(StateSet));
@@ -97,7 +55,7 @@ bool sets_equal(StateSet* a, StateSet* b) {
     return true;
 }
 
-// ==================== FUNÇÕES DO AFN ====================
+// -=-=-=-FUNÇÕES DO AFN-=-=-=-
 
 AFN* create_afn(int num_states, int alphabet_size) {
     AFN* afn = (AFN*)malloc(sizeof(AFN));
@@ -112,7 +70,31 @@ AFN* create_afn(int num_states, int alphabet_size) {
     // Aloca estados finais
     afn->final_states = (bool *)calloc(num_states, sizeof(bool));
     
+    // Aloca tipos de token
+    afn->token_types = (TokenType *)calloc(num_states, sizeof(TokenType));
+    
+    // Inicializa todos os tipos de token como TOKEN_ERROR
+    for (int i = 0; i < num_states; i++) {
+        afn->token_types[i] = TOKEN_ERROR;
+    }
+    
     return afn;
+}
+
+void free_afn(AFN* afn) {
+    if (afn) {
+        for (int i = 0; i < afn->num_states; i++) {
+            for (int j = 0; j < afn->transition_counts[i]; j++) {
+                free_state_set(afn->transitions[i][j].to_states);
+            }
+            free(afn->transitions[i]);
+        }
+        free(afn->transitions);
+        free(afn->transition_counts);
+        free(afn->final_states);
+        free(afn->token_types);
+        free(afn);
+    }
 }
 
 void add_afn_transition(AFN* afn, int from, int input, int to) {
@@ -132,7 +114,6 @@ void add_afn_transition(AFN* afn, int from, int input, int to) {
                                          afn->transition_counts[from] * sizeof(AFNTransition));
         
         int idx = afn->transition_counts[from] - 1;
-        afn->transitions[from][idx].from_state = from;
         afn->transitions[from][idx].input = input;
         afn->transitions[from][idx].to_states = create_state_set();
         add_state(afn->transitions[from][idx].to_states, to);
@@ -142,22 +123,7 @@ void add_afn_transition(AFN* afn, int from, int input, int to) {
     }
 }
 
-void free_afn(AFN* afn) {
-    if (afn) {
-        for (int i = 0; i < afn->num_states; i++) {
-            for (int j = 0; j < afn->transition_counts[i]; j++) {
-                free_state_set(afn->transitions[i][j].to_states);
-            }
-            free(afn->transitions[i]);
-        }
-        free(afn->transitions);
-        free(afn->transition_counts);
-        free(afn->final_states);
-        free(afn);
-    }
-}
-
-// ==================== FECHO EPSILON ====================
+// -=-=-=-FECHO EPSILON-=-=-=-
 
 StateSet* epsilon_closure(AFN* afn, StateSet* states) {
     StateSet* closure = copy_state_set(states);
@@ -185,7 +151,7 @@ StateSet* epsilon_closure(AFN* afn, StateSet* states) {
     return closure;
 }
 
-// ==================== CONVERSÃO AFN → AFD ====================
+// -=-=-=-FUNÇÃO MOVE-=-=-=-
 
 StateSet* move(AFN* afn, StateSet* states, int input) {
     StateSet* result = create_state_set();
@@ -206,232 +172,209 @@ StateSet* move(AFN* afn, StateSet* states, int input) {
     return result;
 }
 
-AFD* afn_to_afd(AFN* afn) {
-    printf("Iniciando conversão AFN → AFD...\n");
-    
-    // Lista de conjuntos de estados do AFD
-    StateSet** dfa_states = (StateSet**)malloc(1000 * sizeof(StateSet*));
-    int num_dfa_states = 0;
-    
-    // Fila de estados não processados
-    StateSet** unmarked = (StateSet**)malloc(1000 * sizeof(StateSet*));
-    int unmarked_count = 0;
-    
-    // Estado inicial do AFD é o fecho epsilon do estado inicial do AFN
-    StateSet* initial_set = create_state_set();
-    add_state(initial_set, afn->start_state);
-    StateSet* initial_closure = epsilon_closure(afn, initial_set);
-    free_state_set(initial_set);
-    
-    dfa_states[num_dfa_states++] = initial_closure;
-    unmarked[unmarked_count++] = initial_closure;
-    
-    // Tabela de transições do AFD
-    int** dfa_transitions = (int**)malloc(1000 * sizeof(int*));
-    for (int i = 0; i < 1000; i++) {
-        dfa_transitions[i] = (int *)malloc(afn->alphabet_size * sizeof(int));
-        for (int j = 0; j < afn->alphabet_size; j++) {
-            dfa_transitions[i][j] = -1;  // Estado de erro
-        }
-    }
-    
-    // Algoritmo de construção de subconjuntos
-    while (unmarked_count > 0) {
-        StateSet* current = unmarked[--unmarked_count];
-        int current_idx = -1;
-        
-        // Encontra índice do estado atual
-        for (int i = 0; i < num_dfa_states; i++) {
-            if (sets_equal(dfa_states[i], current)) {
-                current_idx = i;
-                break;
-            }
-        }
-        
-        printf("Processando estado %d (conjunto com %d estados do AFN)\n", 
-               current_idx, current->size);
-        
-        // Para cada símbolo do alfabeto
-        for (int symbol = 0; symbol < afn->alphabet_size; symbol++) {
-            StateSet* next = move(afn, current, symbol);
-            
-            if (next->size == 0) {
-                free_state_set(next);
-                continue;
-            }
-            
-            StateSet* next_closure = epsilon_closure(afn, next);
-            free_state_set(next);
-            
-            // Verifica se o conjunto já existe
-            int existing_idx = -1;
-            for (int i = 0; i < num_dfa_states; i++) {
-                if (sets_equal(dfa_states[i], next_closure)) {
-                    existing_idx = i;
-                    break;
-                }
-            }
-            
-            if (existing_idx == -1) {
-                // Novo estado do AFD
-                dfa_states[num_dfa_states] = next_closure;
-                unmarked[unmarked_count++] = next_closure;
-                dfa_transitions[current_idx][symbol] = num_dfa_states;
-                num_dfa_states++;
-            } else {
-                // Estado já existe
-                dfa_transitions[current_idx][symbol] = existing_idx;
-                free_state_set(next_closure);
-            }
-        }
-    }
-    
-    printf("Conversão concluída: %d estados no AFD\n", num_dfa_states);
-    
-    // Cria o AFD final
-    AFD* afd = (AFD*)malloc(sizeof(AFD));
-    afd->num_states = num_dfa_states;
-    afd->alphabet_size = afn->alphabet_size;
-    afd->start_state = 0;
-    
-    // Copia tabela de transições
-    afd->transition_table = (int **)malloc(num_dfa_states * sizeof(int*));
-    for (int i = 0; i < num_dfa_states; i++) {
-        afd->transition_table[i] = (int *)malloc(afn->alphabet_size * sizeof(int));
-        memcpy(afd->transition_table[i], dfa_transitions[i], 
-               afn->alphabet_size * sizeof(int));
-    }
-    
-    // Define estados finais
-    afd->final_states = (bool *)malloc(num_dfa_states * sizeof(bool));
-    for (int i = 0; i < num_dfa_states; i++) {
-        afd->final_states[i] = false;
-        for (int j = 0; j < dfa_states[i]->size; j++) {
-            if (afn->final_states[dfa_states[i]->states[j]]) {
-                afd->final_states[i] = true;
-                break;
-            }
-        }
-    }
-    
-    // Libera memória temporária
-    for (int i = 0; i < 1000; i++) {
-        free(dfa_transitions[i]);
-    }
-    free(dfa_transitions);
-    free(unmarked);
-    
-    for (int i = 0; i < num_dfa_states; i++) {
-        free_state_set(dfa_states[i]);
-    }
-    free(dfa_states);
-    
-    return afd;
-}
+// -=-=-=-AFN UNIFICADO COMPLETO PARA DATALANG-=-=-=-
 
-// ==================== AFNs PARA PADRÕES COMPLEXOS ====================
+AFN* create_unified_datalang_afn() {
+    printf("Criando AFN unificado para DataLang...\n");
+    
+    // Cria um AFN com estados suficientes para todos os padrões
+    AFN* afn = create_afn(200, 256);
+    
+    // Configura estado inicial
+    afn->start_state = 0;
+    
+    int next_state = 1; // Próximo estado livre
+    
+    // === WHITESPACE (simples) ===
+    int ws_start = next_state;
+    add_afn_transition(afn, 0, ' ', ws_start);
+    add_afn_transition(afn, 0, '\t', ws_start);
+    add_afn_transition(afn, 0, '\n', ws_start);
+    add_afn_transition(afn, 0, '\r', ws_start);
+    
+    add_afn_transition(afn, ws_start, ' ', ws_start);
+    add_afn_transition(afn, ws_start, '\t', ws_start);
+    add_afn_transition(afn, ws_start, '\n', ws_start);
+    add_afn_transition(afn, ws_start, '\r', ws_start);
+    
+    afn->final_states[ws_start] = true;
+    afn->token_types[ws_start] = TOKEN_WHITESPACE;
+    next_state++;
 
-// AFN para literais string com escape complexo
-AFN* create_string_afn() {
-    AFN* afn = create_afn(10, 256);
+    // === IDENTIFICADORES E PALAVRAS-CHAVE ===
+    int id_start = next_state;
+    for (int c = 'a'; c <= 'z'; c++) add_afn_transition(afn, 0, c, id_start);
+    for (int c = 'A'; c <= 'Z'; c++) add_afn_transition(afn, 0, c, id_start);
+    add_afn_transition(afn, 0, '_', id_start);
     
-    // Estado 0: inicial
-    add_afn_transition(afn, 0, '"', 1);
+    for (int c = 'a'; c <= 'z'; c++) add_afn_transition(afn, id_start, c, id_start);
+    for (int c = 'A'; c <= 'Z'; c++) add_afn_transition(afn, id_start, c, id_start);
+    for (int c = '0'; c <= '9'; c++) add_afn_transition(afn, id_start, c, id_start);
+    add_afn_transition(afn, id_start, '_', id_start);
     
-    // Estado 1: dentro da string
+    afn->final_states[id_start] = true;
+    afn->token_types[id_start] = TOKEN_IDENTIFIER;
+    next_state++;
+
+    // === NÚMEROS INTEIROS ===
+    int int_start = next_state;
+    for (int c = '0'; c <= '9'; c++) add_afn_transition(afn, 0, c, int_start);
+    
+    for (int c = '0'; c <= '9'; c++) add_afn_transition(afn, int_start, c, int_start);
+    
+    afn->final_states[int_start] = true;
+    afn->token_types[int_start] = TOKEN_INTEGER;
+    next_state++;
+
+    // === NÚMEROS DECIMAIS ===
+    int float_start = next_state;
+    add_afn_transition(afn, int_start, '.', float_start);
+    
+    for (int c = '0'; c <= '9'; c++) add_afn_transition(afn, float_start, c, float_start);
+    
+    afn->final_states[float_start] = true;
+    afn->token_types[float_start] = TOKEN_FLOAT;
+    next_state++;
+
+    // === STRINGS ===
+    int str_start = next_state;
+    add_afn_transition(afn, 0, '"', str_start);
+    
+    // Dentro da string
     for (int c = 0; c < 256; c++) {
         if (c != '"' && c != '\\' && c != '\n') {
-            add_afn_transition(afn, 1, c, 1);
+            add_afn_transition(afn, str_start, c, str_start);
         }
     }
     
-    // Transições para escape
-    add_afn_transition(afn, 1, '\\', 2);
+    // Escape
+    int str_escape = next_state++;
+    add_afn_transition(afn, str_start, '\\', str_escape);
+    add_afn_transition(afn, str_escape, '"', str_start);
+    add_afn_transition(afn, str_escape, '\\', str_start);
+    add_afn_transition(afn, str_escape, 'n', str_start);
+    add_afn_transition(afn, str_escape, 't', str_start);
+    add_afn_transition(afn, str_escape, 'r', str_start);
     
-    // Estado 2: após backslash - aceita qualquer escape
-    add_afn_transition(afn, 2, '"', 1);
-    add_afn_transition(afn, 2, '\\', 1);
-    add_afn_transition(afn, 2, 'n', 1);
-    add_afn_transition(afn, 2, 't', 1);
-    add_afn_transition(afn, 2, 'r', 1);
-    add_afn_transition(afn, 2, '0', 1);
+    // Fim da string
+    int str_end = next_state++;
+    add_afn_transition(afn, str_start, '"', str_end);
     
-    // Unicode escape \uXXXX
-    add_afn_transition(afn, 2, 'u', 3);
-    for (int i = 0; i < 4; i++) {
-        for (int c = '0'; c <= '9'; c++) add_afn_transition(afn, 3+i, c, 4+i);
-        for (int c = 'a'; c <= 'f'; c++) add_afn_transition(afn, 3+i, c, 4+i);
-        for (int c = 'A'; c <= 'F'; c++) add_afn_transition(afn, 3+i, c, 4+i);
-    }
-    add_afn_transition(afn, 7, EPSILON, 1);
-    
-    // Estado 1 -> Estado final com aspas de fechamento
-    add_afn_transition(afn, 1, '"', 8);
-    
-    afn->final_states[8] = true;
-    return afn;
-}
+    afn->final_states[str_end] = true;
+    afn->token_types[str_end] = TOKEN_STRING;
+    next_state++;
 
-// AFN para comentários (linha e bloco)
-AFN* create_comment_afn() {
-    AFN* afn = create_afn(20, 256);
-    
-    // Comentário de linha: // até newline
-    add_afn_transition(afn, 0, '/', 1);
-    add_afn_transition(afn, 1, '/', 2);
+    // === OPERADORES SIMPLES ===
+    // +
+    int op_plus = next_state++;
+    add_afn_transition(afn, 0, '+', op_plus);
+    afn->final_states[op_plus] = true;
+    afn->token_types[op_plus] = TOKEN_OPERATOR;
+
+    // -
+    int op_minus = next_state++;
+    add_afn_transition(afn, 0, '-', op_minus);
+    afn->final_states[op_minus] = true;
+    afn->token_types[op_minus] = TOKEN_OPERATOR;
+
+    // *
+    int op_mult = next_state++;
+    add_afn_transition(afn, 0, '*', op_mult);
+    afn->final_states[op_mult] = true;
+    afn->token_types[op_mult] = TOKEN_OPERATOR;
+
+    // /
+    int op_div = next_state++;
+    add_afn_transition(afn, 0, '/', op_div);
+    afn->final_states[op_div] = true;
+    afn->token_types[op_div] = TOKEN_OPERATOR;
+
+    // =
+    int op_assign = next_state++;
+    add_afn_transition(afn, 0, '=', op_assign);
+    afn->final_states[op_assign] = true;
+    afn->token_types[op_assign] = TOKEN_OPERATOR;
+
+    // === DELIMITADORES ===
+    // (
+    int delim_paren_open = next_state++;
+    add_afn_transition(afn, 0, '(', delim_paren_open);
+    afn->final_states[delim_paren_open] = true;
+    afn->token_types[delim_paren_open] = TOKEN_DELIMITER;
+
+    // )
+    int delim_paren_close = next_state++;
+    add_afn_transition(afn, 0, ')', delim_paren_close);
+    afn->final_states[delim_paren_close] = true;
+    afn->token_types[delim_paren_close] = TOKEN_DELIMITER;
+
+    // {
+    int delim_brace_open = next_state++;
+    add_afn_transition(afn, 0, '{', delim_brace_open);
+    afn->final_states[delim_brace_open] = true;
+    afn->token_types[delim_brace_open] = TOKEN_DELIMITER;
+
+    // }
+    int delim_brace_close = next_state++;
+    add_afn_transition(afn, 0, '}', delim_brace_close);
+    afn->final_states[delim_brace_close] = true;
+    afn->token_types[delim_brace_close] = TOKEN_DELIMITER;
+
+    // [
+    int delim_bracket_open = next_state++;
+    add_afn_transition(afn, 0, '[', delim_bracket_open);
+    afn->final_states[delim_bracket_open] = true;
+    afn->token_types[delim_bracket_open] = TOKEN_DELIMITER;
+
+    // ]
+    int delim_bracket_close = next_state++;
+    add_afn_transition(afn, 0, ']', delim_bracket_close);
+    afn->final_states[delim_bracket_close] = true;
+    afn->token_types[delim_bracket_close] = TOKEN_DELIMITER;
+
+    // ,
+    int delim_comma = next_state++;
+    add_afn_transition(afn, 0, ',', delim_comma);
+    afn->final_states[delim_comma] = true;
+    afn->token_types[delim_comma] = TOKEN_DELIMITER;
+
+    // ;
+    int delim_semicolon = next_state++;
+    add_afn_transition(afn, 0, ';', delim_semicolon);
+    afn->final_states[delim_semicolon] = true;
+    afn->token_types[delim_semicolon] = TOKEN_DELIMITER;
+
+    // :
+    int delim_colon = next_state++;
+    add_afn_transition(afn, 0, ':', delim_colon);
+    afn->final_states[delim_colon] = true;
+    afn->token_types[delim_colon] = TOKEN_DELIMITER;
+
+    // === COMENTÁRIOS DE LINHA ===
+    int comment_line_start = next_state++;
+    add_afn_transition(afn, op_div, '/', comment_line_start);
     
     for (int c = 0; c < 256; c++) {
         if (c != '\n' && c != '\r') {
-            add_afn_transition(afn, 2, c, 2);
-        }
-    }
-    add_afn_transition(afn, 2, '\n', 3);
-    add_afn_transition(afn, 2, EPSILON, 3);  // EOF também aceita
-    
-    afn->final_states[3] = true;
-    
-    // Comentário de bloco: /* ... */
-    add_afn_transition(afn, 1, '*', 10);
-    
-    for (int c = 0; c < 256; c++) {
-        if (c != '*') {
-            add_afn_transition(afn, 10, c, 10);
+            add_afn_transition(afn, comment_line_start, c, comment_line_start);
         }
     }
     
-    add_afn_transition(afn, 10, '*', 11);
-    add_afn_transition(afn, 11, '*', 11);  // Múltiplos asteriscos
+    int comment_line_end = next_state++;
+    add_afn_transition(afn, comment_line_start, '\n', comment_line_end);
+    add_afn_transition(afn, comment_line_start, '\r', comment_line_end);
     
-    for (int c = 0; c < 256; c++) {
-        if (c != '*' && c != '/') {
-            add_afn_transition(afn, 11, c, 10);
-        }
-    }
-    
-    add_afn_transition(afn, 11, '/', 12);
-    afn->final_states[12] = true;
+    afn->final_states[comment_line_end] = true;
+    afn->token_types[comment_line_end] = TOKEN_COMMENT_LINE;
+    next_state++;
+
+    printf("AFN unificado criado com %d estados\n", next_state);
+    printf("Tokens suportados: whitespace, identificadores, números, strings, operadores, delimitadores, comentários\n");
     
     return afn;
 }
 
-// AFN para identificadores com Unicode (simplificado)
-AFN* create_identifier_afn() {
-    AFN* afn = create_afn(3, 256);
-    
-    // Estado 0 -> 1 com letra ou underscore
-    for (int c = 'a'; c <= 'z'; c++) add_afn_transition(afn, 0, c, 1);
-    for (int c = 'A'; c <= 'Z'; c++) add_afn_transition(afn, 0, c, 1);
-    add_afn_transition(afn, 0, '_', 1);
-    
-    // Estado 1 -> 1 com letra, dígito ou underscore
-    for (int c = 'a'; c <= 'z'; c++) add_afn_transition(afn, 1, c, 1);
-    for (int c = 'A'; c <= 'Z'; c++) add_afn_transition(afn, 1, c, 1);
-    for (int c = '0'; c <= '9'; c++) add_afn_transition(afn, 1, c, 1);
-    add_afn_transition(afn, 1, '_', 1);
-    
-    afn->final_states[1] = true;
-    return afn;
-}
+// -=-=-=-FUNÇÕES DO AFD-=-=-=-
 
 void free_afd(AFD* afd) {
     if (afd) {
@@ -442,8 +385,7 @@ void free_afd(AFD* afd) {
             free(afd->transition_table);
         }
         free(afd->final_states);
+        free(afd->token_types);
         free(afd);
     }
 }
-
-#endif // DATALANG_AFN_H
