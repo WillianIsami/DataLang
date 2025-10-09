@@ -172,6 +172,17 @@ void free_lexer(Lexer* lexer) {
 
 // ==================== RECONHECIMENTO DE TOKENS COM AFD ====================
 
+void update_position(Lexer* lexer, int start, int end) {
+    for (int i = start; i < end; i++) {
+        if (lexer->input[i] == '\n') {
+            lexer->line++;
+            lexer->column = 1;
+        } else {
+            lexer->column++;
+        }
+    }
+}
+
 /*
  * Reconhece o próximo token usando o AFD.
  * Implementa a estratégia do "match mais longo" (maximal munch).
@@ -181,76 +192,64 @@ Token recognize_token(Lexer* lexer) {
     token.line = lexer->line;
     token.column = lexer->column;
     
-    // Se chegou ao fim da entrada
     if (lexer->position >= lexer->length) {
         token.type = TOKEN_EOF;
-        token.value = NULL;
-        token.length = 0;
         return token;
     }
     
     int current_state = lexer->afd->start_state;
     int last_final_state = -1;
-    int last_final_position = -1;
+    int last_final_position = lexer->position;
     int start_position = lexer->position;
     
+    // Estratégia do match mais longo
     while (lexer->position < lexer->length) {
-        unsigned char c = (unsigned char)lexer->input[lexer->position];
+        unsigned char c = lexer->input[lexer->position];
         
-        // Verifica se há transição válida
         if (c >= lexer->afd->alphabet_size) {
             break;
         }
         
         int next_state = lexer->afd->transition_table[current_state][c];
         
-        // Se não há transição válida, para
         if (next_state < 0) {
-            break;
+            break; // Não há transição
         }
         
         current_state = next_state;
         lexer->position++;
         
-        // Se chegou a um estado final, registra
+        // Registra se é estado final
         if (lexer->afd->final_states[current_state]) {
             last_final_state = current_state;
             last_final_position = lexer->position;
         }
     }
     
-    // Se encontrou um estado final, aceita o token
+    // Processa resultado
     if (last_final_state >= 0) {
+        // Match bem-sucedido
         lexer->position = last_final_position;
         token.length = last_final_position - start_position;
         token.value = strndup(&lexer->input[start_position], token.length);
         token.type = lexer->afd->token_types[last_final_state];
         
-        // Atualiza posição (linha/coluna)
-        for (int i = start_position; i < last_final_position; i++) {
-            if (lexer->input[i] == '\n') {
-                lexer->line++;
-                lexer->column = 1;
-            } else {
-                lexer->column++;
-            }
-        }
-        
-        // Classifica identificadores (palavras-chave vs identificadores)
+        // Classificação adicional para identificadores
         if (token.type == TOKEN_IDENTIFIER) {
-            TokenType keyword_type = lookup_keyword(token.value);
-            token.type = keyword_type;
+            token.type = lookup_keyword(token.value);
         }
         
-        return token;
+        // Atualiza linha/coluna
+        update_position(lexer, start_position, last_final_position);
+        
+    } else {
+        // Erro léxico
+        token.type = TOKEN_ERROR;
+        token.value = strndup(&lexer->input[start_position], 1);
+        token.length = 1;
+        lexer->position = start_position + 1;
+        lexer->column++;
     }
-    
-    // Erro léxico: caractere inválido
-    token.type = TOKEN_ERROR;
-    token.value = strndup(&lexer->input[start_position], 1);
-    token.length = 1;
-    lexer->position = start_position + 1;
-    lexer->column++;
     
     return token;
 }
@@ -290,13 +289,15 @@ void free_token_stream(TokenStream* stream) {
 }
 
 TokenStream* tokenize(const char* input, AFD* afd) {
+    if (!input || !afd) return NULL;
+    
     Lexer* lexer = create_lexer(input, afd);
     TokenStream* stream = create_token_stream();
     
-    while (true) {
+    while (lexer->position < lexer->length) {
         Token token = recognize_token(lexer);
         
-        // Filtra whitespace e comentários
+        // Filtra whitespace
         if (token.type != TOKEN_WHITESPACE && token.type != TOKEN_COMMENT) {
             add_token(stream, token);
         } else {
@@ -306,9 +307,16 @@ TokenStream* tokenize(const char* input, AFD* afd) {
         if (token.type == TOKEN_EOF || token.type == TOKEN_ERROR) break;
     }
     
+    // Adiciona EOF se necessário
+    if (stream->count == 0 || stream->tokens[stream->count-1].type != TOKEN_EOF) {
+        Token eof_token = {TOKEN_EOF, NULL, 0, lexer->line, lexer->column};
+        add_token(stream, eof_token);
+    }
+    
     free_lexer(lexer);
     return stream;
 }
+
 
 // ==================== INTEGRAÇÃO COM AFN->AFD ====================
 

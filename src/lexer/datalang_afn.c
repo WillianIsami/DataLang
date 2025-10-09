@@ -177,16 +177,13 @@ StateSet* move(AFN* afn, StateSet* states, int input) {
 AFN* create_unified_datalang_afn() {
     printf("Criando AFN unificado para DataLang...\n");
     
-    // Cria um AFN com estados suficientes para todos os padrões
-    AFN* afn = create_afn(200, 256);
-    
-    // Configura estado inicial
+    AFN* afn = create_afn(100, 256);
     afn->start_state = 0;
     
-    int next_state = 1; // Próximo estado livre
-    
-    // === WHITESPACE (simples) ===
-    int ws_start = next_state;
+    int next_state = 1;
+
+    // === WHITESPACE ===
+    int ws_start = next_state++;
     add_afn_transition(afn, 0, ' ', ws_start);
     add_afn_transition(afn, 0, '\t', ws_start);
     add_afn_transition(afn, 0, '\n', ws_start);
@@ -199,10 +196,9 @@ AFN* create_unified_datalang_afn() {
     
     afn->final_states[ws_start] = true;
     afn->token_types[ws_start] = TOKEN_WHITESPACE;
-    next_state++;
 
-    // === IDENTIFICADORES E PALAVRAS-CHAVE ===
-    int id_start = next_state;
+    // === IDENTIFICADORES ===
+    int id_start = next_state++;
     for (int c = 'a'; c <= 'z'; c++) add_afn_transition(afn, 0, c, id_start);
     for (int c = 'A'; c <= 'Z'; c++) add_afn_transition(afn, 0, c, id_start);
     add_afn_transition(afn, 0, '_', id_start);
@@ -214,33 +210,28 @@ AFN* create_unified_datalang_afn() {
     
     afn->final_states[id_start] = true;
     afn->token_types[id_start] = TOKEN_IDENTIFIER;
-    next_state++;
 
     // === NÚMEROS INTEIROS ===
-    int int_start = next_state;
+    int int_start = next_state++;
     for (int c = '0'; c <= '9'; c++) add_afn_transition(afn, 0, c, int_start);
-    
     for (int c = '0'; c <= '9'; c++) add_afn_transition(afn, int_start, c, int_start);
     
     afn->final_states[int_start] = true;
     afn->token_types[int_start] = TOKEN_INTEGER;
-    next_state++;
 
     // === NÚMEROS DECIMAIS ===
-    int float_start = next_state;
-    add_afn_transition(afn, int_start, '.', float_start);
+    int decimal_start = next_state++;
+    add_afn_transition(afn, int_start, '.', decimal_start);
+    for (int c = '0'; c <= '9'; c++) add_afn_transition(afn, decimal_start, c, decimal_start);
     
-    for (int c = '0'; c <= '9'; c++) add_afn_transition(afn, float_start, c, float_start);
-    
-    afn->final_states[float_start] = true;
-    afn->token_types[float_start] = TOKEN_FLOAT;
-    next_state++;
+    afn->final_states[decimal_start] = true;
+    afn->token_types[decimal_start] = TOKEN_FLOAT;
 
     // === STRINGS ===
-    int str_start = next_state;
+    int str_start = next_state++;
     add_afn_transition(afn, 0, '"', str_start);
     
-    // Dentro da string
+    // Caracteres normais dentro da string
     for (int c = 0; c < 256; c++) {
         if (c != '"' && c != '\\' && c != '\n') {
             add_afn_transition(afn, str_start, c, str_start);
@@ -262,115 +253,116 @@ AFN* create_unified_datalang_afn() {
     
     afn->final_states[str_end] = true;
     afn->token_types[str_end] = TOKEN_STRING;
-    next_state++;
 
-    // === OPERADORES SIMPLES ===
-    // +
-    int op_plus = next_state++;
-    add_afn_transition(afn, 0, '+', op_plus);
-    afn->final_states[op_plus] = true;
-    afn->token_types[op_plus] = TOKEN_OPERATOR;
+    // === OPERADORES RELACIONAIS COMPOSTOS ===
+    
+    // = e ==
+    int assign_start = next_state++;
+    add_afn_transition(afn, 0, '=', assign_start);
+    afn->final_states[assign_start] = true;
+    afn->token_types[assign_start] = TOKEN_ASSIGN;
+    
+    int equal_op = next_state++;
+    add_afn_transition(afn, assign_start, '=', equal_op);
+    afn->final_states[equal_op] = true;
+    afn->token_types[equal_op] = TOKEN_EQUAL;
+    
+    // ! e !=
+    int not_op = next_state++;
+    add_afn_transition(afn, 0, '!', not_op);
+    afn->final_states[not_op] = true;
+    afn->token_types[not_op] = TOKEN_NOT;
+    
+    int not_equal = next_state++;
+    add_afn_transition(afn, not_op, '=', not_equal);
+    afn->final_states[not_equal] = true;
+    afn->token_types[not_equal] = TOKEN_NOT_EQUAL;
+    
+    // < e <=
+    int less_op = next_state++;
+    add_afn_transition(afn, 0, '<', less_op);
+    afn->final_states[less_op] = true;
+    afn->token_types[less_op] = TOKEN_LESS;
+    
+    int less_equal = next_state++;
+    add_afn_transition(afn, less_op, '=', less_equal);
+    afn->final_states[less_equal] = true;
+    afn->token_types[less_equal] = TOKEN_LESS_EQUAL;
+    
+    // > e >=  
+    int greater_op = next_state++;
+    add_afn_transition(afn, 0, '>', greater_op);
+    afn->final_states[greater_op] = true;
+    afn->token_types[greater_op] = TOKEN_GREATER;
+    
+    int greater_equal = next_state++;
+    add_afn_transition(afn, greater_op, '=', greater_equal);
+    afn->final_states[greater_equal] = true;
+    afn->token_types[greater_equal] = TOKEN_GREATER_EQUAL;
 
-    // -
-    int op_minus = next_state++;
-    add_afn_transition(afn, 0, '-', op_minus);
-    afn->final_states[op_minus] = true;
-    afn->token_types[op_minus] = TOKEN_OPERATOR;
+    // === OPERADORES ARITMÉTICOS SIMPLES ===
+    int plus_op = next_state++;
+    add_afn_transition(afn, 0, '+', plus_op);
+    afn->final_states[plus_op] = true;
+    afn->token_types[plus_op] = TOKEN_PLUS;
 
-    // *
-    int op_mult = next_state++;
-    add_afn_transition(afn, 0, '*', op_mult);
-    afn->final_states[op_mult] = true;
-    afn->token_types[op_mult] = TOKEN_OPERATOR;
+    int minus_op = next_state++;
+    add_afn_transition(afn, 0, '-', minus_op);
+    afn->final_states[minus_op] = true;
+    afn->token_types[minus_op] = TOKEN_MINUS;
 
-    // /
-    int op_div = next_state++;
-    add_afn_transition(afn, 0, '/', op_div);
-    afn->final_states[op_div] = true;
-    afn->token_types[op_div] = TOKEN_OPERATOR;
+    int mult_op = next_state++;
+    add_afn_transition(afn, 0, '*', mult_op);
+    afn->final_states[mult_op] = true;
+    afn->token_types[mult_op] = TOKEN_MULT;
 
-    // =
-    int op_assign = next_state++;
-    add_afn_transition(afn, 0, '=', op_assign);
-    afn->final_states[op_assign] = true;
-    afn->token_types[op_assign] = TOKEN_OPERATOR;
+    int div_op = next_state++;
+    add_afn_transition(afn, 0, '/', div_op);
+    afn->final_states[div_op] = true;
+    afn->token_types[div_op] = TOKEN_DIV;
+
+    int mod_op = next_state++;
+    add_afn_transition(afn, 0, '%', mod_op);
+    afn->final_states[mod_op] = true;
+    afn->token_types[mod_op] = TOKEN_MOD;
 
     // === DELIMITADORES ===
-    // (
-    int delim_paren_open = next_state++;
-    add_afn_transition(afn, 0, '(', delim_paren_open);
-    afn->final_states[delim_paren_open] = true;
-    afn->token_types[delim_paren_open] = TOKEN_DELIMITER;
+    int lparen = next_state++;
+    add_afn_transition(afn, 0, '(', lparen);
+    afn->final_states[lparen] = true;
+    afn->token_types[lparen] = TOKEN_LPAREN;
 
-    // )
-    int delim_paren_close = next_state++;
-    add_afn_transition(afn, 0, ')', delim_paren_close);
-    afn->final_states[delim_paren_close] = true;
-    afn->token_types[delim_paren_close] = TOKEN_DELIMITER;
+    int rparen = next_state++;
+    add_afn_transition(afn, 0, ')', rparen);
+    afn->final_states[rparen] = true;
+    afn->token_types[rparen] = TOKEN_RPAREN;
 
-    // {
-    int delim_brace_open = next_state++;
-    add_afn_transition(afn, 0, '{', delim_brace_open);
-    afn->final_states[delim_brace_open] = true;
-    afn->token_types[delim_brace_open] = TOKEN_DELIMITER;
+    int lbrace = next_state++;
+    add_afn_transition(afn, 0, '{', lbrace);
+    afn->final_states[lbrace] = true;
+    afn->token_types[lbrace] = TOKEN_LBRACE;
 
-    // }
-    int delim_brace_close = next_state++;
-    add_afn_transition(afn, 0, '}', delim_brace_close);
-    afn->final_states[delim_brace_close] = true;
-    afn->token_types[delim_brace_close] = TOKEN_DELIMITER;
+    int rbrace = next_state++;
+    add_afn_transition(afn, 0, '}', rbrace);
+    afn->final_states[rbrace] = true;
+    afn->token_types[rbrace] = TOKEN_RBRACE;
 
-    // [
-    int delim_bracket_open = next_state++;
-    add_afn_transition(afn, 0, '[', delim_bracket_open);
-    afn->final_states[delim_bracket_open] = true;
-    afn->token_types[delim_bracket_open] = TOKEN_DELIMITER;
+    int comma = next_state++;
+    add_afn_transition(afn, 0, ',', comma);
+    afn->final_states[comma] = true;
+    afn->token_types[comma] = TOKEN_COMMA;
 
-    // ]
-    int delim_bracket_close = next_state++;
-    add_afn_transition(afn, 0, ']', delim_bracket_close);
-    afn->final_states[delim_bracket_close] = true;
-    afn->token_types[delim_bracket_close] = TOKEN_DELIMITER;
+    int semicolon = next_state++;
+    add_afn_transition(afn, 0, ';', semicolon);
+    afn->final_states[semicolon] = true;
+    afn->token_types[semicolon] = TOKEN_SEMICOLON;
 
-    // ,
-    int delim_comma = next_state++;
-    add_afn_transition(afn, 0, ',', delim_comma);
-    afn->final_states[delim_comma] = true;
-    afn->token_types[delim_comma] = TOKEN_DELIMITER;
-
-    // ;
-    int delim_semicolon = next_state++;
-    add_afn_transition(afn, 0, ';', delim_semicolon);
-    afn->final_states[delim_semicolon] = true;
-    afn->token_types[delim_semicolon] = TOKEN_DELIMITER;
-
-    // :
-    int delim_colon = next_state++;
-    add_afn_transition(afn, 0, ':', delim_colon);
-    afn->final_states[delim_colon] = true;
-    afn->token_types[delim_colon] = TOKEN_DELIMITER;
-
-    // === COMENTÁRIOS DE LINHA ===
-    int comment_line_start = next_state++;
-    add_afn_transition(afn, op_div, '/', comment_line_start);
-    
-    for (int c = 0; c < 256; c++) {
-        if (c != '\n' && c != '\r') {
-            add_afn_transition(afn, comment_line_start, c, comment_line_start);
-        }
-    }
-    
-    int comment_line_end = next_state++;
-    add_afn_transition(afn, comment_line_start, '\n', comment_line_end);
-    add_afn_transition(afn, comment_line_start, '\r', comment_line_end);
-    
-    afn->final_states[comment_line_end] = true;
-    afn->token_types[comment_line_end] = TOKEN_COMMENT_LINE;
-    next_state++;
+    int colon = next_state++;
+    add_afn_transition(afn, 0, ':', colon);
+    afn->final_states[colon] = true;
+    afn->token_types[colon] = TOKEN_COLON;
 
     printf("AFN unificado criado com %d estados\n", next_state);
-    printf("Tokens suportados: whitespace, identificadores, números, strings, operadores, delimitadores, comentários\n");
-    
     return afn;
 }
 
