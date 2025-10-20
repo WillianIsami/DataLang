@@ -10,7 +10,54 @@
 #include <stdbool.h>
 #include <ctype.h>
 #include "datalang_afn.h"
-#include "afn_to_afd.h"
+
+// ==================== BUFFER DE ARQUIVO ====================
+
+typedef struct {
+    char* data;
+    size_t size;
+    size_t capacity;
+} FileBuffer;
+
+FileBuffer* read_file_to_buffer(const char* filename) {
+    FILE* file = fopen(filename, "rb");
+    if (!file) {
+        perror("Erro ao abrir arquivo");
+        return NULL;
+    }
+
+    fseek(file, 0, SEEK_END);
+    long file_size = ftell(file);
+    fseek(file, 0, SEEK_SET);
+
+    FileBuffer* buffer = (FileBuffer*)malloc(sizeof(FileBuffer));
+    if (!buffer) {
+        fclose(file);
+        return NULL;
+    }
+
+    buffer->capacity = file_size + 1;
+    buffer->data = (char*)malloc(buffer->capacity);
+    if (!buffer->data) {
+        free(buffer);
+        fclose(file);
+        return NULL;
+    }
+
+    size_t bytes_read = fread(buffer->data, 1, file_size, file);
+    buffer->data[bytes_read] = '\0';
+    buffer->size = bytes_read;
+
+    fclose(file);
+    return buffer;
+}
+
+void free_file_buffer(FileBuffer* buffer) {
+    if (buffer) {
+        free(buffer->data);
+        free(buffer);
+    }
+}
 
 // ==================== TABELA DE PALAVRAS-CHAVE ====================
 
@@ -183,6 +230,35 @@ void update_position(Lexer* lexer, int start, int end) {
     }
 }
 
+TokenType fallback_token_type(const char* lexema) {
+    if (strlen(lexema) == 1) {
+        switch (lexema[0]) {
+            case '=': return TOKEN_OPERATOR;
+            case '(': return TOKEN_DELIMITER;
+            case ')': return TOKEN_DELIMITER;
+            case '{': return TOKEN_DELIMITER;
+            case '}': return TOKEN_DELIMITER;
+            case '[': return TOKEN_DELIMITER;
+            case ']': return TOKEN_DELIMITER;
+            case ',': return TOKEN_DELIMITER;
+            case ':': return TOKEN_DELIMITER;
+            case ';': return TOKEN_DELIMITER;
+            case '.': return TOKEN_DELIMITER;
+            case '|': return TOKEN_OPERATOR;
+            case '>': return TOKEN_OPERATOR;
+            case '<': return TOKEN_OPERATOR;
+            case '!': return TOKEN_OPERATOR;
+            case '&': return TOKEN_OPERATOR;
+            case '+': return TOKEN_OPERATOR;
+            case '-': return TOKEN_OPERATOR;
+            case '*': return TOKEN_OPERATOR;
+            case '/': return TOKEN_OPERATOR;
+            case '%': return TOKEN_OPERATOR;
+        }
+    }
+    return TOKEN_ERROR;
+}
+
 /*
  * Reconhece o próximo token usando o AFD.
  * Implementa a estratégia do "match mais longo" (maximal munch).
@@ -194,6 +270,7 @@ Token recognize_token(Lexer* lexer) {
     
     if (lexer->position >= lexer->length) {
         token.type = TOKEN_EOF;
+        token.lexema = strdup("");
         return token;
     }
     
@@ -231,12 +308,57 @@ Token recognize_token(Lexer* lexer) {
         // Match bem-sucedido
         lexer->position = last_final_position;
         token.length = last_final_position - start_position;
-        token.value = strndup(&lexer->input[start_position], token.length);
+        token.lexema = strndup(&lexer->input[start_position], token.length);
         token.type = lexer->afd->token_types[last_final_state];
         
-        // Classificação adicional para identificadores
+        // Se ainda for UNKNOWN, tenta fallback
+        if (token.type == TOKEN_ERROR) {
+            token.type = fallback_token_type(token.lexema);
+        }
+
+        // Classificação adicional para OPERADORES
+        // O AFD nos diz que "é um operador", aqui descobrimos "qual"
+        if (token.type == TOKEN_OPERATOR) {
+            if (strcmp(token.lexema, "+") == 0) token.type = TOKEN_PLUS;
+            else if (strcmp(token.lexema, "-") == 0) token.type = TOKEN_MINUS;
+            else if (strcmp(token.lexema, "*") == 0) token.type = TOKEN_MULT;
+            else if (strcmp(token.lexema, "/") == 0) token.type = TOKEN_DIV;
+            else if (strcmp(token.lexema, "%") == 0) token.type = TOKEN_MOD;
+            else if (strcmp(token.lexema, "=") == 0) token.type = TOKEN_ASSIGN;
+            else if (strcmp(token.lexema, "==") == 0) token.type = TOKEN_EQUAL;
+            else if (strcmp(token.lexema, "!=") == 0) token.type = TOKEN_NOT_EQUAL;
+            else if (strcmp(token.lexema, "<") == 0) token.type = TOKEN_LESS;
+            else if (strcmp(token.lexema, "<=") == 0) token.type = TOKEN_LESS_EQUAL;
+            else if (strcmp(token.lexema, ">") == 0) token.type = TOKEN_GREATER;
+            else if (strcmp(token.lexema, ">=") == 0) token.type = TOKEN_GREATER_EQUAL;
+            else if (strcmp(token.lexema, "&&") == 0) token.type = TOKEN_AND;
+            else if (strcmp(token.lexema, "||") == 0) token.type = TOKEN_OR;
+            else if (strcmp(token.lexema, "!") == 0) token.type = TOKEN_NOT;
+            else if (strcmp(token.lexema, "->") == 0) token.type = TOKEN_ARROW;
+            else if (strcmp(token.lexema, "|>") == 0) token.type = TOKEN_PIPE;
+            else if (strcmp(token.lexema, "|") == 0) token.type = TOKEN_DELIMITER;
+            // Estes são classificados como OPERATOR devido à prioridade
+            // sobre DELIMITER na construção do AFN
+            else if (strcmp(token.lexema, ".") == 0) token.type = TOKEN_DOT;
+            else if (strcmp(token.lexema, ":") == 0) token.type = TOKEN_COLON;
+            else if (strcmp(token.lexema, ",") == 0) token.type = TOKEN_COMMA;
+        }
+        
+        // Classificação adicional para DELIMITADORES
+        if (token.type == TOKEN_DELIMITER) {
+            if (strcmp(token.lexema, "(") == 0) token.type = TOKEN_LPAREN;
+            else if (strcmp(token.lexema, ")") == 0) token.type = TOKEN_RPAREN;
+            else if (strcmp(token.lexema, "[") == 0) token.type = TOKEN_LBRACKET;
+            else if (strcmp(token.lexema, "]") == 0) token.type = TOKEN_RBRACKET;
+            else if (strcmp(token.lexema, "{") == 0) token.type = TOKEN_LBRACE;
+            else if (strcmp(token.lexema, "}") == 0) token.type = TOKEN_RBRACE;
+            else if (strcmp(token.lexema, ";") == 0) token.type = TOKEN_SEMICOLON;
+            else if (strcmp(token.lexema, "..") == 0) token.type = TOKEN_RANGE;
+        }
+        
+        // Classificação adicional para IDENTIFICADORES
         if (token.type == TOKEN_IDENTIFIER) {
-            token.type = lookup_keyword(token.value);
+            token.type = lookup_keyword(token.lexema);
         }
         
         // Atualiza linha/coluna
@@ -245,7 +367,7 @@ Token recognize_token(Lexer* lexer) {
     } else {
         // Erro léxico
         token.type = TOKEN_ERROR;
-        token.value = strndup(&lexer->input[start_position], 1);
+        token.lexema = strndup(&lexer->input[start_position], 1);
         token.length = 1;
         lexer->position = start_position + 1;
         lexer->column++;
@@ -281,7 +403,7 @@ void add_token(TokenStream* stream, Token token) {
 void free_token_stream(TokenStream* stream) {
     if (stream) {
         for (int i = 0; i < stream->count; i++) {
-            free(stream->tokens[i].value);
+            free(stream->tokens[i].lexema);
         }
         free(stream->tokens);
         free(stream);
@@ -297,11 +419,11 @@ TokenStream* tokenize(const char* input, AFD* afd) {
     while (lexer->position < lexer->length) {
         Token token = recognize_token(lexer);
         
-        // Filtra whitespace
+        // Filtra whitespace e comentários
         if (token.type != TOKEN_WHITESPACE && token.type != TOKEN_COMMENT) {
             add_token(stream, token);
         } else {
-            free(token.value);
+            free(token.lexema);
         }
         
         if (token.type == TOKEN_EOF || token.type == TOKEN_ERROR) break;
@@ -309,7 +431,7 @@ TokenStream* tokenize(const char* input, AFD* afd) {
     
     // Adiciona EOF se necessário
     if (stream->count == 0 || stream->tokens[stream->count-1].type != TOKEN_EOF) {
-        Token eof_token = {TOKEN_EOF, NULL, 0, lexer->line, lexer->column};
+        Token eof_token = {TOKEN_EOF, strdup(""), 0, lexer->line, lexer->column};
         add_token(stream, eof_token);
     }
     
@@ -317,10 +439,7 @@ TokenStream* tokenize(const char* input, AFD* afd) {
     return stream;
 }
 
-
 // ==================== INTEGRAÇÃO COM AFN->AFD ====================
-
-// A função afn_to_afd está declarada em afn_to_afd.h
 
 AFD* create_datalang_afd_from_afn() {
     printf("Criando AFD a partir do AFN unificado...\n");
@@ -360,18 +479,18 @@ void print_tokens(TokenStream* stream) {
         printf("[%3d] L%03d:C%03d  %-15s", 
                i, t->line, t->column, token_type_name(t->type));
         
-        if (t->value) {
+        if (t->lexema && t->lexema[0] != '\0') {
             if (t->type == TOKEN_STRING) {
-                printf(" %s", t->value);
+                printf(" %s", t->lexema);
             } else {
-                printf(" '%s'", t->value);
+                printf(" '%s'", t->lexema);
             }
         }
         printf("\n");
     }
     
     printf("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n");
-    printf("Total: %d tokens (excluindo whitespace)\n", stream->count - 1);
+    printf("Total: %d tokens (excluindo whitespace e comentários)\n", stream->count - 1);
     printf("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n");
 }
 
@@ -386,6 +505,36 @@ void print_afd_info(AFD* afd) {
         if (afd->final_states[i]) final_count++;
     }
     printf("   - Estados finais: %d\n", final_count);
+}
+
+// ==================== TESTES COM ARQUIVO ====================
+
+void test_with_file(const char* filename) {
+    printf("\nTESTE COM ARQUIVO: %s\n", filename);
+    printf("════════════════════════════════════════════════════════════\n");
+    
+    FileBuffer* buffer = read_file_to_buffer(filename);
+    if (!buffer) {
+        printf("Erro ao ler arquivo: %s\n", filename);
+        return;
+    }
+    
+    printf("Conteúdo do arquivo (%zu bytes):\n%s\n", buffer->size, buffer->data);
+    
+    AFD* afd = create_datalang_afd_from_afn();
+    if (!afd) {
+        free_file_buffer(buffer);
+        return;
+    }
+    
+    print_afd_info(afd);
+    
+    TokenStream* stream = tokenize(buffer->data, afd);
+    print_tokens(stream);
+    
+    free_token_stream(stream);
+    free_afd(afd);
+    free_file_buffer(buffer);
 }
 
 // ==================== TESTES ====================
@@ -488,7 +637,7 @@ void test_error_handling() {
     for (int i = 0; i < stream->count; i++) {
         Token* t = &stream->tokens[i];
         printf("  %-15s", token_type_name(t->type));
-        if (t->value) printf(" '%s'", t->value);
+        if (t->lexema) printf(" '%s'", t->lexema);
         if (t->type == TOKEN_ERROR) printf(" ← ERRO LÉXICO");
         printf("\n");
     }
@@ -500,7 +649,7 @@ void test_error_handling() {
 // ==================== FUNÇÃO PRINCIPAL ====================
 
 #ifndef LIB_BUILD
-int main() {
+int main(int argc, char** argv) {
     printf("\n╔════════════════════════════════════════════════════════════╗\n");
     printf("║          ANALISADOR LÉXICO DATALANG - AFD UNIFICADO       ║\n");
     printf("╚════════════════════════════════════════════════════════════╝\n\n");
@@ -508,14 +657,22 @@ int main() {
     printf("Este analisador léxico usa um AFD unificado gerado a partir\n");
     printf("de um AFN através do algoritmo de construção de subconjuntos.\n\n");
     
-    // Executa todos os testes
-    test_simple_code();
-    test_complex_code();
-    test_edge_cases();
-    test_error_handling();
-    
-    printf("\nTodos os testes concluídos!\n");
-    printf("O analisador léxico está funcionando com o AFD unificado.\n\n");
+    if (argc > 1) {
+        // Modo arquivo - processa o arquivo especificado
+        test_with_file(argv[1]);
+    } else {
+        // Modo teste - executa todos os testes
+        test_simple_code();
+        test_complex_code();
+        test_edge_cases();
+        test_error_handling();
+        
+        printf("\nTodos os testes concluídos!\n");
+        printf("O analisador léxico está funcionando com o AFD unificado.\n\n");
+        
+        printf("Uso: %s <arquivo.datalang>\n", argv[0]);
+        printf("Para processar um arquivo específico.\n\n");
+    }
     
     return 0;
 }

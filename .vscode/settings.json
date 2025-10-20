@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "string.h": "c",
-        "datalang_afn.h": "c"
+        "datalang_afn.h": "c",
+        "datalang_lexer.h": "c"
     }
 }
