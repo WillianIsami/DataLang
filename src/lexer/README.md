@@ -72,7 +72,7 @@ datalang_lexer.exe ..\..\examples\test_fix.datalang
 
 ```bash
 src/lexer/
-├── datalang_afn.h/c    # Definições e implementações dos AFNs
+├── datalang_afn.h/c    # Implementações dos AFDs e conversão para AFN
 ├── afn_to_afd.h/c      # Conversão AFN→AFD  
 ├── lexer.c             # Analisador léxico principal
 ├── Makefile            # Sistema de build (Linux/macOS)
