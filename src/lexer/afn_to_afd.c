@@ -172,8 +172,8 @@ AFD* afn_to_afd(AFN* afn) {
         const TokenType priority_order[] = {
             TOKEN_STRING,       // 0 - Strings primeiro (maior prioridade)
             TOKEN_COMMENT,      // 1 - Comentários
-            TOKEN_FLOAT,        // 2 - Números decimais
-            TOKEN_INTEGER,      // 3 - Inteiros
+            TOKEN_INTEGER,      // 2 - Inteiros
+            TOKEN_FLOAT,        // 3 - Números decimais
             TOKEN_OPERATOR,     // 4 - Operadores
             TOKEN_DELIMITER,    // 5 - Delimitadores
             TOKEN_IDENTIFIER,   // 6 - Identificadores

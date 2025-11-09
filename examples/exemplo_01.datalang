@@ -1,8 +1,10 @@
+// Exemplo de código DataLang
 let data = load("dados.csv")
+
 let resultado = data
     |> filter(|linha| linha.idade >= 18)
     |> map(|x| { 
-        nome: x.nome, 
+        nome: x.nome,
         salario_ajustado: x.salario * 1.1 
     })
     |> groupby("departamento")
@@ -11,10 +13,11 @@ let resultado = data
         media_salario: mean(grupo.valores.salario_ajustado),
         total_funcionarios: count(grupo.valores)
     })
+
 save(resultado, "resultado.json")
 
 fn calcular_bonus(salario: Float, desempenho: Float) -> Float {
-    if desempenho === 0.9 {
+    if desempenho > 0.9 {
         return salario * 0.2
     } else if desempenho > 0.7 {
         return salario * 0.1

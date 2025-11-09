@@ -288,7 +288,7 @@ AFN* create_unified_datalang_afn() {
     int total_states = 1 + 
                        2 +   // whitespace
                        2 +   // identifier
-                       8 +   // number
+                       9 +   // number (CORRIGIDO: 8 -> 9)
                        4 +   // string
                        22 +  // operator
                        12 +  // delimiter
@@ -379,12 +379,13 @@ AFN* create_unified_datalang_afn() {
     }
     
     /* ────────────────────────────────────────────────────────────
-       NÚMEROS (inteiros, decimais, científicos)
+       NÚMEROS (inteiros, decimais, científicos) - CORRIGIDO
        ──────────────────────────────────────────────────────────── */
     {
         printf("\n3. NÚMEROS\n");
         
-        int num_states = 8;
+        // CORREÇÃO: Aumentado de 8 para 9 estados
+        int num_states = 9;
         int** trans = (int**)malloc(num_states * sizeof(int*));
         bool* finals = (bool*)calloc(num_states, sizeof(bool));
         
@@ -405,14 +406,15 @@ AFN* create_unified_datalang_afn() {
         
         // Estado 2: dígitos inteiros
         for (int c = '0'; c <= '9'; c++) trans[2][c] = 2;
-        trans[2]['.'] = 4;
         trans[2]['e'] = trans[2]['E'] = 5;
         finals[2] = true; // Inteiro válido
+        // CORREÇÃO: Transição para estado 8 (intermediário) em vez de 4
+        trans[2]['.'] = 8; 
         
-        // Estado 3: após ponto inicial
+        // Estado 3: após ponto inicial (ex: .14)
         for (int c = '0'; c <= '9'; c++) trans[3][c] = 4;
         
-        // Estado 4: parte decimal
+        // Estado 4: parte decimal (ex: .14, 3.14)
         for (int c = '0'; c <= '9'; c++) trans[4][c] = 4;
         trans[4]['e'] = trans[4]['E'] = 5;
         finals[4] = true; // Decimal válido
@@ -427,15 +429,27 @@ AFN* create_unified_datalang_afn() {
         // Estado 7: dígitos do expoente
         for (int c = '0'; c <= '9'; c++) trans[7][c] = 7;
         finals[7] = true; // Científico válido
+
+        // CORREÇÃO: NOVO ESTADO 8
+        // Estado 8: após ponto vindo de inteiro (ex: "3.")
+        // Este estado NÃO é final. Só vira float se seguir um dígito.
+        for (int c = '0'; c <= '9'; c++) trans[8][c] = 4; // Vai para o estado decimal
         
         int used = integrate_afd_to_afn(afn, trans, finals, num_states, 256,
                                         next_state, TOKEN_INTEGER, &final_state);
+        
         // Ajusta tipos de token para números
         for (int i = next_state; i < next_state + num_states; i++) {
-            if (finals[i - next_state]) {
-                if (i - next_state == 2 || i - next_state == 4) {
+            int state_index = i - next_state;
+            if (finals[state_index]) {
+                if (state_index == 2) {
+                    // Estado 2: Inteiro válido
+                    afn->token_types[i] = TOKEN_INTEGER;
+                } else if (state_index == 4) {
+                    // Estado 4: Decimal válido
                     afn->token_types[i] = TOKEN_FLOAT;
-                } else if (i - next_state == 7) {
+                } else if (state_index == 7) {
+                    // Estado 7: Científico válido
                     afn->token_types[i] = TOKEN_FLOAT;
                 }
             }

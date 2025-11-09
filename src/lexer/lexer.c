@@ -59,6 +59,17 @@ void free_file_buffer(FileBuffer* buffer) {
     }
 }
 
+static char* c99_strndup(const char* s, size_t n) {
+    size_t len = strnlen(s, n);
+    char* new_str = (char*)malloc(len + 1);
+    if (!new_str) {
+        return NULL;
+    }
+    memcpy(new_str, s, len);
+    new_str[len] = '\0';
+    return new_str;
+}
+
 // ==================== TABELA DE PALAVRAS-CHAVE ====================
 
 typedef struct {
@@ -308,9 +319,19 @@ Token recognize_token(Lexer* lexer) {
         // Match bem-sucedido
         lexer->position = last_final_position;
         token.length = last_final_position - start_position;
-        token.lexema = strndup(&lexer->input[start_position], token.length);
+        // token.lexema = strndup(&lexer->input[start_position], token.length);
         token.type = lexer->afd->token_types[last_final_state];
         
+        // Processamento especial para strings
+        token.lexema = c99_strndup(&lexer->input[start_position], token.length);
+        
+        if (!token.lexema) {
+            fprintf(stderr, "Falha ao alocar lexema!\n");
+            // Lidar com falha de alocação, definindo token.type = TOKEN_ERROR
+            token.type = TOKEN_ERROR;
+            token.lexema = strdup(""); // Um lexema vazio seguro
+        }
+
         // Se ainda for UNKNOWN, tenta fallback
         if (token.type == TOKEN_ERROR) {
             token.type = fallback_token_type(token.lexema);
@@ -367,7 +388,7 @@ Token recognize_token(Lexer* lexer) {
     } else {
         // Erro léxico
         token.type = TOKEN_ERROR;
-        token.lexema = strndup(&lexer->input[start_position], 1);
+        token.lexema = c99_strndup(&lexer->input[start_position], 1);
         token.length = 1;
         lexer->position = start_position + 1;
         lexer->column++;
@@ -648,32 +669,32 @@ void test_error_handling() {
 
 // ==================== FUNÇÃO PRINCIPAL ====================
 
-#ifndef LIB_BUILD
-int main(int argc, char** argv) {
-    printf("\n╔════════════════════════════════════════════════════════════╗\n");
-    printf("║          ANALISADOR LÉXICO DATALANG - AFD UNIFICADO       ║\n");
-    printf("╚════════════════════════════════════════════════════════════╝\n\n");
+// #ifndef LIB_BUILD
+// int main(int argc, char** argv) {
+//     printf("\n╔════════════════════════════════════════════════════════════╗\n");
+//     printf("║          ANALISADOR LÉXICO DATALANG - AFD UNIFICADO       ║\n");
+//     printf("╚════════════════════════════════════════════════════════════╝\n\n");
     
-    printf("Este analisador léxico usa um AFD unificado gerado a partir\n");
-    printf("de um AFN através do algoritmo de construção de subconjuntos.\n\n");
+//     printf("Este analisador léxico usa um AFD unificado gerado a partir\n");
+//     printf("de um AFN através do algoritmo de construção de subconjuntos.\n\n");
     
-    if (argc > 1) {
-        // Modo arquivo - processa o arquivo especificado
-        test_with_file(argv[1]);
-    } else {
-        // Modo teste - executa todos os testes
-        test_simple_code();
-        test_complex_code();
-        test_edge_cases();
-        test_error_handling();
+//     if (argc > 1) {
+//         // Modo arquivo - processa o arquivo especificado
+//         test_with_file(argv[1]);
+//     } else {
+//         // Modo teste - executa todos os testes
+//         test_simple_code();
+//         test_complex_code();
+//         test_edge_cases();
+//         test_error_handling();
         
-        printf("\nTodos os testes concluídos!\n");
-        printf("O analisador léxico está funcionando com o AFD unificado.\n\n");
+//         printf("\nTodos os testes concluídos!\n");
+//         printf("O analisador léxico está funcionando com o AFD unificado.\n\n");
         
-        printf("Uso: %s <arquivo.datalang>\n", argv[0]);
-        printf("Para processar um arquivo específico.\n\n");
-    }
+//         printf("Uso: %s <arquivo.datalang>\n", argv[0]);
+//         printf("Para processar um arquivo específico.\n\n");
+//     }
     
-    return 0;
-}
-#endif
+//     return 0;
+// }
+// #endif
