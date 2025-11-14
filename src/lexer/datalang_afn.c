@@ -384,7 +384,6 @@ AFN* create_unified_datalang_afn() {
     {
         printf("\n3. NÚMEROS\n");
         
-        // CORREÇÃO: Aumentado de 8 para 9 estados
         int num_states = 9;
         int** trans = (int**)malloc(num_states * sizeof(int*));
         bool* finals = (bool*)calloc(num_states, sizeof(bool));
@@ -408,7 +407,6 @@ AFN* create_unified_datalang_afn() {
         for (int c = '0'; c <= '9'; c++) trans[2][c] = 2;
         trans[2]['e'] = trans[2]['E'] = 5;
         finals[2] = true; // Inteiro válido
-        // CORREÇÃO: Transição para estado 8 (intermediário) em vez de 4
         trans[2]['.'] = 8; 
         
         // Estado 3: após ponto inicial (ex: .14)
@@ -430,7 +428,6 @@ AFN* create_unified_datalang_afn() {
         for (int c = '0'; c <= '9'; c++) trans[7][c] = 7;
         finals[7] = true; // Científico válido
 
-        // CORREÇÃO: NOVO ESTADO 8
         // Estado 8: após ponto vindo de inteiro (ex: "3.")
         // Este estado NÃO é final. Só vira float se seguir um dígito.
         for (int c = '0'; c <= '9'; c++) trans[8][c] = 4; // Vai para o estado decimal

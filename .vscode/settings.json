@@ -5,6 +5,9 @@
         "datalang_lexer.h": "c",
         "stdlib.h": "c",
         "parser.h": "c",
-        "lexer.h": "c"
+        "lexer.h": "c",
+        "semantic.h": "c",
+        "stdbool.h": "c",
+        "symbol_table.h": "c"
     }
 }

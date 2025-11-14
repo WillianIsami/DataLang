@@ -1,54 +1,259 @@
-// Exemplo de código DataLang
-// Demonstra declarações, funções e expressões
+// ============================================================
+// DataLang - Exemplo Completo de Análise Semântica
+// Demonstra todas as funcionalidades do analisador semântico
+// ============================================================
 
-// Declarações de variáveis
-let x = 42;
-let y = 3.14;
-let nome = "DataLang";
+// ------------------------------------------------------------
+// 1. DECLARAÇÕES BÁSICAS COM INFERÊNCIA DE TIPOS
+// ------------------------------------------------------------
 
-// Função simples
-fn soma(a: Int, b: Int) -> Int {
+// let idade: Int = 25;                    // Tipo inferido: Int
+let altura = 1.75;                 // Tipo inferido: Float
+let nome = "Alice";                // Tipo inferido: String
+let ativo = true;                  // Tipo inferido: Bool
+
+let err = idade + nome;
+
+if (idade > altura) {
+    let res = "something";
+} else {
+    let res2 = "some";
+}
+
+// ------------------------------------------------------------
+// 2. DECLARAÇÕES COM ANOTAÇÃO EXPLÍCITA DE TIPOS
+// ------------------------------------------------------------
+
+let anos: Int = 30;
+let peso: Float = 70.5;
+let cidade: String = "São Paulo";
+let estudante: Bool = false;
+
+// ------------------------------------------------------------
+// 3. ARRAYS E ESTRUTURAS DE DADOS
+// ------------------------------------------------------------
+
+let numeros = [1, 2, 3, 4, 5];              // [Int]
+let nomes = ["Ana", "Bruno", "Carlos"];     // [String]
+let temperaturas = [22.5, 23.0, 21.8];      // [Float]
+
+// Range de números
+let sequencia = 1..10;                       // [Int]
+
+// ------------------------------------------------------------
+// 4. OPERAÇÕES ARITMÉTICAS
+// ------------------------------------------------------------
+
+let soma = 10 + 5;                 // 15
+let subtracao = 20 - 8;            // 12
+let multiplicacao = 6 * 7;         // 42
+let divisao = 100 / 4;             // 25
+let resto = 17 % 5;                // 2
+
+let expressao_complexa = (10 + 5) * 3 - 8 / 2;  // 41
+
+// ------------------------------------------------------------
+// 5. OPERAÇÕES DE COMPARAÇÃO
+// ------------------------------------------------------------
+
+let maior = 10 > 5;                // true
+let menor_igual = 8 <= 10;         // true
+let igual = 5 == 5;                // true
+let diferente = 10 != 20;          // true
+
+// ------------------------------------------------------------
+// 6. OPERAÇÕES LÓGICAS
+// ------------------------------------------------------------
+
+let e_logico = true && false;      // false
+let ou_logico = true || false;     // true
+let negacao = !true;               // false
+
+let condicao_composta = (idade > 18) && (ativo == true);
+
+// ------------------------------------------------------------
+// 7. FUNÇÕES SIMPLES
+// ------------------------------------------------------------
+
+fn quadrado(x: Int) -> Int {
+    return x * x;
+}
+
+fn dobro(n: Int) -> Int {
+    return n * 2;
+}
+
+fn saudacao(nome: String) -> String {
+    return "Olá, " + nome;
+}
+
+// ------------------------------------------------------------
+// 8. FUNÇÕES COM MÚLTIPLOS PARÂMETROS
+// ------------------------------------------------------------
+
+fn soma_dois(a: Int, b: Int) -> Int {
     return a + b;
 }
 
-// Função com múltiplas operações
-fn calcular(n: Int) -> Int {
-    let temp = n * 2;
-    let resultado = temp + 10;
-    return resultado;
+fn area_retangulo(largura: Float, altura: Float) -> Float {
+    return largura * altura;
 }
 
-// Teste das funções
-let resultado1 = soma(5, 3);
-let resultado2 = calcular(10);
+fn media_tres(a: Float, b: Float, c: Float) -> Float {
+    return (a + b + c) / 3.0;
+}
 
-// Estrutura de controle if
-fn maior(a: Int, b: Int) -> Int {
-    if a > b {
+// ------------------------------------------------------------
+// 9. FUNÇÕES COM LÓGICA CONDICIONAL
+// ------------------------------------------------------------
+
+fn maximo(a: Int, b: Int) -> Int {
+    if (a > b) {
         return a;
     } else {
         return b;
     }
 }
 
-// Loop for
-fn somar_range(n: Int) -> Int {
-    let soma = 0;
-    for i in 1..n {
-        let soma = soma + i;
+fn absoluto(x: Int) -> Int {
+    if (x < 0) {
+        return -x;
+    } else {
+        return x;
     }
-    return soma;
 }
 
-// Expressões complexas
-let expr = (5 + 3) * 2 - 1;
-let logica = x > 10 && y < 5;
-
-// Arrays
-let numeros = [1, 2, 3, 4, 5];
-
-// Data type
-data Pessoa {
-    nome: String;
-    idade: Int;
+fn classificacao_idade(idade: Int) -> String {
+    if (idade < 18) {
+        return "Menor de idade";
+    } else if (idade < 60) {
+        return "Adulto";
+    } else {
+        return "Idoso";
+    }
 }
+
+// ------------------------------------------------------------
+// 10. CHAMADAS DE FUNÇÃO
+// ------------------------------------------------------------
+
+let resultado1 = quadrado(5);                  // 25
+let resultado2 = soma_dois(10, 20);            // 30
+let resultado3 = area_retangulo(5.0, 3.0);     // 15.0
+let resultado4 = maximo(45, 23);               // 45
+let mensagem = saudacao("Maria");              // "Olá, Maria"
+
+// ------------------------------------------------------------
+// 11. EXPRESSÕES LAMBDA
+// ------------------------------------------------------------
+
+let incrementa = |x| x + 1;
+let multiplica = |a, b| a * b;
+let eh_positivo = |n| n > 0;
+
+let valor_incrementado = incrementa(10);       // 11
+let produto = multiplica(6, 7);                // 42
+let positivo = eh_positivo(-5);                // false
+
+// ------------------------------------------------------------
+// 12. LOOPS E ITERAÇÃO
+// ------------------------------------------------------------
+
+fn soma_array(arr: [Int]) -> Int {
+    let total = 0;
+    for elemento in arr {
+        let temp = total + elemento;
+    }
+    return total;
+}
+
+fn conta_positivos(arr: [Int]) -> Int {
+    let contador = 0;
+    for num in arr {
+        if (num > 0) {
+            let novo_contador = contador + 1;
+        }
+    }
+    return contador;
+}
+
+// ------------------------------------------------------------
+// 13. PIPELINE DE DADOS (Futuro)
+// ------------------------------------------------------------
+
+// let dados = load("dados.csv")
+//     |> filter(|row| row.idade > 18)
+//     |> map(|row| row.salario * 1.1)
+//     |> reduce(0, |acc, val| acc + val);
+
+// ------------------------------------------------------------
+// 14. ESTRUTURAS DE DADOS CUSTOMIZADAS (Futuro)
+// ------------------------------------------------------------
+
+// data Pessoa {
+//     nome: String;
+//     idade: Int;
+//     altura: Float;
+// }
+
+// let pessoa1 = Pessoa {
+//     nome: "João",
+//     idade: 30,
+//     altura: 1.80
+// };
+
+// ------------------------------------------------------------
+// 15. EXEMPLOS DE ESCOPO E SHADOWING
+// ------------------------------------------------------------
+
+let x = 10;  // x global
+
+fn teste_escopo() -> Int {
+    let x = 20;  // x local
+    
+    if (x > 15) {
+        let x = 30;  // x no bloco if
+        return x;     // Retorna 30
+    } else {
+        return x;     // Retornaria 20
+    }
+}
+
+let resultado_escopo = teste_escopo();  // 30
+
+// ------------------------------------------------------------
+// 16. COMPOSIÇÃO DE FUNÇÕES
+// ------------------------------------------------------------
+
+fn triplo(x: Int) -> Int {
+    return x * 3;
+}
+
+fn adiciona_dez(x: Int) -> Int {
+    return x + 10;
+}
+
+fn funcao_composta(x: Int) -> Int {
+    let passo1 = dobro(x);
+    let passo2 = adiciona_dez(passo1);
+    let passo3 = triplo(passo2);
+    return passo3;
+}
+
+let resultado_composto = funcao_composta(5);  
+// 5 -> 10 -> 20 -> 60
+
+// ------------------------------------------------------------
+// 17. OPERAÇÕES COM ARRAYS
+// ------------------------------------------------------------
+
+let lista = [10, 20, 30, 40, 50];
+let primeiro = lista[0];                // 10
+let terceiro = lista[2];                // 30
+
+// ------------------------------------------------------------
+// 18. EXPRESSÕES COMPLEXAS
+// ------------------------------------------------------------
+
+let calculo_complexo = ((10 + 5) * 3 - 8) / 2 + (4 * 7);
+let condicao_complexa = (idade > 18) && (altura > 1.60) || (nome == "Admin");

@@ -188,10 +188,18 @@ ASTNode* parse_program(Parser* p) {
             decl = parse_import_decl(p);
         } else if (check(p, TOKEN_EXPORT)) {
             decl = parse_export_decl(p);
+        } else if (check(p, TOKEN_IF)) {
+            decl = parse_if_statement(p);
         } else {
-            error(p, "Esperado declaração de nível superior");
-            synchronize(p);
-            continue;
+            ASTNode* stmt = parse_statement(p);
+            if (stmt && stmt->type == AST_EXPR_STMT) {
+                decl = stmt;
+            } else {
+                error(p, "Esperado declaração ou statement de nível superior");
+                if (stmt) free_ast(stmt);
+                synchronize(p);
+                continue;
+            }
         }
         
         if (decl != NULL) {

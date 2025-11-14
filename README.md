@@ -1,130 +1,147 @@
 # DataLang
 
-Linguagem de programação especializada em processamento de dados, desenvolvida como parte do projeto integrador do curso de Compiladores e Linguagens Formais.
+Linguagem de programação especializada em processamento de dados, desenvolvida como parte do projeto de Compiladores e Linguagens Formais.
 
 ## Visão Geral
 
-DataLang é uma linguagem de programação projetada para facilitar a manipulação e transformação de dados. Ela combina uma sintaxe limpa e expressiva com operações de alto nível para trabalhar com conjuntos de dados, inspirada em linguagens como Rust, Elixir e Python.
+DataLang é uma linguagem de programação projetada para facilitar a manipulação e transformação de dados. Este repositório contém a implementação do compilador, agora incluindo análise léxica, sintática e semântica.
+
+-----
 
 ## Estrutura do Projeto
 
-```bash
+A estrutura foi atualizada para incluir o analisador semântico e centralizar o `Makefile` na raiz.
+
+```
 DataLang/
-├── README.md                 # Este arquivo
-├── docs/                     # Documentação do projeto
-│   ├── 1_proposta_inicial.md
-│   ├── 2_definicao_formal_linguagem.md
-│   ├── 4_expressoes_regulares_.md
-│   ├── gramatica_formal.md
-│   └── diagramas/            # Diagramas de autômatos
-├── examples/                 # Exemplos de código DataLang
-│   ├── exemplo.datalang
-│   ├── exemplo_01.datalang
-│   └── test_fix.datalang
-└── src/
-    ├── Makefile              # Novo Makefile unificado
-    ├── lexer/                # Implementação do analisador léxico
-    │   ├── datalang_afn.c    # Implementação de AFNs
-    │   ├── datalang_afn.h
-    │   ├── afn_to_afd.c      # Conversão AFN para AFD
-    │   ├── afn_to_afd.h
-    │   ├── lexer.c           # Analisador léxico principal
-    │   └── lexer.h
-    └── parser/               # NOVO: Implementação do analisador sintático
-        ├── parser.c
-        ├── parser.h
-        ├── parser_expr.c
-        └── parser_main.c
+├── Makefile           # Makefile principal
+├── README.md          # Este arquivo
+├── bin/               # Executáveis compilados
+├── build/             # Arquivos-objeto intermediários
+├── docs/              # Documentação (AFDs, gramática, etc.)
+├── examples/          # Exemplos de código DataLang
+├── src/
+│   ├── main.c         # Ponto de entrada do compilador
+│   ├── lexer/         # Código do Analisador Léxico
+│   ├── parser/        # Código do Analisador Sintático
+│   └── semantic/      # Código do Analisador Semântico
+└── tests/
+    └── test_semantic.c  # Testes para o Analisador Semântico
 ```
 
-## Começando
+-----
+
+## 🛠️ Compilação e Execução
 
 ### Pré-requisitos
 
-- GCC (GNU Compiler Collection) ou compilador C compatível
-- **Windows**: MinGW ou WSL (Windows Subsystem for Linux)
+  * `gcc` (GNU Compiler Collection) ou compilador C compatível
+  * `make` (opcional, recomendado)
+  * **Windows**: Recomenda-se o uso de MinGW ou WSL (Windows Subsystem for Linux)
 
-### Compilação
+-----
 
-#### Método 1: Usando Make (Linux/macOS)
+### Método 1: Usando Make (Recomendado)
+
+O `Makefile` na raiz do projeto gerencia toda a compilação.
+
+1.  **Compilar tudo (compilador e testes):**
+
+    ```bash
+    make
+    ```
+
+    (ou `make all`)
+
+2.  **Executar o compilador em um arquivo de exemplo:**
+
+    ```bash
+    make run
+    ```
+
+    (Isso executa `./bin/datalang examples/exemplo.datalang`)
+
+3.  **Testar um arquivo específico:**
+
+    ```bash
+    make test-file FILE=examples/exemplo.datalang
+    ```
+
+4.  **Limpar arquivos compilados:**
+
+    ```bash
+    make clean
+    ```
+
+5.  **Ver ajuda:**
+
+    ```bash
+    make help
+    ```
+
+-----
+
+### Método 2: Compilação Manual (Sem Make)
+
+Siga estas instruções caso não tenha o `make` instalado. Os comandos devem ser executados a partir do diretório **raiz** do projeto.
+
+#### 1\. Criar Diretórios de Saída
+
 ```bash
-cd src
-make
+# Linux / macOS / WSL
+mkdir -p bin
+
+# Windows (CMD)
+if not exist bin ( mkdir bin )
 ```
 
-#### Método 2: Compilação manual (Linux/macOS/Windows)
+#### 2\. Compilar o Compilador `datalang`
+
+**Linux / macOS / WSL:**
+
 ```bash
-cd src
-gcc -Wall -Wextra -std=c99 -g -I. -o datalang lexer/datalang_afn.c lexer/afn_to_afd.c lexer/lexer.c parser/parser.c parser/parser_expr.c parser/parser_main.c
+gcc -Wall -Wextra -std=c11 -g -I. -Isrc/lexer -Isrc/parser -Isrc/semantic -o bin/datalang \
+    src/main.c \
+    src/lexer/datalang_afn.c src/lexer/afn_to_afd.c src/lexer/lexer.c \
+    src/parser/parser.c src/parser/parser_expr.c src/parser/parser_main.c \
+    src/semantic/symbol_table.c src/semantic/type_system.c src/semantic/type_inference.c src/semantic/semantic_analyzer.c
 ```
 
-#### Método 3: Windows com MinGW
+**Windows (MinGW):**
+
 ```cmd
-cd src
-gcc -Wall -Wextra -std=c99 -g -I. -o datalang.exe lexer/datalang_afn.c lexer/afn_to_afd.c lexer/lexer.c parser/parser.c parser/parser_expr.c parser/parser_main.c
+gcc -Wall -Wextra -std=c11 -g -I. -Isrc/lexer -Isrc/parser -Isrc/semantic -o bin\datalang.exe ^
+    src/main.c ^
+    src/lexer/datalang_afn.c src/lexer/afn_to_afd.c src/lexer/lexer.c ^
+    src/parser/parser.c src/parser/parser_expr.c src/parser/parser_main.c ^
+    src/semantic/symbol_table.c src/semantic/type_system.c src/semantic/type_inference.c src/semantic/semantic_analyzer.c
 ```
 
-#### Método 4: Windows com WSL
+-----
+
+### Execução (Após compilar manualmente)
+
+#### Analisar um Arquivo
+
+**Linux / macOS / WSL:**
+
 ```bash
-# Dentro do WSL
-cd src
-gcc -Wall -Wextra -std=c99 -g -I. -o datalang lexer/datalang_afn.c lexer/afn_to_afd.c lexer/lexer.c parser/parser.c parser/parser_expr.c parser/parser_main.c
+./bin/datalang examples/exemplo.datalang
 ```
 
-### Execução
+**Windows (CMD):**
 
-#### Modo de teste (executa testes internos)
-
-**Linux/macOS:**
-```bash
-./datalang
-```
-
-**Windows:**
 ```cmd
-datalang.exe
+bin\datalang.exe examples\exemplo.datalang
 ```
 
-#### Modo de arquivo (analisa um arquivo .datalang)
+-----
 
-**Linux/macOS:**
-```bash
-./datalang ../examples/exemplo.datalang
-./datalang ../examples/test_fix.datalang
-```
+## Documentação Adicional
 
-**Windows:**
-```cmd
-datalang.exe ..\examples\exemplo.datalang
-datalang.exe ..\examples\test_fix.datalang
-```
+Para mais detalhes sobre a gramática, autômatos e definições formais da linguagem, consulte os arquivos no diretório `/docs`:
 
-### Comandos Make Úteis
-
-```bash
-cd src
-make          # Compila o compilador
-make clean    # Remove arquivos compilados
-make test     # Executa teste com código embutido
-make test-file # Executa teste com arquivo exemplo
-make exemplo  # Cria arquivo de exemplo se não existir
-make help     # Mostra ajuda completa
-```
-
-## Novas Funcionalidades
-
-### Analisador Sintático (Parser)
-- Análise de expressões aritméticas e lógicas
-- Reconhecimento de estruturas de controle
-- Validação sintática completa
-- Integração com o analisador léxico
-
-### Sistema de Build Unificado
-- Makefile único para todo o projeto
-- Compilação integrada lexer + parser
-- Comandos de teste simplificados
-- Suporte multiplataforma
-
----
-
-Para mais detalhes sobre a implementação do analisador léxico e sintático, consulte [src/README.md](src/README.md).
+  * [Definição Formal da Linguagem](docs/2_definicao_formal_linguagem.md)
+  * [Expressões Regulares](docs/4_expressoes_regulares_.md)
+  * [Gramática Formal](docs/gramatica_formal.md)
+  * [Diagramas dos AFDs](docs/diagramas/)
