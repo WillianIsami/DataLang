@@ -1,14 +1,13 @@
-# Makefile para DataLang - Compilador Completo
-# Inclui: Léxico, Sintático e Semântico
-
+# Makefile para DataLang - Compilador Completo com LLVM IR
 CC = gcc
 CFLAGS = -Wall -Wextra -std=c11 -g
-INCLUDES = -I. -Isrc/lexer -Isrc/parser -Isrc/semantic
+INCLUDES = -I. -Isrc/lexer -Isrc/parser -Isrc/semantic -Isrc/codegen
 
 # Diretórios
 LEXER_DIR = src/lexer
 PARSER_DIR = src/parser
 SEMANTIC_DIR = src/semantic
+CODEGEN_DIR = src/codegen
 BUILD_DIR = build
 BIN_DIR = bin
 
@@ -26,25 +25,25 @@ SEMANTIC_SOURCES = $(SEMANTIC_DIR)/symbol_table.c \
                    $(SEMANTIC_DIR)/type_inference.c \
                    $(SEMANTIC_DIR)/semantic_analyzer.c
 
+CODEGEN_SOURCES = $(CODEGEN_DIR)/codegen.c
+
 MAIN_SOURCE = src/main.c
 
 # Objetos
 LEXER_OBJECTS = $(patsubst $(LEXER_DIR)/%.c,$(BUILD_DIR)/%.o,$(LEXER_SOURCES))
 PARSER_OBJECTS = $(patsubst $(PARSER_DIR)/%.c,$(BUILD_DIR)/%.o,$(PARSER_SOURCES))
 SEMANTIC_OBJECTS = $(patsubst $(SEMANTIC_DIR)/%.c,$(BUILD_DIR)/%.o,$(SEMANTIC_SOURCES))
+CODEGEN_OBJECTS = $(patsubst $(CODEGEN_DIR)/%.c,$(BUILD_DIR)/%.o,$(CODEGEN_SOURCES))
 MAIN_OBJECT = $(BUILD_DIR)/main.o
 
-ALL_OBJECTS = $(MAIN_OBJECT) $(LEXER_OBJECTS) $(PARSER_OBJECTS) $(SEMANTIC_OBJECTS)
+ALL_OBJECTS = $(MAIN_OBJECT) $(LEXER_OBJECTS) $(PARSER_OBJECTS) $(SEMANTIC_OBJECTS) $(CODEGEN_OBJECTS)
 
-# Executáveis
+# Executável
 COMPILER = $(BIN_DIR)/datalang
-TEST_SEMANTIC = $(BIN_DIR)/test_semantic
 
-# ==================== ALVOS PRINCIPAIS ====================
+.PHONY: all clean directories test help run compile-example
 
-.PHONY: all clean directories test help
-
-all: directories $(COMPILER) $(TEST_SEMANTIC)
+all: directories $(COMPILER)
 
 # Compilador completo
 $(COMPILER): $(ALL_OBJECTS)
@@ -52,13 +51,6 @@ $(COMPILER): $(ALL_OBJECTS)
 	@mkdir -p $(BIN_DIR)
 	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^
 	@echo "✓ Compilador criado: $(COMPILER)"
-
-# Teste do analisador semântico
-$(TEST_SEMANTIC): $(BUILD_DIR)/test_semantic.o $(ALL_OBJECTS)
-	@echo "🔗 Linkando teste semântico..."
-	@mkdir -p $(BIN_DIR)
-	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^
-	@echo "✓ Teste criado: $(TEST_SEMANTIC)"
 
 # ==================== COMPILAÇÃO DE OBJETOS ====================
 
@@ -80,9 +72,9 @@ $(BUILD_DIR)/%.o: $(SEMANTIC_DIR)/%.c
 	@mkdir -p $(BUILD_DIR)
 	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
-# Testes
-$(BUILD_DIR)/test_semantic.o: tests/test_semantic.c
-	@echo "📦 Compilando teste semântico..."
+# CodeGen
+$(BUILD_DIR)/%.o: $(CODEGEN_DIR)/%.c
+	@echo "📦 Compilando $<..."
 	@mkdir -p $(BUILD_DIR)
 	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
@@ -95,57 +87,74 @@ $(BUILD_DIR)/main.o: $(MAIN_SOURCE)
 # ==================== DIRETÓRIOS ====================
 
 directories:
-	@mkdir -p $(BUILD_DIR) $(BIN_DIR)
+	@mkdir -p $(BUILD_DIR) $(BIN_DIR) $(CODEGEN_DIR)
 
 # ==================== LIMPEZA ====================
 
 clean:
 	@echo "🧹 Limpando arquivos compilados..."
 	@rm -rf $(BUILD_DIR) $(BIN_DIR)
-	@rm -f AST.json
+	@rm -f AST.json *.ll *.s *.o programa
 	@echo "✓ Limpeza concluída"
 
 # ==================== TESTES ====================
 
-test: $(TEST_SEMANTIC)
-	@echo "\n╔════════════════════════════════════════════════════════════╗"
-	@echo "║           EXECUTANDO TESTES SEMÂNTICOS                    ║"
-	@echo "╚════════════════════════════════════════════════════════════╝\n"
-	@$(TEST_SEMANTIC)
+# Compila e executa exemplo
+run: $(COMPILER)
+	@if [ -f "examples/exemplo_01.datalang" ]; then \
+		echo "\n╔════════════════════════════════════════════════════════════╗"; \
+		echo "║           COMPILANDO EXEMPLO                              ║"; \
+		echo "╚════════════════════════════════════════════════════════════╝\n"; \
+		$(COMPILER) examples/exemplo_01.datalang -o output.ll; \
+		if [ -f "output.ll" ]; then \
+			echo "\n╔════════════════════════════════════════════════════════════╗"; \
+			echo "║           COMPILANDO LLVM IR → EXECUTÁVEL                 ║"; \
+			echo "╚════════════════════════════════════════════════════════════╝\n"; \
+			clang output.ll -o programa; \
+			echo "\n╔════════════════════════════════════════════════════════════╗"; \
+			echo "║           EXECUTANDO PROGRAMA                             ║"; \
+			echo "╚════════════════════════════════════════════════════════════╝\n"; \
+			./programa; \
+		fi \
+	else \
+		echo "❌ Arquivo de exemplo não encontrado: examples/exemplo_01.datalang"; \
+	fi
+
+# Compila exemplo sem executar
+compile-example: $(COMPILER)
+	@if [ -f "examples/exemplo_01.datalang" ]; then \
+		$(COMPILER) examples/exemplo_01.datalang -o output.ll; \
+		echo "\n✓ LLVM IR gerado em: output.ll"; \
+		echo "\nPara compilar e executar:"; \
+		echo "  clang output.ll -o programa && ./programa"; \
+	else \
+		echo "❌ Arquivo não encontrado: examples/exemplo_01.datalang"; \
+	fi
 
 # Teste com arquivo específico
 test-file: $(COMPILER)
 	@if [ -z "$(FILE)" ]; then \
-		echo "❌ Uso: make test-file FILE=examples/exemplo.datalang"; \
+		echo "❌ Uso: make test-file FILE=examples/exemplo_01.datalang"; \
 	else \
 		echo "\n╔════════════════════════════════════════════════════════════╗"; \
 		echo "║           COMPILANDO: $(FILE)"; \
 		echo "╚════════════════════════════════════════════════════════════╝\n"; \
-		$(COMPILER) $(FILE); \
-	fi
-
-# ==================== EXECUÇÃO ====================
-
-run: $(COMPILER)
-	@if [ -f "examples/exemplo.datalang" ]; then \
-		$(COMPILER) examples/exemplo.datalang; \
-	else \
-		echo "❌ Arquivo de exemplo não encontrado: examples/exemplo.datalang"; \
+		$(COMPILER) $(FILE) -o output.ll; \
+		if [ -f "output.ll" ]; then \
+			echo "\nCompilando para executável..."; \
+			clang output.ll -o programa; \
+			echo "\nExecutando..."; \
+			./programa; \
+		fi \
 	fi
 
 # ==================== DESENVOLVIMENTO ====================
 
-# Recompila tudo do zero
 rebuild: clean all
 
-# Compila apenas o analisador semântico
-semantic: $(SEMANTIC_OBJECTS)
-	@echo "✓ Módulos semânticos compilados"
-
-# Verifica sintaxe sem compilar
 check:
 	@echo "🔍 Verificando sintaxe..."
-	$(CC) $(CFLAGS) $(INCLUDES) -fsyntax-only $(LEXER_SOURCES) $(PARSER_SOURCES) $(SEMANTIC_SOURCES)
+	$(CC) $(CFLAGS) $(INCLUDES) -fsyntax-only $(LEXER_SOURCES) $(PARSER_SOURCES) $(SEMANTIC_SOURCES) $(CODEGEN_SOURCES)
 	@echo "✓ Sintaxe verificada"
 
 # ==================== INFORMAÇÕES ====================
@@ -157,38 +166,35 @@ help:
 	@echo ""
 	@echo "Alvos disponíveis:"
 	@echo ""
-	@echo "  all          - Compila o compilador completo (padrão)"
-	@echo "  clean        - Remove arquivos compilados"
-	@echo "  test         - Executa testes do analisador semântico"
-	@echo "  test-file    - Testa com arquivo: make test-file FILE=<arquivo>"
-	@echo "  run          - Executa com arquivo de exemplo padrão"
-	@echo "  rebuild      - Recompila tudo do zero"
-	@echo "  check        - Verifica sintaxe sem compilar"
-	@echo "  help         - Mostra esta ajuda"
+	@echo "  all              - Compila o compilador completo (padrão)"
+	@echo "  clean            - Remove arquivos compilados"
+	@echo "  run              - Compila e executa exemplo padrão"
+	@echo "  compile-example  - Apenas compila exemplo (sem executar)"
+	@echo "  test-file        - Testa arquivo: make test-file FILE=<arquivo>"
+	@echo "  rebuild          - Recompila tudo do zero"
+	@echo "  check            - Verifica sintaxe sem compilar"
+	@echo "  help             - Mostra esta ajuda"
 	@echo ""
 	@echo "Estrutura do projeto:"
 	@echo "  src/lexer/       - Analisador léxico (AFN/AFD)"
 	@echo "  src/parser/      - Analisador sintático (LL1)"
 	@echo "  src/semantic/    - Analisador semântico e inferência"
+	@echo "  src/codegen/     - Gerador de código LLVM IR"
 	@echo "  examples/        - Exemplos de código DataLang"
-	@echo "  tests/           - Testes unitários"
 	@echo ""
-	@echo "Exemplo de uso:"
-	@echo "  make                              # Compila tudo"
-	@echo "  make test                         # Executa testes"
-	@echo "  make test-file FILE=exemplo.dl    # Testa arquivo específico"
+	@echo "Pipeline completo:"
+	@echo "  Código → Léxico → Sintático → Semântico → LLVM IR → Executável"
 	@echo ""
-
-# ==================== INFORMAÇÕES DE VERSÃO ====================
 
 version:
-	@echo "DataLang Compiler v0.3.0"
+	@echo "DataLang Compiler v1.0.0"
 	@echo "Componentes:"
 	@echo "  ✓ Analisador Léxico (AFN → AFD)"
 	@echo "  ✓ Analisador Sintático (LL1 Recursivo Descendente)"
-	@echo "  ✓ Analisador Semântico (Tabela de Símbolos + Inferência de Tipos)"
+	@echo "  ✓ Analisador Semântico (Tabela de Símbolos + Inferência)"
+	@echo "  ✓ Gerador de Código (LLVM IR)"
 	@echo ""
 	@echo "Compilador: $(CC)"
 	@echo "Flags: $(CFLAGS)"
 
-.PHONY: version semantic check rebuild help
+.PHONY: version

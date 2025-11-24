@@ -1,0 +1,7 @@
+let x = 10;
+// let y = 20; // Comentado de propósito
+
+// Isso deve gerar erro semântico: 'y' não declarado
+if (x > y) {
+    print("Erro não detectado!");
+}

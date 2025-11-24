@@ -1,0 +1,41 @@
+// Exemplo Simples - Teste Básico
+
+fn main() {
+    // Teste de print com diferentes tipos
+    print(42);
+    print(3.14);
+    print("Hello, DataLang!");
+    print(true);
+    print(false);
+    
+    // Teste de variáveis
+    let x = 10;
+    let y = 20;
+    print(x);
+    print(y);
+    
+    // Teste de operações
+    let soma = x + y;
+    print(soma);
+    
+    // Teste de loop simples
+    let range = 1..5;
+    for i in range {
+        print(i);
+    }
+    
+    // Teste de array
+    let numbers = [100, 200, 300];
+    for n in numbers {
+        print(n);
+    }
+    
+    // Teste de condicional
+    if (x < y) {
+        print(1);
+    } else {
+        print(0);
+    }
+}
+
+main();

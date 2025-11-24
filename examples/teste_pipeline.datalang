@@ -1,0 +1,32 @@
+// Exemplo 1: Processamento de Dados com Pipelines
+
+fn main() -> Int {
+    // Dataset simulado: números de 1 a 10
+    let dados = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+    print("Processando dados...");
+
+    // Pipeline complexo:
+    // 1. Filtra apenas números pares (2, 4, 6, 8, 10)
+    // 2. Mapeia para o quadrado deles (4, 16, 36, 64, 100)
+    // 3. Reduz somando tudo (4+16+36+64+100 = 220)
+    
+    let resultado = dados 
+        |> filter(|x| x % 2 == 0)
+        |> map(|x| x * x)
+        |> reduce(0, |acc, val| acc + val);
+
+    print("Soma dos quadrados dos numeros pares:");
+    print(resultado);
+
+    // Validação lógica
+    if (resultado == 220) {
+        print("Calculo correto!");
+    } else {
+        print("Erro no calculo.");
+    }
+
+    return 0;
+}
+
+main();

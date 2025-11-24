@@ -1,0 +1,6 @@
+fn obter_numero() -> Int {
+    return "isto não é um número";
+}
+
+let res = obter_numero();
+print(res);

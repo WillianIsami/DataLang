@@ -1,0 +1,150 @@
+// ============================================================
+// DataLang - Exemplo Completo CORRIGIDO
+// Demonstra todas as funcionalidades funcionando corretamente
+// ============================================================
+
+// ------------------------------------------------------------
+// 1. DECLARAÇÕES BÁSICAS
+// ------------------------------------------------------------
+
+let idade = 25;
+let altura = 1.75;
+let nome = "Alice";
+let ativo = true;
+
+// ------------------------------------------------------------
+// 2. OPERAÇÕES ARITMÉTICAS
+// ------------------------------------------------------------
+
+let soma_simples = 10 + 5;
+let subtracao = 20 - 8;
+let multiplicacao = 6 * 7;
+let divisao = 100 / 4;
+let resto = 17 % 5;
+
+// ------------------------------------------------------------
+// 3. ARRAYS
+// ------------------------------------------------------------
+
+let numeros = [1, 2, 3, 4, 5];
+let nomes = ["Ana", "Bruno", "Carlos"];
+let sequencia = 1..10;
+
+// ------------------------------------------------------------
+// 4. FUNÇÕES SIMPLES
+// ------------------------------------------------------------
+
+fn quadrado(x: Int) -> Int {
+    return x * x;
+}
+
+fn dobro(n: Int) -> Int {
+    return n * 2;
+}
+
+// ------------------------------------------------------------
+// 5. FUNÇÕES COM MÚLTIPLOS PARÂMETROS
+// ------------------------------------------------------------
+
+fn soma_dois(a: Int, b: Int) -> Int {
+    return a + b;
+}
+
+fn area_retangulo(largura: Float, altura: Float) -> Float {
+    return largura * altura;
+}
+
+// ------------------------------------------------------------
+// 6. FUNÇÕES COM LÓGICA CONDICIONAL
+// ------------------------------------------------------------
+
+fn maximo(a: Int, b: Int) -> Int {
+    if (a > b) {
+        return a;
+    } else {
+        return b;
+    }
+}
+
+fn absoluto(x: Int) -> Int {
+    if (x < 0) {
+        return -x;
+    } else {
+        return x;
+    }
+}
+
+// ------------------------------------------------------------
+// 7. FUNÇÃO RECURSIVA (Fatorial)
+// ------------------------------------------------------------
+
+fn fatorial(n: Int) -> Int {
+    if (n <= 1) {
+        return 1;
+    } else {
+        return n * fatorial(n - 1);
+    }
+}
+
+// ------------------------------------------------------------
+// 8. USANDO FUNÇÕES BUILT-IN
+// ------------------------------------------------------------
+
+fn demonstra_builtin() -> Int {
+    let a = 10;
+    let b = 20;
+    
+    // sum() é uma função built-in
+    let resultado_sum = sum(a, b);
+    print(resultado_sum);
+    
+    // min() é uma função built-in
+    let resultado_min = min(a, b);
+    print(resultado_min);
+    
+    // max() é uma função built-in
+    let resultado_max = max(a, b);
+    print(resultado_max);
+    
+    return resultado_sum;
+}
+
+// ------------------------------------------------------------
+// 9. FUNÇÃO PRINCIPAL (MAIN)
+// ------------------------------------------------------------
+
+fn main() -> Int {
+    print(42);
+    print(100);
+    
+    let x = 5;
+    let y = 10;
+    
+    print(x);
+    print(y);
+    
+    // Testa função soma_dois
+    let resultado1 = soma_dois(x, y);
+    print(resultado1);
+    
+    // Testa função quadrado
+    let resultado2 = quadrado(x);
+    print(resultado2);
+    
+    // Testa função maximo
+    let resultado3 = maximo(x, y);
+    print(resultado3);
+    
+    // Testa função fatorial
+    let fat5 = fatorial(5);
+    print(fat5);
+    
+    // Testa funções built-in
+    let resultado_builtin = demonstra_builtin();
+    print(resultado_builtin);
+    
+    return 0;
+}
+
+// Chama main
+main();

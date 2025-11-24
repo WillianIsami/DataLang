@@ -29,6 +29,7 @@ Type* analyze_array_literal(SemanticAnalyzer* analyzer, ASTNode* node);
 Type* analyze_range_expr(SemanticAnalyzer* analyzer, ASTNode* node);
 Type* analyze_load_expr(SemanticAnalyzer* analyzer, ASTNode* node);
 Type* analyze_save_expr(SemanticAnalyzer* analyzer, ASTNode* node);
+Type* analyze_print_stmt(SemanticAnalyzer* analyzer, ASTNode* node);
 
 // ==================== FUNÇÕES AUXILIARES ====================
 
@@ -70,6 +71,70 @@ void free_semantic_analyzer(SemanticAnalyzer* analyzer) {
     free(analyzer);
 }
 
+// ==================== FUNÇÕES BUILT-IN ====================
+
+void register_builtin_functions(SemanticAnalyzer* analyzer) {
+    printf("[Semantic] Registrando funções built-in...\n");
+    
+    // print(x) -> Void
+    {
+        Type* param_types[1] = {create_primitive_type(TYPE_INT)};
+        Type* return_type = create_primitive_type(TYPE_VOID);
+        declare_function(analyzer->symbol_table, "print", return_type, param_types, 1, 0, 0);
+    }
+    
+    // sum(a, b) -> Int
+    {
+        Type* param_types[2] = {
+            create_primitive_type(TYPE_INT),
+            create_primitive_type(TYPE_INT)
+        };
+        Type* return_type = create_primitive_type(TYPE_INT);
+        declare_function(analyzer->symbol_table, "sum", return_type, param_types, 2, 0, 0);
+    }
+    
+    // mean(a, b) -> Float
+    {
+        Type* param_types[2] = {
+            create_primitive_type(TYPE_FLOAT),
+            create_primitive_type(TYPE_FLOAT)
+        };
+        Type* return_type = create_primitive_type(TYPE_FLOAT);
+        declare_function(analyzer->symbol_table, "mean", return_type, param_types, 2, 0, 0);
+    }
+    
+    // count(array) -> Int
+    {
+        Type* param_types[1] = {
+            create_array_type(create_primitive_type(TYPE_INT))
+        };
+        Type* return_type = create_primitive_type(TYPE_INT);
+        declare_function(analyzer->symbol_table, "count", return_type, param_types, 1, 0, 0);
+    }
+    
+    // min(a, b) -> Int
+    {
+        Type* param_types[2] = {
+            create_primitive_type(TYPE_INT),
+            create_primitive_type(TYPE_INT)
+        };
+        Type* return_type = create_primitive_type(TYPE_INT);
+        declare_function(analyzer->symbol_table, "min", return_type, param_types, 2, 0, 0);
+    }
+    
+    // max(a, b) -> Int
+    {
+        Type* param_types[2] = {
+            create_primitive_type(TYPE_INT),
+            create_primitive_type(TYPE_INT)
+        };
+        Type* return_type = create_primitive_type(TYPE_INT);
+        declare_function(analyzer->symbol_table, "max", return_type, param_types, 2, 0, 0);
+    }
+    
+    printf("[Semantic] Funções built-in registradas com sucesso\n");
+}
+
 // ==================== ANÁLISE PRINCIPAL ====================
 
 bool analyze_semantics(SemanticAnalyzer* analyzer, ASTNode* program) {
@@ -84,17 +149,27 @@ bool analyze_semantics(SemanticAnalyzer* analyzer, ASTNode* program) {
         return false;
     }
     
-    // Primeira passada: coleta assinaturas de funções e tipos
+    // Registra funções built-in ANTES de processar declarações
+    register_builtin_functions(analyzer);
+    
+    // Fase 1: Coleta de Declarações (Funções e Tipos)
     printf("[Fase 1] Coletando declarações de nível superior...\n");
     for (int i = 0; i < program->program.decl_count; i++) {
         ASTNode* decl = program->program.declarations[i];
         
         if (decl->type == AST_FN_DECL) {
-            // Pré-declara função
+            Symbol* existing = lookup_symbol(analyzer->symbol_table, decl->fn_decl.name);
+            if (existing && existing->kind == SYMBOL_FUNCTION) {
+                symbol_table_error(analyzer->symbol_table, decl->line, decl->column,
+                    "Função '%s' já foi declarada anteriormente na linha %d",
+                    decl->fn_decl.name, existing->line);
+                analyzer->had_error = true;
+                continue;
+            }
+            
             Type** param_types = malloc(decl->fn_decl.param_count * sizeof(Type*));
             for (int j = 0; j < decl->fn_decl.param_count; j++) {
-                param_types[j] = ast_type_to_type(analyzer, 
-                    decl->fn_decl.params[j]->param.param_type);
+                param_types[j] = ast_type_to_type(analyzer, decl->fn_decl.params[j]->param.param_type);
             }
             
             Type* return_type = decl->fn_decl.return_type ? 
@@ -104,56 +179,68 @@ bool analyze_semantics(SemanticAnalyzer* analyzer, ASTNode* program) {
             declare_function(analyzer->symbol_table, decl->fn_decl.name,
                            return_type, param_types, decl->fn_decl.param_count,
                            decl->line, decl->column);
-            
             free(param_types);
         }
         else if (decl->type == AST_DATA_DECL) {
-            // Pré-declara tipo customizado
+            Symbol* existing = lookup_symbol(analyzer->symbol_table, decl->data_decl.name);
+            if (existing && existing->kind == SYMBOL_TYPE) {
+                symbol_table_error(analyzer->symbol_table, decl->line, decl->column,
+                    "Tipo '%s' já foi declarado anteriormente na linha %d",
+                    decl->data_decl.name, existing->line);
+                analyzer->had_error = true;
+                continue;
+            }
+            
             Symbol** fields = malloc(decl->data_decl.field_count * sizeof(Symbol*));
             for (int j = 0; j < decl->data_decl.field_count; j++) {
                 ASTNode* field = decl->data_decl.fields[j];
                 Type* field_type = ast_type_to_type(analyzer, field->field_decl.field_type);
-                fields[j] = create_symbol(field->field_decl.field_name, 
-                                         SYMBOL_FIELD, field_type,
-                                         field->line, field->column);
+                
+                Symbol* field_symbol = calloc(1, sizeof(Symbol));
+                field_symbol->name = strdup(field->field_decl.field_name);
+                field_symbol->kind = SYMBOL_FIELD;
+                field_symbol->type = field_type;
+                field_symbol->line = field->line;
+                field_symbol->column = field->column;
+                
+                fields[j] = field_symbol;
             }
             
             declare_type(analyzer->symbol_table, decl->data_decl.name,
                         fields, decl->data_decl.field_count,
                         decl->line, decl->column);
-            
             free(fields);
         }
     }
     
-    // Segunda passada: analisa todos os corpos
-    printf("[Fase 2] Analisando corpos de declarações...\n");
+    // Fase 2: Analisa CORPOS e STATEMENTS DE NÍVEL SUPERIOR
+    printf("[Fase 2] Analisando corpos e instruções...\n");
     for (int i = 0; i < program->program.decl_count; i++) {
         ASTNode* decl = program->program.declarations[i];
         
         switch (decl->type) {
-            case AST_LET_DECL:
-                analyze_let_decl(analyzer, decl);
-                break;
             case AST_FN_DECL:
-                analyze_fn_decl(analyzer, decl);
+                // Funções já foram declaradas, agora analisamos o corpo
+                if (!analyzer->had_error || !lookup_symbol(analyzer->symbol_table, decl->fn_decl.name)) {
+                    analyze_fn_decl(analyzer, decl);
+                }
                 break;
             case AST_DATA_DECL:
+                // Data types já foram declarados, analisamos estrutura interna
                 analyze_data_decl(analyzer, decl);
                 break;
-            case AST_EXPR_STMT:
-                analyze_expression(analyzer, decl->expr_stmt.expression);
-                break;
             default:
+                // Para qualquer outra coisa (Let, If, For, Print, ExprStmt),
+                // usamos analyze_statement para garantir que a validação ocorra.
+                analyze_statement(analyzer, decl);
                 break;
         }
     }
     
-    // Terceira passada: verificações finais
+    // Fase 3: Verificações finais
     printf("[Fase 3] Verificações finais...\n");
     check_unused_symbols(analyzer->symbol_table);
     
-    // Imprime resultados
     print_semantic_analysis_report(analyzer);
     
     return !analyzer->had_error;
@@ -274,6 +361,10 @@ Type* analyze_data_decl(SemanticAnalyzer* analyzer, ASTNode* node) {
 // ==================== ANÁLISE DE STATEMENTS ====================
 
 Type* analyze_statement(SemanticAnalyzer* analyzer, ASTNode* node) {
+    if (!node) {
+        return create_error_type();
+    }
+    
     switch (node->type) {
         case AST_LET_DECL:
             return analyze_let_decl(analyzer, node);
@@ -283,11 +374,23 @@ Type* analyze_statement(SemanticAnalyzer* analyzer, ASTNode* node) {
             return analyze_for_stmt(analyzer, node);
         case AST_RETURN_STMT:
             return analyze_return_stmt(analyzer, node);
+        case AST_PRINT_STMT:
+            return analyze_print_stmt(analyzer, node);
         case AST_EXPR_STMT:
-            return analyze_expression(analyzer, node->expr_stmt.expression);
+            if (node->expr_stmt.expression) {
+                return analyze_expression(analyzer, node->expr_stmt.expression);
+            } else {
+                symbol_table_error(analyzer->symbol_table, node->line, node->column,
+                    "Statement de expressão vazio");
+                analyzer->had_error = true;
+                return create_error_type();
+            }
         case AST_BLOCK:
             return analyze_block(analyzer, node);
         default:
+            symbol_table_error(analyzer->symbol_table, node->line, node->column,
+                "Tipo de statement não suportado: %d", node->type);
+            analyzer->had_error = true;
             return create_error_type();
     }
 }
@@ -385,6 +488,26 @@ Type* analyze_return_stmt(SemanticAnalyzer* analyzer, ASTNode* node) {
     return return_value_type;
 }
 
+Type* analyze_print_stmt(SemanticAnalyzer* analyzer, ASTNode* node) {
+    // Analisa a expressão sendo impressa
+    Type* expr_type = analyze_expression(analyzer, node->print_stmt.expression);
+    
+    // Print aceita qualquer tipo - não precisa de verificação especial
+    // Mas podemos avisar se for um tipo complexo que não tem representação string
+    if (expr_type->kind != TYPE_INT && 
+        expr_type->kind != TYPE_FLOAT &&
+        expr_type->kind != TYPE_STRING &&
+        expr_type->kind != TYPE_BOOL &&
+        expr_type->kind != TYPE_ERROR) {
+        
+        analyzer->warning_count++;
+        printf("Aviso [linha %d]: print() com tipo complexo %s pode não ter representação adequada\n",
+               node->line, type_to_string(expr_type));
+    }
+    
+    return create_primitive_type(TYPE_VOID);
+}
+
 Type* analyze_block(SemanticAnalyzer* analyzer, ASTNode* node) {
     Type* last_type = create_primitive_type(TYPE_VOID);
     
@@ -436,6 +559,13 @@ Type* analyze_expression(SemanticAnalyzer* analyzer, ASTNode* node) {
 }
 
 Type* analyze_binary_expr(SemanticAnalyzer* analyzer, ASTNode* node) {
+    if (!node->binary_expr.left || !node->binary_expr.right) {
+        symbol_table_error(analyzer->symbol_table, node->line, node->column,
+            "Expressão binária com operandos inválidos");
+        analyzer->had_error = true;
+        return create_error_type();
+    }
+
     Type* left = analyze_expression(analyzer, node->binary_expr.left);
     Type* right = analyze_expression(analyzer, node->binary_expr.right);
     
@@ -502,25 +632,46 @@ Type* analyze_unary_expr(SemanticAnalyzer* analyzer, ASTNode* node) {
 }
 
 Type* analyze_call_expr(SemanticAnalyzer* analyzer, ASTNode* node) {
-    // Analisa a função sendo chamada
-    Type* callee_type = analyze_expression(analyzer, node->call_expr.callee);
+    // funções built-in
+    char* func_name = node->call_expr.callee->identifier.id_name;
     
-    if (callee_type->kind != TYPE_FUNCTION && callee_type->kind != TYPE_ERROR) {
+    // Verifica se é print (tratamento especial - aceita qualquer tipo)
+    if (strcmp(func_name, "print") == 0) {
+        if (node->call_expr.arg_count != 1) {
+            symbol_table_error(analyzer->symbol_table, node->line, node->column,
+                "Função 'print' espera 1 argumento, mas recebeu %d",
+                node->call_expr.arg_count);
+            analyzer->had_error = true;
+            return create_error_type();
+        }
+        
+        // Analisa o argumento (pode ser qualquer tipo)
+        analyze_expression(analyzer, node->call_expr.arguments[0]);
+        return create_primitive_type(TYPE_VOID);
+    }
+    
+    // Busca a função na tabela de símbolos
+    Symbol* func_symbol = lookup_symbol(analyzer->symbol_table, func_name);
+    
+    if (!func_symbol) {
         symbol_table_error(analyzer->symbol_table, node->line, node->column,
-            "Tentativa de chamar tipo não-função: %s", type_to_string(callee_type));
+            "Função '%s' não foi declarada", func_name);
         analyzer->had_error = true;
         return create_error_type();
     }
     
-    if (callee_type->kind == TYPE_ERROR) {
+    if (func_symbol->kind != SYMBOL_FUNCTION) {
+        symbol_table_error(analyzer->symbol_table, node->line, node->column,
+            "'%s' não é uma função", func_name);
+        analyzer->had_error = true;
         return create_error_type();
     }
     
     // Verifica número de argumentos
-    if (node->call_expr.arg_count != callee_type->param_count) {
+    if (node->call_expr.arg_count != func_symbol->param_count) {
         symbol_table_error(analyzer->symbol_table, node->line, node->column,
-            "Função espera %d argumentos mas recebeu %d",
-            callee_type->param_count, node->call_expr.arg_count);
+            "Função '%s' espera %d argumentos mas recebeu %d",
+            func_name, func_symbol->param_count, node->call_expr.arg_count);
         analyzer->had_error = true;
         return create_error_type();
     }
@@ -528,19 +679,22 @@ Type* analyze_call_expr(SemanticAnalyzer* analyzer, ASTNode* node) {
     // Verifica tipos dos argumentos
     for (int i = 0; i < node->call_expr.arg_count; i++) {
         Type* arg_type = analyze_expression(analyzer, node->call_expr.arguments[i]);
-        Type* param_type = callee_type->param_types[i];
+        Type* param_type = func_symbol->param_types[i];
         
         if (!types_compatible(param_type, arg_type)) {
             symbol_table_error(analyzer->symbol_table, 
                 node->call_expr.arguments[i]->line,
                 node->call_expr.arguments[i]->column,
-                "Argumento %d: esperado %s mas encontrado %s",
-                i + 1, type_to_string(param_type), type_to_string(arg_type));
+                "Argumento %d de '%s': esperado %s mas encontrado %s",
+                i + 1, func_name, type_to_string(param_type), type_to_string(arg_type));
             analyzer->had_error = true;
         }
     }
     
-    return clone_type(callee_type->return_type);
+    // Marca função como usada
+    mark_symbol_used(analyzer->symbol_table, func_name);
+    
+    return clone_type(func_symbol->type->return_type);
 }
 
 Type* analyze_lambda_expr(SemanticAnalyzer* analyzer, ASTNode* node) {
@@ -1001,7 +1155,9 @@ Type* ast_type_to_type(SemanticAnalyzer* analyzer, ASTNode* type_node) {
         }
         
         case TOKEN_IDENTIFIER: {
-            // Tipo customizado
+            if (strcmp(type_node->type_node.type_name, "Void") == 0) {
+                return create_primitive_type(TYPE_VOID);
+            }
             return create_custom_type(type_node->type_node.type_name);
         }
         

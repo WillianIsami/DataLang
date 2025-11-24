@@ -26,6 +26,7 @@ typedef enum {
     AST_IF_STMT,
     AST_FOR_STMT,
     AST_RETURN_STMT,
+    AST_PRINT_STMT,
     AST_EXPR_STMT,
     AST_BLOCK,
     
@@ -95,6 +96,11 @@ struct ASTNode {
             ASTNode* type_annotation;
             ASTNode* initializer;
         } let_decl;
+
+        // Print Statement
+        struct {
+            ASTNode* expression;
+        } print_stmt;
         
         // Function Declaration
         struct {
@@ -253,12 +259,10 @@ struct ASTNode {
         // Literal
         struct {
             TokenType literal_type;
-            union {
-                long long int_value;
-                double float_value;
-                char* string_value;
-                bool bool_value;
-            };
+            long long int_value;
+            double float_value;
+            char* string_value;
+            bool bool_value;
         } literal;
         
         // Identifier
@@ -291,7 +295,7 @@ struct ASTNode {
         
         // Type
         struct {
-            TokenType type_kind;
+            int type_kind;
             char* type_name;
             ASTNode* inner_type;
             ASTNode** tuple_types;

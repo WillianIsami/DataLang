@@ -8,6 +8,7 @@
         "lexer.h": "c",
         "semantic.h": "c",
         "stdbool.h": "c",
-        "symbol_table.h": "c"
+        "symbol_table.h": "c",
+        "codegen.h": "c"
     }
 }

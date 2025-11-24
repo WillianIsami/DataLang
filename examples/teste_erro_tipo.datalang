@@ -1,0 +1,6 @@
+let numero = 10;
+let texto = "Teste";
+
+// Erro esperado: Tipos incompatíveis para operador '+'
+let resultado = numero + texto;
+print(resultado);

@@ -1,6 +1,5 @@
 /*
- * DataLang - Parser Principal
- * Implementação do parser LL(1) recursivo descendente
+ * DataLang - Parser Principal com Print Statement
  */
 
 #define _GNU_SOURCE
@@ -11,9 +10,8 @@
 #include <stdarg.h>
 #include "parser.h"
 
-// ==================== DECLARAÇÕES FORWARD (FUNÇÕES INTERNAS) ====================
+// ==================== DECLARAÇÕES FORWARD ====================
 
-// Funções auxiliares (privadas - static)
 Token* peek(Parser* p);
 Token* previous(Parser* p);
 Token* advance(Parser* p);
@@ -26,7 +24,6 @@ Token* consume(Parser* p, TokenType type, const char* message);
 void synchronize(Parser* p);
 ASTNode* create_node(ASTNodeType type, int line, int column);
 
-// Funções de parsing (privadas - static)
 ASTNode* parse_program(Parser* p);
 ASTNode* parse_let_decl(Parser* p);
 ASTNode* parse_fn_decl(Parser* p);
@@ -39,12 +36,12 @@ ASTNode* parse_statement(Parser* p);
 ASTNode* parse_if_statement(Parser* p);
 ASTNode* parse_for_statement(Parser* p);
 ASTNode* parse_return_statement(Parser* p);
+ASTNode* parse_print_statement(Parser* p);
 ASTNode* parse_expr_statement(Parser* p);
 
-// Expressões (declaradas em parser_expr.c)
 extern ASTNode* parse_expression(Parser* p);
 
-// ==================== UTILITÁRIOS DO PARSER ====================
+// ==================== UTILITÁRIOS ====================
 
 Token* peek(Parser* p) {
     if (p->current >= p->token_count) {
@@ -140,6 +137,7 @@ void synchronize(Parser* p) {
             case TOKEN_IF:
             case TOKEN_FOR:
             case TOKEN_RETURN:
+            case TOKEN_PRINT:
             case TOKEN_IMPORT:
             case TOKEN_EXPORT:
                 return;
@@ -151,7 +149,7 @@ void synchronize(Parser* p) {
     }
 }
 
-// ==================== CRIAÇÃO DE NODOS AST ====================
+// ==================== CRIAÇÃO DE NODOS ====================
 
 ASTNode* create_node(ASTNodeType type, int line, int column) {
     ASTNode* node = calloc(1, sizeof(ASTNode));
@@ -167,7 +165,6 @@ ASTNode* create_node(ASTNodeType type, int line, int column) {
 
 // ==================== PARSING PRINCIPAL ====================
 
-// Program = { TopLevel }
 ASTNode* parse_program(Parser* p) {
     ASTNode* program = create_node(AST_PROGRAM, 1, 1);
     
@@ -190,6 +187,8 @@ ASTNode* parse_program(Parser* p) {
             decl = parse_export_decl(p);
         } else if (check(p, TOKEN_IF)) {
             decl = parse_if_statement(p);
+        } else if (check(p, TOKEN_PRINT)) {
+            decl = parse_print_statement(p);
         } else {
             ASTNode* stmt = parse_statement(p);
             if (stmt && stmt->type == AST_EXPR_STMT) {
@@ -216,7 +215,8 @@ ASTNode* parse_program(Parser* p) {
     return program;
 }
 
-// LetDecl = "let" Ident [ ":" Type ] "=" Expr ";"
+// ==================== DECLARAÇÕES ====================
+
 ASTNode* parse_let_decl(Parser* p) {
     Token* let_token = consume(p, TOKEN_LET, "Esperado 'let'");
     if (!let_token) return NULL;
@@ -230,7 +230,6 @@ ASTNode* parse_let_decl(Parser* p) {
     }
     node->let_decl.name = strdup(name->lexema);
     
-    // Tipo opcional
     if (match(p, 1, TOKEN_COLON)) {
         node->let_decl.type_annotation = parse_type(p);
     } else {
@@ -244,7 +243,6 @@ ASTNode* parse_let_decl(Parser* p) {
     return node;
 }
 
-// FnDecl = "fn" Ident "(" [ FormalParams ] ")" [ "->" Type ] Block
 ASTNode* parse_fn_decl(Parser* p) {
     Token* fn_token = consume(p, TOKEN_FN, "Esperado 'fn'");
     if (!fn_token) return NULL;
@@ -260,7 +258,6 @@ ASTNode* parse_fn_decl(Parser* p) {
     
     consume(p, TOKEN_LPAREN, "Esperado '(' após nome da função");
     
-    // Parâmetros
     int param_capacity = 5;
     node->fn_decl.params = malloc(param_capacity * sizeof(ASTNode*));
     node->fn_decl.param_count = 0;
@@ -289,7 +286,6 @@ ASTNode* parse_fn_decl(Parser* p) {
     
     consume(p, TOKEN_RPAREN, "Esperado ')' após parâmetros");
     
-    // Tipo de retorno opcional
     if (match(p, 1, TOKEN_ARROW)) {
         node->fn_decl.return_type = parse_type(p);
     } else {
@@ -301,7 +297,6 @@ ASTNode* parse_fn_decl(Parser* p) {
     return node;
 }
 
-// DataDecl = "data" Ident "{" { FieldDecl } "}"
 ASTNode* parse_data_decl(Parser* p) {
     Token* data_token = consume(p, TOKEN_DATA, "Esperado 'data'");
     if (!data_token) return NULL;
@@ -346,7 +341,6 @@ ASTNode* parse_data_decl(Parser* p) {
     return node;
 }
 
-// ImportDecl = "import" STRING [ "as" Ident ] ";"
 ASTNode* parse_import_decl(Parser* p) {
     Token* import_token = consume(p, TOKEN_IMPORT, "Esperado 'import'");
     if (!import_token) return NULL;
@@ -360,7 +354,6 @@ ASTNode* parse_import_decl(Parser* p) {
     }
     node->import_decl.module_path = strdup(path->lexema);
     
-    // Alias opcional
     if (match(p, 1, TOKEN_AS)) {
         Token* alias = consume(p, TOKEN_IDENTIFIER, "Esperado identificador após 'as'");
         if (alias) {
@@ -375,7 +368,6 @@ ASTNode* parse_import_decl(Parser* p) {
     return node;
 }
 
-// ExportDecl = "export" Ident ";"
 ASTNode* parse_export_decl(Parser* p) {
     Token* export_token = consume(p, TOKEN_EXPORT, "Esperado 'export'");
     if (!export_token) return NULL;
@@ -394,7 +386,6 @@ ASTNode* parse_export_decl(Parser* p) {
     return node;
 }
 
-// Type = "Int" | "Float" | "String" | "Bool" | "DataFrame" | ...
 ASTNode* parse_type(Parser* p) {
     Token* current = peek(p);
     ASTNode* node = create_node(AST_TYPE, current->line, current->column);
@@ -415,7 +406,6 @@ ASTNode* parse_type(Parser* p) {
         return node;
     }
     
-    // Array type: [Type]
     if (match(p, 1, TOKEN_LBRACKET)) {
         node->type_node.type_kind = TOKEN_LBRACKET;
         node->type_node.inner_type = parse_type(p);
@@ -423,7 +413,6 @@ ASTNode* parse_type(Parser* p) {
         return node;
     }
     
-    // Tuple type: (Type, Type, ...)
     if (match(p, 1, TOKEN_LPAREN)) {
         node->type_node.type_kind = TOKEN_LPAREN;
         int capacity = 5;
@@ -449,7 +438,8 @@ ASTNode* parse_type(Parser* p) {
     return NULL;
 }
 
-// Block = "{" { Statement } "}"
+// ==================== STATEMENTS ====================
+
 ASTNode* parse_block(Parser* p) {
     Token* brace = consume(p, TOKEN_LBRACE, "Esperado '{'");
     if (!brace) return NULL;
@@ -477,7 +467,6 @@ ASTNode* parse_block(Parser* p) {
     return node;
 }
 
-// Statement = LetDecl | IfStatement | ForStatement | ReturnStatement | ExprStatement
 ASTNode* parse_statement(Parser* p) {
     if (check(p, TOKEN_LET)) {
         return parse_let_decl(p);
@@ -495,10 +484,13 @@ ASTNode* parse_statement(Parser* p) {
         return parse_return_statement(p);
     }
     
+    if (check(p, TOKEN_PRINT)) {
+        return parse_print_statement(p);
+    }
+    
     return parse_expr_statement(p);
 }
 
-// IfStatement = "if" Expr Block [ "else" ( IfStatement | Block ) ]
 ASTNode* parse_if_statement(Parser* p) {
     Token* if_token = consume(p, TOKEN_IF, "Esperado 'if'");
     if (!if_token) return NULL;
@@ -508,7 +500,6 @@ ASTNode* parse_if_statement(Parser* p) {
     node->if_stmt.condition = parse_expression(p);
     node->if_stmt.then_block = parse_block(p);
     
-    // Else opcional
     if (match(p, 1, TOKEN_ELSE)) {
         if (check(p, TOKEN_IF)) {
             node->if_stmt.else_block = parse_if_statement(p);
@@ -522,7 +513,6 @@ ASTNode* parse_if_statement(Parser* p) {
     return node;
 }
 
-// ForStatement = "for" Ident "in" Expr Block
 ASTNode* parse_for_statement(Parser* p) {
     Token* for_token = consume(p, TOKEN_FOR, "Esperado 'for'");
     if (!for_token) return NULL;
@@ -543,7 +533,6 @@ ASTNode* parse_for_statement(Parser* p) {
     return node;
 }
 
-// ReturnStatement = "return" [ Expr ] ";"
 ASTNode* parse_return_statement(Parser* p) {
     Token* return_token = consume(p, TOKEN_RETURN, "Esperado 'return'");
     if (!return_token) return NULL;
@@ -561,7 +550,21 @@ ASTNode* parse_return_statement(Parser* p) {
     return node;
 }
 
-// ExprStatement = Expr ";"
+// Print Statement
+ASTNode* parse_print_statement(Parser* p) {
+    Token* print_token = consume(p, TOKEN_PRINT, "Esperado 'print'");
+    if (!print_token) return NULL;
+    
+    ASTNode* node = create_node(AST_PRINT_STMT, print_token->line, print_token->column);
+    
+    consume(p, TOKEN_LPAREN, "Esperado '(' após 'print'");
+    node->print_stmt.expression = parse_expression(p);
+    consume(p, TOKEN_RPAREN, "Esperado ')' após expressão");
+    consume(p, TOKEN_SEMICOLON, "Esperado ';' após print");
+    
+    return node;
+}
+
 ASTNode* parse_expr_statement(Parser* p) {
     Token* current = peek(p);
     ASTNode* node = create_node(AST_EXPR_STMT, current->line, current->column);

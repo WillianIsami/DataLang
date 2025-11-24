@@ -91,6 +91,7 @@ static const KeywordEntry keywords[] = {
     {"for", TOKEN_FOR},
     {"in", TOKEN_IN},
     {"return", TOKEN_RETURN},
+    {"print", TOKEN_PRINT},
     {"load", TOKEN_LOAD},
     {"save", TOKEN_SAVE},
     {"select", TOKEN_SELECT},

@@ -1,0 +1,10 @@
+let x = 100;
+
+fn teste() -> Void {
+    let x = 10;
+    print(x); // Deve imprimir 10
+    return;
+}
+
+print(x); // Deve imprimir 100
+teste();

@@ -1,0 +1,137 @@
+// Exemplo Completo - DataLang
+// Testando todas as funcionalidades implementadas
+
+// ==================== TESTES BÁSICOS ====================
+
+fn test_basic() {
+    print("TESTES BÁSICOS:");
+    let x = 42;
+    let y = 3.14;
+    let name = "DataLang";
+    let flag = true;
+    
+    print(x);
+    print(y);
+    print(name);
+    print(flag);
+}
+
+// ==================== TESTES DE ARRAYS ====================
+
+fn test_arrays() {
+    print("TESTES DE ARRAYS:");
+    // Array literal
+    let numbers = [1, 2, 3, 4, 5];
+    
+    // Acesso por índice
+    let first = numbers[0];
+    let third = numbers[2];
+    
+    print(first);
+    print(third);
+}
+
+// ==================== TESTES DE LOOPS ====================
+
+fn test_loops() {
+    print("TESTES DE LOOPS:");
+    // Range básico
+    let range = [1,2,3,4,5];
+    
+    // Loop for com range
+    for i in range {
+        print(i);
+    }
+    
+    // Loop for com array literal
+    let values = [10, 20, 30, 40];
+    for v in values {
+        print(v);
+    }
+}
+
+// ==================== TESTES DE OPERAÇÕES ====================
+
+fn test_operations() {
+    print("TESTES DE OPERAÇÕES:");
+    let a = 10;
+    let b = 20;
+    
+    // Operações aritméticas
+    let soma = a + b;
+    let diff = b - a;
+    let prod = a * b;
+    let quot = b / a;
+    let mod = b % a;
+    
+    print(soma);
+    print(diff);
+    print(prod);
+    print(quot);
+    print(mod);
+    
+    // Operações de comparação
+    let less = a < b;
+    let greater = b > a;
+    let equal = a == a;
+    
+    print(less);
+    print(greater);
+    print(equal);
+}
+
+// ==================== TESTES DE CONDICIONAIS ====================
+
+fn test_conditionals() {
+    print("TESTES DE CONDICIONAIS:");
+    let x = 15;
+    
+    if (x > 10) {
+        print(1);
+    } else {
+        print(0);
+    }
+    
+    let y = 5;
+    if (y > 10) {
+        print(0);
+    } else {
+        print(1);
+    }
+}
+
+// ==================== FUNÇÕES COM RETORNO ====================
+
+fn add(a: Int, b: Int) -> Int {
+    return a + b;
+}
+
+fn multiply(a: Int, b: Int) -> Int {
+    return a * b;
+}
+
+fn test_functions() {
+    print("TESTES DE FUNÇÕES:");
+    let soma = add(5, 3);
+    let product = multiply(4, 7);
+    
+    print(soma);
+    print(product);
+}
+
+// ==================== FUNÇÃO PRINCIPAL ====================
+
+fn main() {
+    print(100);
+    
+    test_basic();
+    test_arrays();
+    test_loops();
+    test_operations();
+    test_conditionals();
+    test_functions();
+    
+    print(999);
+}
+
+main();

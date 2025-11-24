@@ -8,7 +8,6 @@
 #include <string.h>
 #include "parser.h"
 
-// Declarações externas (do lexer.c)
 extern AFD* create_datalang_afd_from_afn();
 extern TokenStream* tokenize(const char* input, AFD* afd);
 extern void free_afd(AFD* afd);
@@ -31,6 +30,11 @@ void free_ast(ASTNode* node) {
             free(node->let_decl.name);
             free_ast(node->let_decl.type_annotation);
             free_ast(node->let_decl.initializer);
+            break;
+        
+        // Print Statement
+        case AST_PRINT_STMT:
+            free_ast(node->print_stmt.expression);
             break;
             
         case AST_FN_DECL:
@@ -246,6 +250,7 @@ static const char* ast_node_type_name(ASTNodeType type) {
         case AST_IF_STMT: return "IfStmt";
         case AST_FOR_STMT: return "ForStmt";
         case AST_RETURN_STMT: return "ReturnStmt";
+        case AST_PRINT_STMT: return "PrintStmt";
         case AST_EXPR_STMT: return "ExprStmt";
         case AST_BLOCK: return "Block";
         case AST_BINARY_EXPR: return "BinaryExpr";
@@ -296,6 +301,14 @@ void print_ast(ASTNode* node, int indent) {
                     printf("├─ NULL\n");
                 }
             }
+            break;
+        
+        // Print Statement
+        case AST_PRINT_STMT:
+            printf("\n");
+            print_indent(indent + 1);
+            printf("├─ Expressão:\n");
+            print_ast(node->print_stmt.expression, indent + 2);
             break;
             
         case AST_LET_DECL:
@@ -411,7 +424,6 @@ void print_ast(ASTNode* node, int indent) {
             
         case AST_LITERAL:
             printf(" [");
-            // Verificar o tipo antes de acessar a union
             switch (node->literal.literal_type) {
                 case TOKEN_INTEGER:
                     printf("INT: %lld", node->literal.int_value);
@@ -420,8 +432,6 @@ void print_ast(ASTNode* node, int indent) {
                     printf("FLOAT: %f", node->literal.float_value);
                     break;
                 case TOKEN_STRING:
-                    // O parser já removeu as aspas, então node->literal.string_value
-                    // contém o valor bruto (ex: "DataLang"). Apenas imprimimos.
                     if (node->literal.string_value) {
                         printf("STRING: \"%s\"", node->literal.string_value);
                     } else {
@@ -438,24 +448,12 @@ void print_ast(ASTNode* node, int indent) {
             break;
             
         case AST_IDENTIFIER:
-            // O `node->identifier.id_name` NUNCA deve ser NULL se o parser
-            // funcionou, mas se for um ponteiro lixo (corrupção de heap),
-            // esta verificação simples pode não ser suficiente.
             if (node->identifier.id_name != NULL) {
-                // Tenta imprimir de forma segura
                 printf(" '%s'\n", node->identifier.id_name);
             } else {
                 printf(" 'NULL_ID'\n");
             }
             break;
-        
-        // case AST_IDENTIFIER:
-        //     if (node->identifier.id_name) {
-        //         printf(" '%s'\n", node->identifier.id_name);
-        //     } else {
-        //         printf(" 'NULL_ID'\n");
-        //     }
-        //     break;
             
         case AST_BLOCK:
             printf(" (%d statements)\n", node->block.stmt_count);
@@ -566,147 +564,6 @@ void print_ast(ASTNode* node, int indent) {
     }
 }
 
-static void json_indent(FILE* f, int indent) {
-    for (int i = 0; i < indent; i++) fprintf(f, "  ");
-}
-
-void ast_to_json(ASTNode* node, FILE* out, int indent) {
-    if (!node) {
-        fprintf(out, "null");
-        return;
-    }
-
-    json_indent(out, indent);
-    fprintf(out, "{\n");
-
-    // Tipo do nó
-    json_indent(out, indent + 1);
-    fprintf(out, "\"type\": \"%s\"", ast_node_type_name(node->type));
-
-    // Para facilitar leitura, todas as propriedades virão depois de vírgulas
-    fprintf(out, ",\n");
-
-    switch (node->type) {
-
-        case AST_PROGRAM: {
-            json_indent(out, indent + 1);
-            fprintf(out, "\"declarations\": [\n");
-
-            for (int i = 0; i < node->program.decl_count; i++) {
-                ast_to_json(node->program.declarations[i], out, indent + 2);
-                if (i < node->program.decl_count - 1) fprintf(out, ",");
-                fprintf(out, "\n");
-            }
-
-            json_indent(out, indent + 1);
-            fprintf(out, "]");
-            break;
-        }
-
-        case AST_LET_DECL:
-            json_indent(out, indent + 1);
-            fprintf(out, "\"name\": \"%s\",\n", node->let_decl.name);
-
-            json_indent(out, indent + 1);
-            fprintf(out, "\"type_annotation\": ");
-            ast_to_json(node->let_decl.type_annotation, out, indent + 2);
-            fprintf(out, ",\n");
-
-            json_indent(out, indent + 1);
-            fprintf(out, "\"initializer\": ");
-            ast_to_json(node->let_decl.initializer, out, indent + 2);
-            break;
-
-        case AST_LITERAL:
-            json_indent(out, indent + 1);
-            fprintf(out, "\"value\": ");
-
-            switch (node->literal.literal_type) {
-                case TOKEN_INTEGER:
-                    fprintf(out, "%lld", node->literal.int_value);
-                    break;
-                case TOKEN_FLOAT:
-                    fprintf(out, "%f", node->literal.float_value);
-                    break;
-                case TOKEN_STRING:
-                    fprintf(out, "\"%s\"", node->literal.string_value ? node->literal.string_value : "");
-                    break;
-                case TOKEN_BOOL_TYPE:
-                    fprintf(out, node->literal.bool_value ? "true" : "false");
-                    break;
-                default:
-                    fprintf(out, "\"UNKNOWN\"");
-            }
-            break;
-
-        case AST_IDENTIFIER:
-            json_indent(out, indent + 1);
-            fprintf(out, "\"name\": \"%s\"", node->identifier.id_name);
-            break;
-
-        case AST_BINARY_EXPR:
-            json_indent(out, indent + 1);
-            fprintf(out, "\"operator\": \"%d\",\n", node->binary_expr.op);
-
-            json_indent(out, indent + 1);
-            fprintf(out, "\"left\": ");
-            ast_to_json(node->binary_expr.left, out, indent + 2);
-            fprintf(out, ",\n");
-
-            json_indent(out, indent + 1);
-            fprintf(out, "\"right\": ");
-            ast_to_json(node->binary_expr.right, out, indent + 2);
-            break;
-
-        case AST_FN_DECL:
-            json_indent(out, indent + 1);
-            fprintf(out, "\"name\": \"%s\",\n", node->fn_decl.name);
-
-            json_indent(out, indent + 1);
-            fprintf(out, "\"params\": [\n");
-            for (int i = 0; i < node->fn_decl.param_count; i++) {
-                ast_to_json(node->fn_decl.params[i], out, indent + 2);
-                if (i < node->fn_decl.param_count - 1) fprintf(out, ",");
-                fprintf(out, "\n");
-            }
-            json_indent(out, indent + 1);
-            fprintf(out, "],\n");
-
-            json_indent(out, indent + 1);
-            fprintf(out, "\"return_type\": ");
-            ast_to_json(node->fn_decl.return_type, out, indent + 2);
-            fprintf(out, ",\n");
-
-            json_indent(out, indent + 1);
-            fprintf(out, "\"body\": ");
-            ast_to_json(node->fn_decl.body, out, indent + 2);
-            break;
-
-        default:
-            json_indent(out, indent + 1);
-            fprintf(out, "\"UNIMPLEMENTED\": true");
-            break;
-    }
-
-    fprintf(out, "\n");
-    json_indent(out, indent);
-    fprintf(out, "}");
-}
-
-void save_ast_json(ASTNode* ast, const char* filename) {
-    FILE* f = fopen(filename, "w");
-    if (!f) {
-        printf("Erro ao salvar JSON da AST!\n");
-        return;
-    }
-    ast_to_json(ast, f, 0);
-    fclose(f);
-    printf("✓ AST exportada para %s\n", filename);
-}
-
-
-// ==================== FUNÇÃO MAIN ====================
-
 void test_parser_with_code(const char* code) {
     printf("\n════════════════════════════════════════════════════════════\n");
     printf("Código DataLang:\n");
@@ -714,7 +571,6 @@ void test_parser_with_code(const char* code) {
     printf("%s\n", code);
     printf("════════════════════════════════════════════════════════════\n");
     
-    // Etapa 1: Análise Léxica
     AFD* afd = create_datalang_afd_from_afn();
     if (!afd) {
         printf("Erro ao criar AFD\n");
@@ -728,7 +584,6 @@ void test_parser_with_code(const char* code) {
         return;
     }
     
-    // Etapa 2: Análise Sintática (Parsing)
     Parser* parser = create_parser(tokens);
     if (!parser) {
         printf("Erro ao criar parser\n");
@@ -739,64 +594,16 @@ void test_parser_with_code(const char* code) {
     
     ASTNode* ast = parse(parser);
     
-    // Visualiza a AST
     if (ast && !parser->had_error) {
         printf("\n╔════════════════════════════════════════════════════════════╗\n");
         printf("║                   ÁRVORE SINTÁTICA ABSTRATA                ║\n");
         printf("╚════════════════════════════════════════════════════════════╝\n\n");
         print_ast(ast, 0);
-        save_ast_json(ast, "AST.json");
         printf("\n✓ AST construída com sucesso!\n");
     }
     
-    // Limpeza
     if (ast) free_ast(ast);
     free_parser(parser);
     free_token_stream(tokens);
     free_afd(afd);
 }
-
-// int main(int argc, char** argv) {
-//     printf("\n╔════════════════════════════════════════════════════════════╗\n");
-//     printf("║           COMPILADOR DATALANG - PARSER LL(1)              ║\n");
-//     printf("╚════════════════════════════════════════════════════════════╝\n\n");
-    
-//     if (argc > 1) {
-//         // Modo arquivo
-//         FILE* file = fopen(argv[1], "r");
-//         if (!file) {
-//             fprintf(stderr, "Erro: Não foi possível abrir o arquivo '%s'\n", argv[1]);
-//             return 1;
-//         }
-        
-//         fseek(file, 0, SEEK_END);
-//         long size = ftell(file);
-//         fseek(file, 0, SEEK_SET);
-        
-//         char* code = malloc(size + 1);
-//         fread(code, 1, size, file);
-//         code[size] = '\0';
-//         fclose(file);
-        
-//         test_parser_with_code(code);
-//         free(code);
-//     } else {
-//         // Modo teste
-//         const char* test_code = 
-//             "let x = 4;\n"
-//             "let name = \"DataLang\";\n"
-//             "\n"
-//             "fn soma(a: Int, b: Int) -> Int {\n"
-//             "    return a + b;\n"
-//             "}\n"
-//             "\n"
-//             "let resultado = soma(5, 3);\n";
-        
-//         test_parser_with_code(test_code);
-        
-//         printf("\n\nPara testar com um arquivo:\n");
-//         printf("  %s <arquivo.datalang>\n\n", argv[0]);
-//     }
-    
-//     return 0;
-// }

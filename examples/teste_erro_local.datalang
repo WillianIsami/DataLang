@@ -1,0 +1,7 @@
+fn calcular() -> Int {
+    let a = 10;
+    // b não existe
+    return a + b;
+}
+
+calcular();
