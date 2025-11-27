@@ -20,6 +20,8 @@ fn main() {
     
     // Teste de loop simples
     let range = 1..5;
+    print("RANGE?");
+    print(range);
     for i in range {
         print(i);
     }

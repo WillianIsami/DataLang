@@ -18,9 +18,6 @@
 
 // ==================== DECLARAÇÕES FORWARD ====================
 
-static Symbol* create_symbol(const char* name, SymbolKind kind, Type* type,
-                             int line, int column);
-
 // Análise de expressões (da parte 2)
 Type* analyze_member_expr(SemanticAnalyzer* analyzer, ASTNode* node);
 Type* analyze_index_expr(SemanticAnalyzer* analyzer, ASTNode* node);
@@ -30,22 +27,7 @@ Type* analyze_range_expr(SemanticAnalyzer* analyzer, ASTNode* node);
 Type* analyze_load_expr(SemanticAnalyzer* analyzer, ASTNode* node);
 Type* analyze_save_expr(SemanticAnalyzer* analyzer, ASTNode* node);
 Type* analyze_print_stmt(SemanticAnalyzer* analyzer, ASTNode* node);
-
-// ==================== FUNÇÕES AUXILIARES ====================
-
-static Symbol* create_symbol(const char* name, SymbolKind kind, Type* type,
-                             int line, int column) {
-    Symbol* symbol = calloc(1, sizeof(Symbol));
-    symbol->name = strdup(name);
-    symbol->kind = kind;
-    symbol->type = type;
-    symbol->line = line;
-    symbol->column = column;
-    symbol->initialized = false;
-    symbol->used = false;
-    symbol->is_mutable = true;
-    return symbol;
-}
+Type* analyze_aggregate_transform(SemanticAnalyzer* analyzer, ASTNode* node);
 
 // ==================== CRIAÇÃO E DESTRUIÇÃO ====================
 
@@ -76,34 +58,32 @@ void free_semantic_analyzer(SemanticAnalyzer* analyzer) {
 void register_builtin_functions(SemanticAnalyzer* analyzer) {
     printf("[Semantic] Registrando funções built-in...\n");
     
-    // print(x) -> Void
+    // print(x) -> Void (polimórfico - aceita qualquer tipo)
     {
         Type* param_types[1] = {create_primitive_type(TYPE_INT)};
         Type* return_type = create_primitive_type(TYPE_VOID);
         declare_function(analyzer->symbol_table, "print", return_type, param_types, 1, 0, 0);
     }
     
-    // sum(a, b) -> Int
+    // sum(array: [Int]) -> Int
     {
-        Type* param_types[2] = {
-            create_primitive_type(TYPE_INT),
-            create_primitive_type(TYPE_INT)
+        Type* param_types[1] = {
+            create_array_type(create_primitive_type(TYPE_INT))
         };
         Type* return_type = create_primitive_type(TYPE_INT);
-        declare_function(analyzer->symbol_table, "sum", return_type, param_types, 2, 0, 0);
+        declare_function(analyzer->symbol_table, "sum", return_type, param_types, 1, 0, 0);
     }
     
-    // mean(a, b) -> Float
+    // mean(array: [Int]) -> Float
     {
-        Type* param_types[2] = {
-            create_primitive_type(TYPE_FLOAT),
-            create_primitive_type(TYPE_FLOAT)
+        Type* param_types[1] = {
+            create_array_type(create_primitive_type(TYPE_INT))
         };
         Type* return_type = create_primitive_type(TYPE_FLOAT);
-        declare_function(analyzer->symbol_table, "mean", return_type, param_types, 2, 0, 0);
+        declare_function(analyzer->symbol_table, "mean", return_type, param_types, 1, 0, 0);
     }
     
-    // count(array) -> Int
+    // count(array: [Int]) -> Int
     {
         Type* param_types[1] = {
             create_array_type(create_primitive_type(TYPE_INT))
@@ -112,24 +92,22 @@ void register_builtin_functions(SemanticAnalyzer* analyzer) {
         declare_function(analyzer->symbol_table, "count", return_type, param_types, 1, 0, 0);
     }
     
-    // min(a, b) -> Int
+    // min(array: [Int]) -> Int
     {
-        Type* param_types[2] = {
-            create_primitive_type(TYPE_INT),
-            create_primitive_type(TYPE_INT)
+        Type* param_types[1] = {
+            create_array_type(create_primitive_type(TYPE_INT))
         };
         Type* return_type = create_primitive_type(TYPE_INT);
-        declare_function(analyzer->symbol_table, "min", return_type, param_types, 2, 0, 0);
+        declare_function(analyzer->symbol_table, "min", return_type, param_types, 1, 0, 0);
     }
     
-    // max(a, b) -> Int
+    // max(array: [Int]) -> Int
     {
-        Type* param_types[2] = {
-            create_primitive_type(TYPE_INT),
-            create_primitive_type(TYPE_INT)
+        Type* param_types[1] = {
+            create_array_type(create_primitive_type(TYPE_INT))
         };
         Type* return_type = create_primitive_type(TYPE_INT);
-        declare_function(analyzer->symbol_table, "max", return_type, param_types, 2, 0, 0);
+        declare_function(analyzer->symbol_table, "max", return_type, param_types, 1, 0, 0);
     }
     
     printf("[Semantic] Funções built-in registradas com sucesso\n");
@@ -434,9 +412,6 @@ Type* analyze_for_stmt(SemanticAnalyzer* analyzer, ASTNode* node) {
     Type* element_type = NULL;
     if (iterable_type->kind == TYPE_ARRAY) {
         element_type = clone_type(iterable_type->element_type);
-    } else if (iterable_type->kind == TYPE_VECTOR || 
-               iterable_type->kind == TYPE_SERIES) {
-        element_type = fresh_type_var(analyzer->inference_ctx->var_gen);
     } else if (iterable_type->kind != TYPE_ERROR) {
         symbol_table_error(analyzer->symbol_table, node->line, node->column,
             "Tipo %s não é iterável", type_to_string(iterable_type));
@@ -491,20 +466,30 @@ Type* analyze_return_stmt(SemanticAnalyzer* analyzer, ASTNode* node) {
 Type* analyze_print_stmt(SemanticAnalyzer* analyzer, ASTNode* node) {
     // Analisa a expressão sendo impressa
     Type* expr_type = analyze_expression(analyzer, node->print_stmt.expression);
-    
-    // Print aceita qualquer tipo - não precisa de verificação especial
-    // Mas podemos avisar se for um tipo complexo que não tem representação string
-    if (expr_type->kind != TYPE_INT && 
-        expr_type->kind != TYPE_FLOAT &&
-        expr_type->kind != TYPE_STRING &&
-        expr_type->kind != TYPE_BOOL &&
-        expr_type->kind != TYPE_ERROR) {
-        
-        analyzer->warning_count++;
-        printf("Aviso [linha %d]: print() com tipo complexo %s pode não ter representação adequada\n",
-               node->line, type_to_string(expr_type));
+
+    if (expr_type->kind != TYPE_ERROR) {
+        bool is_supported = false;
+
+        if (expr_type->kind == TYPE_INT ||
+            expr_type->kind == TYPE_FLOAT ||
+            expr_type->kind == TYPE_STRING ||
+            expr_type->kind == TYPE_BOOL) {
+            is_supported = true;
+        } else if (expr_type->kind == TYPE_ARRAY &&
+                   expr_type->element_type &&
+                   (expr_type->element_type->kind == TYPE_INT ||
+                    expr_type->element_type->kind == TYPE_FLOAT ||
+                    expr_type->element_type->kind == TYPE_STRING ||
+                    expr_type->element_type->kind == TYPE_BOOL)) {
+            is_supported = true;
+        }
+
+        if (!is_supported) {
+            analyzer->warning_count++;
+            printf("Aviso [linha %d]: print() com tipo complexo %s pode não ter representação adequada\n",
+                   node->line, type_to_string(expr_type));
+        }
     }
-    
     return create_primitive_type(TYPE_VOID);
 }
 
@@ -553,6 +538,29 @@ Type* analyze_expression(SemanticAnalyzer* analyzer, ASTNode* node) {
             return analyze_load_expr(analyzer, node);
         case AST_SAVE_EXPR:
             return analyze_save_expr(analyzer, node);
+        case AST_AGGREGATE_TRANSFORM:
+            return analyze_aggregate_transform(analyzer, node);
+        default:
+            return create_error_type();
+    }
+}
+
+// Análise de AggregateTransform (sum, mean, count, min, max como transformações)
+Type* analyze_aggregate_transform(SemanticAnalyzer* analyzer, ASTNode* node) {
+    // Analisa os argumentos
+    for (int i = 0; i < node->aggregate_transform.agg_arg_count; i++) {
+        analyze_expression(analyzer, node->aggregate_transform.agg_args[i]);
+    }
+    
+    // Retorna o tipo baseado na agregação
+    switch (node->aggregate_transform.agg_type) {
+        case AGG_SUM:
+        case AGG_MIN:
+        case AGG_MAX:
+        case AGG_COUNT:
+            return create_primitive_type(TYPE_INT);
+        case AGG_MEAN:
+            return create_primitive_type(TYPE_FLOAT);
         default:
             return create_error_type();
     }
@@ -603,8 +611,6 @@ Type* analyze_binary_expr(SemanticAnalyzer* analyzer, ASTNode* node) {
 Type* analyze_unary_expr(SemanticAnalyzer* analyzer, ASTNode* node) {
     Type* operand = analyze_expression(analyzer, node->unary_expr.operand);
     
-    const char* op_str = (node->unary_expr.op == UNOP_NEG) ? "-" : "!";
-    
     // Verifica tipo apropriado
     if (node->unary_expr.op == UNOP_NEG) {
         if (!is_numeric_type(operand) && operand->kind != TYPE_ERROR) {
@@ -632,7 +638,6 @@ Type* analyze_unary_expr(SemanticAnalyzer* analyzer, ASTNode* node) {
 }
 
 Type* analyze_call_expr(SemanticAnalyzer* analyzer, ASTNode* node) {
-    // funções built-in
     char* func_name = node->call_expr.callee->identifier.id_name;
     
     // Verifica se é print (tratamento especial - aceita qualquer tipo)
@@ -759,6 +764,7 @@ Type* analyze_pipeline_expr(SemanticAnalyzer* analyzer, ASTNode* node) {
 }
 
 Type* analyze_literal(SemanticAnalyzer* analyzer, ASTNode* node) {
+    (void)analyzer; // Parâmetro não usado nesta função
     switch (node->literal.literal_type) {
         case TOKEN_INTEGER:
             return create_primitive_type(TYPE_INT);
@@ -848,9 +854,7 @@ Type* analyze_member_expr(SemanticAnalyzer* analyzer, ASTNode* node) {
         return create_error_type();
     }
     
-    if (object_type->kind == TYPE_DATAFRAME ||
-        object_type->kind == TYPE_VECTOR ||
-        object_type->kind == TYPE_SERIES) {
+    if (object_type->kind == TYPE_DATAFRAME) {
         return fresh_type_var(analyzer->inference_ctx->var_gen);
     }
     
@@ -874,10 +878,6 @@ Type* analyze_index_expr(SemanticAnalyzer* analyzer, ASTNode* node) {
     // Retorna tipo do elemento
     if (object_type->kind == TYPE_ARRAY) {
         return clone_type(object_type->element_type);
-    }
-    
-    if (object_type->kind == TYPE_VECTOR || object_type->kind == TYPE_SERIES) {
-        return fresh_type_var(analyzer->inference_ctx->var_gen);
     }
     
     if (object_type->kind == TYPE_ERROR) {
@@ -938,6 +938,8 @@ Type* analyze_range_expr(SemanticAnalyzer* analyzer, ASTNode* node) {
 }
 
 Type* analyze_load_expr(SemanticAnalyzer* analyzer, ASTNode* node) {
+    (void)analyzer; // Parâmetro não usado
+    (void)node;     // Parâmetro não usado (path da string não é validado aqui)
     // load() retorna DataFrame
     return create_primitive_type(TYPE_DATAFRAME);
 }
@@ -1135,9 +1137,11 @@ Type* ast_type_to_type(SemanticAnalyzer* analyzer, ASTNode* type_node) {
         case TOKEN_DATAFRAME_TYPE:
             return create_primitive_type(TYPE_DATAFRAME);
         case TOKEN_VECTOR_TYPE:
-            return create_primitive_type(TYPE_VECTOR);
+            // Vector é tratado como array de tipo genérico
+            return create_array_type(create_primitive_type(TYPE_INT));
         case TOKEN_SERIES_TYPE:
-            return create_primitive_type(TYPE_SERIES);
+            // Series é tratado como array de tipo genérico
+            return create_array_type(create_primitive_type(TYPE_INT));
             
         case TOKEN_LBRACKET: {
             // Array type

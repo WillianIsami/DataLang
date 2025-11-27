@@ -95,15 +95,15 @@ fn demonstra_builtin() -> Int {
     let b = 20;
     
     // sum() é uma função built-in
-    let resultado_sum = sum(a, b);
+    let resultado_sum = sum([a, b]);
     print(resultado_sum);
     
     // min() é uma função built-in
-    let resultado_min = min(a, b);
+    let resultado_min = min([a, b]);
     print(resultado_min);
     
     // max() é uma função built-in
-    let resultado_max = max(a, b);
+    let resultado_max = max([a, b]);
     print(resultado_max);
     
     return resultado_sum;

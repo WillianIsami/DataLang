@@ -174,10 +174,8 @@ ASTNode* parse_program(Parser* p) {
     
     while (!is_at_end(p)) {
         ASTNode* decl = NULL;
-        
-        if (check(p, TOKEN_LET)) {
-            decl = parse_let_decl(p);
-        } else if (check(p, TOKEN_FN)) {
+
+        if (check(p, TOKEN_FN)) {
             decl = parse_fn_decl(p);
         } else if (check(p, TOKEN_DATA)) {
             decl = parse_data_decl(p);
@@ -185,30 +183,21 @@ ASTNode* parse_program(Parser* p) {
             decl = parse_import_decl(p);
         } else if (check(p, TOKEN_EXPORT)) {
             decl = parse_export_decl(p);
-        } else if (check(p, TOKEN_IF)) {
-            decl = parse_if_statement(p);
-        } else if (check(p, TOKEN_PRINT)) {
-            decl = parse_print_statement(p);
         } else {
-            ASTNode* stmt = parse_statement(p);
-            if (stmt && stmt->type == AST_EXPR_STMT) {
-                decl = stmt;
-            } else {
-                error(p, "Esperado declaração ou statement de nível superior");
-                if (stmt) free_ast(stmt);
-                synchronize(p);
-                continue;
-            }
+            decl = parse_statement(p);
         }
-        
+
         if (decl != NULL) {
             if (program->program.decl_count >= capacity) {
                 capacity *= 2;
                 program->program.declarations = realloc(
-                    program->program.declarations, 
-                    capacity * sizeof(ASTNode*));
+                    program->program.declarations,
+                    capacity * sizeof(ASTNode*)
+                );
             }
             program->program.declarations[program->program.decl_count++] = decl;
+        } else {
+            synchronize(p);
         }
     }
     

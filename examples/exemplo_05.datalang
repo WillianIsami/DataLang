@@ -1,0 +1,91 @@
+// Exemplo Completo da Linguagem DataLang
+// Demonstra todas as funcionalidades implementadas
+
+// ==================== VARIÁVEIS E TIPOS BÁSICOS ====================
+
+let idade = 25;
+let altura = 1.75;
+let nome = "DataLang";
+let ativo = true;
+
+// ==================== PRINT STATEMENT ====================
+
+print(idade);
+print(altura);
+print(nome);
+print(ativo);
+
+// ==================== OPERAÇÕES ARITMÉTICAS ====================
+
+let soma = 10 + 20;
+let produto = 5 * 6;
+let divisao = 100 / 4;
+
+print(soma);
+print(produto);
+print(divisao);
+
+// ==================== FUNÇÕES ====================
+
+fn calcular_area(largura: Int, altura: Int) -> Int {
+    return largura * altura;
+}
+
+fn saudacao(msg: String) -> String {
+    return msg;
+}
+
+let area = calcular_area(10, 20);
+print(area);
+
+// ==================== ESTRUTURAS DE CONTROLE ====================
+
+// Condicional
+if area > 100 {
+    print(1);
+} else {
+    print(0);
+}
+
+// ==================== OPERAÇÕES COM ARRAYS ====================
+
+let numeros = [1, 2, 3, 4, 5];
+print(numeros);            // [1, 2, 3, 4, 5]
+
+let valores = [10, 20, 30, 40, 50];
+let primeiro = valores[0];
+print(primeiro);           // 10
+
+let reais: [Float] = [1.5, 2.5, 3.5];
+let nomes: [String] = ["Ana", "Bia", "Carlos"];
+let flags: [Bool] = [true, false, true];
+
+print(reais);              // [1.500000, 2.500000, 3.500000]
+print(nomes);              // [Ana, Bia, Carlos]
+print(flags);              // [true, false, true]
+
+for nome in nomes {
+    print(nome);
+}
+
+// ==================== EXPRESSÕES LAMBDA E PIPELINES ====================
+
+let dobrados = valores
+    |> map(|x| x * 2);
+
+let filtrados = valores
+    |> filter(|x| x > 25);
+
+// ==================== DATAFRAME (OPERAÇÕES BÁSICAS) ====================
+
+// Nota: load() e save() requerem implementação de I/O
+// let dados = load("arquivo.csv");
+// save(dados, "saida.csv");
+
+// ==================== AGREGAÇÕES ====================
+
+let total = sum(valores);
+let media = mean(valores);
+
+print(total);
+print(media);

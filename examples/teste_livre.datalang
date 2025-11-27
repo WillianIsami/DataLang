@@ -1,0 +1,57 @@
+// Exemplo 3: Análise Estatística Básica
+
+fn fn_media(lista: [Int]) -> Float {
+    let soma = sum(lista);
+    let qtd = count(lista);
+
+    // Evita divisão por zero
+    if (qtd == 0) {
+        return 0.0;
+    }
+
+    return soma / qtd;
+}
+
+fn main() -> Int {
+    // Notas de alunos (0 a 100)
+    let notas = [65, 90, 78, 45, 88, 92, 50];
+    
+    // Usando funções de agregação (AggregateTransform na gramática)
+    let total = sum(notas);
+    let media = fn_media(notas);
+    print("MEDIA com o fn_media:");
+    print(media);
+    print("MEDIA com o mean():");
+    print(mean(notas));
+    let menor_nota = min(notas);
+    let maior_nota = max(notas);
+    let qtd_alunos = count(notas);
+
+    print("=== Relatorio da Turma ===");
+    
+    print("Quantidade de alunos:");
+    print(qtd_alunos);
+
+    print("Soma total das notas:");
+    print(total);
+
+    print("Nota Media:");
+    print(media);
+
+    print("Menor Nota:");
+    print(menor_nota);
+
+    print("Maior Nota:");
+    print(maior_nota);
+
+    // Lógica de aprovação baseada na média
+    if (media >= 70.0) {
+        print("Status da turma: APROVADA");
+    } else {
+        print("Status da turma: REPROVADA");
+    }
+
+    return 0;
+}
+
+main();

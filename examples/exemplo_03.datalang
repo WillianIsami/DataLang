@@ -42,7 +42,8 @@ fn test_loops() {
     for i in range {
         print(i);
     }
-    
+
+    print("Outro loop:");
     // Loop for com array literal
     let values = [10, 20, 30, 40];
     for v in values {

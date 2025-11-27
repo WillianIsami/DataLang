@@ -667,35 +667,3 @@ void test_error_handling() {
     free_token_stream(stream);
     free_afd(afd);
 }
-
-// ==================== FUNÇÃO PRINCIPAL ====================
-
-// #ifndef LIB_BUILD
-// int main(int argc, char** argv) {
-//     printf("\n╔════════════════════════════════════════════════════════════╗\n");
-//     printf("║          ANALISADOR LÉXICO DATALANG - AFD UNIFICADO       ║\n");
-//     printf("╚════════════════════════════════════════════════════════════╝\n\n");
-    
-//     printf("Este analisador léxico usa um AFD unificado gerado a partir\n");
-//     printf("de um AFN através do algoritmo de construção de subconjuntos.\n\n");
-    
-//     if (argc > 1) {
-//         // Modo arquivo - processa o arquivo especificado
-//         test_with_file(argv[1]);
-//     } else {
-//         // Modo teste - executa todos os testes
-//         test_simple_code();
-//         test_complex_code();
-//         test_edge_cases();
-//         test_error_handling();
-        
-//         printf("\nTodos os testes concluídos!\n");
-//         printf("O analisador léxico está funcionando com o AFD unificado.\n\n");
-        
-//         printf("Uso: %s <arquivo.datalang>\n", argv[0]);
-//         printf("Para processar um arquivo específico.\n\n");
-//     }
-    
-//     return 0;
-// }
-// #endif
