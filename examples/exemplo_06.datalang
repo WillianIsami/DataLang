@@ -1,0 +1,176 @@
+// ==========================================================
+// COMPREHENSIVE DATALANG FEATURE DEMONSTRATION
+// ==========================================================
+
+// ---------- DATA TYPE DECLARATIONS ----------
+data Person {
+    name: String;
+    age: Int;
+    salary: Float;
+    active: Bool;
+}
+
+data Department {
+    name: String;
+    budget: Float;
+    employees: [Person];
+}
+
+data StatsResult {
+    avg_salary: Float;
+    total_salary: Float;
+    count_active: Int;
+}
+
+// ---------- GLOBAL VARIABLES ----------
+let company_name: String = "TechCorp Inc.";
+let current_year: Int = 2024;
+
+// ---------- FUNCTION DECLARATIONS ----------
+fn create_sample_data() -> [Person] {
+    let people: [Person] = [
+        Person("Alice", 28, 75000.0, true),
+        Person("Bob", 35, 82000.0, true),
+        Person("Charlie", 42, 95000.0, false),
+        Person("Diana", 31, 68000.0, true),
+        Person("Eve", 26, 72000.0, true)
+    ];
+    return people;
+}
+
+fn calculate_stats(people: [Person]) -> StatsResult {
+    let active_salaries: [Float] = people
+        |> filter(|p: Person| p.active)
+        |> map(|p: Person| p.salary);
+
+    print("Salários ativos:", active_salaries);
+    let avg_salary: Float = mean(active_salaries);
+    let total_salary: Float = sum(active_salaries);
+    let count_active: Int = count(active_salaries);
+    
+    return StatsResult(avg_salary, total_salary, count_active);
+}
+
+fn demonstrate_lambdas() -> Int {
+    print("");
+    print("=== LAMBDA EXPRESSIONS ===");
+    
+    let numbers: [Int] = [1, 2, 3, 4, 5];
+    
+    // Use inline lambdas in pipelines
+    let doubled: [Int] = numbers |> map(|x: Int| x * 2);
+    let even_doubled: [Int] = numbers 
+        |> map(|x: Int| x * 2)
+        |> filter(|x: Int| x > 5);
+    
+    print("Original:", numbers);
+    print("Doubled:", doubled);
+    print("Numbers doubled > 5:", even_doubled);
+    
+    return 0;
+}
+
+// ---------- REAL-WORLD BUSINESS LOGIC ----------
+fn analyze_company_data() -> Int {
+    print("");
+    print("=== BUSINESS ANALYSIS ===");
+    
+    let employees: [Person] = create_sample_data();
+    print("Total employees:", count(employees));
+    
+    // Active employees analysis
+    let active_employees: [Person] = employees |> filter(|p: Person| p.active);
+    print("Active employees:", count(active_employees));
+    
+    // Salary analysis
+    let salaries: [Float] = active_employees |> map(|p: Person| p.salary);
+    print("Operations using ACTIVE EMPLOYEES:");
+    print("Total salary budget:", sum(salaries));
+    print("Average salary:", mean(salaries));
+    print("Highest salary:", max(salaries));
+    print("Lowest salary:", min(salaries));
+    
+    // Age analysis
+    let ages: [Int] = active_employees |> map(|p: Person| p.age);
+    print("Average age:", mean(ages));
+    
+    // High earners
+    let high_earners: [Person] = active_employees 
+        |> filter(|p: Person| p.salary > 80000.0);
+    
+    print("High earners (salary > 80k):", count(high_earners));
+
+    for emp in high_earners {
+        print("  -", emp.name, ":", emp.salary);
+    }
+
+    return 0;
+}
+
+// ---------- LOAD/SAVE DEMONSTRATION ----------
+fn demonstrate_io_operations() -> Int {
+    print("");
+    print("=== I/O OPERATIONS ===");
+    
+    let dados: DataFrame = load("employees.csv");
+    let processed_data: DataFrame = dados 
+        |> select(nome, salario, cidade)
+        |> filter(|row: Row| row.cidade == "SãoPaulo");
+    save(processed_data, "saopaulo_team.csv");
+    
+    print("Load/Save functions work with DataFrame operations");
+    
+    return 0;
+}
+
+// ---------- COMPLEX PIPELINE EXAMPLE ----------
+fn complex_pipeline_example() -> Int {
+    print("");
+    print("=== COMPLEX PIPELINE ===");
+    
+    let dados: [Int] = [10, 15, 20, 25, 30, 35, 40, 45, 50];
+    
+    let result: Float = dados
+        |> filter(|x: Int| x > 20)           // Keep numbers > 20
+        |> map(|x: Int| x * 2)               // Double them
+        |> filter(|x: Int| x < 80)           // Keep results < 80
+        |> map(|x: Int| x + 5)               // Add 5
+        |> mean();                           // Calculate average
+    
+    print("Complex pipeline result:", result);
+    
+    let step1: [Int] = dados |> filter(|x: Int| x > 20);
+    print("Step 1 (filter > 20):", step1);
+    
+    let step2: [Int] = step1 |> map(|x: Int| x * 2);
+    print("Step 2 (map * 2):", step2);
+    
+    let step3: [Int] = step2 |> filter(|x: Int| x < 80);
+    print("Step 3 (filter < 80):", step3);
+    
+    let step4: [Int] = step3 |> map(|x: Int| x + 5);
+    print("Step 4 (map + 5):", step4);
+    
+    let step5: Float = mean(step4);
+    print("Step 5 (mean):", step5);
+    
+    return 0;
+}
+
+fn main() -> Int {
+    print("STARTING DATALANG COMPREHENSIVE DEMONSTRATION");
+    print("================================================");
+    
+    let people: [Person] = create_sample_data();
+    let stats: StatsResult = calculate_stats(people);
+    demonstrate_lambdas();
+    analyze_company_data();
+    demonstrate_io_operations();
+    complex_pipeline_example();
+    
+    print("Average salary:", stats.avg_salary);
+    print("Total salary:", stats.total_salary);
+    print("Active count:", stats.count_active);
+    
+    return 0;
+}

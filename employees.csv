@@ -1,0 +1,7 @@
+nome,idade,salario,ativo,cidade
+"Alice",17,1500.0,true,"SãoPaulo"
+"Bruno",35,8200.0,true,"RiodeJaneiro"
+"Carla",42,9500.0,true,"SãoPaulo"
+"Diego",31,6800.0,true,"Curitiba"
+"Eva",16,1200.0,true,"SãoPaulo"
+"Felipe",30,7000.0,true,"Curitiba"

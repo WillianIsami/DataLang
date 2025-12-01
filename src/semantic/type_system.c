@@ -1,6 +1,5 @@
 /*
- * DataLang - Sistema de Tipos - Melhorado
- * Verificação rigorosa de compatibilidade de tipos
+ * DataLang - Sistema de Tipos
  */
 
 #define _GNU_SOURCE

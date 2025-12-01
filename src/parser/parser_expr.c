@@ -127,11 +127,9 @@ static ASTNode* parse_transform_expr(Parser* p) {
     if (check(p, TOKEN_GROUPBY)) {
         return parse_groupby_transform(p);
     }
-    if (check(p, TOKEN_SUM) || check(p, TOKEN_MEAN) || check(p, TOKEN_COUNT) ||
-        check(p, TOKEN_MIN) || check(p, TOKEN_MAX)) {
-        return parse_aggregate_transform(p);
-    }
-    
+    // NOTE: Aggregate functions (sum, mean, count, min, max) are now treated
+    // as regular function calls via parse_assign_expr, not as special transforms
+
     // Caso contrário, é uma expressão de atribuição
     return parse_assign_expr(p);
 }
@@ -335,17 +333,55 @@ static bool check_pipe_lambda(Parser* p) {
 
 // LambdaExpr = "|" [ LambdaParams ] "|" Expr
 static ASTNode* parse_lambda_expr(Parser* p) {
-    if (!check_pipe_lambda(p)) { error(p, "Esperado '|'"); return NULL; }
-    Token* pipe = advance(p); ASTNode* node = create_node(AST_LAMBDA_EXPR, pipe->line, pipe->column);
-    int cap = 5; node->lambda_expr.lambda_params = malloc(cap * sizeof(ASTNode*)); node->lambda_expr.lambda_param_count = 0;
-    if (!check_pipe_lambda(p)) { do { Token* pn = consume(p, TOKEN_IDENTIFIER, "ID"); if(!pn) break;
-            ASTNode* param = create_node(AST_PARAM, pn->line, pn->column); param->param.param_name = strdup(pn->lexema);
-            if (match(p, 1, TOKEN_COLON)) param->param.param_type = parse_type(p); else param->param.param_type = NULL;
-            if (node->lambda_expr.lambda_param_count >= cap) { cap*=2; node->lambda_expr.lambda_params = realloc(node->lambda_expr.lambda_params, cap*sizeof(ASTNode*)); }
+    if (!check_pipe_lambda(p)) {
+        error(p, "Esperado '|' para lambda");
+        return NULL;
+    }
+    
+    Token* pipe1 = advance(p);
+    ASTNode* node = create_node(AST_LAMBDA_EXPR, pipe1->line, pipe1->column);
+    
+    int cap = 5;
+    node->lambda_expr.lambda_params = malloc(cap * sizeof(ASTNode*));
+    node->lambda_expr.lambda_param_count = 0;
+    
+    // Parse parameters if present
+    if (!check_pipe_lambda(p)) {
+        do {
+            Token* param_name = consume(p, TOKEN_IDENTIFIER, "Esperado nome do parâmetro");
+            if (!param_name) break;
+            
+            ASTNode* param = create_node(AST_PARAM, param_name->line, param_name->column);
+            param->param.param_name = strdup(param_name->lexema);
+            
+            // Optional type annotation
+            if (match(p, 1, TOKEN_COLON)) {
+                param->param.param_type = parse_type(p);
+            } else {
+                param->param.param_type = NULL;
+            }
+            
+            if (node->lambda_expr.lambda_param_count >= cap) {
+                cap *= 2;
+                node->lambda_expr.lambda_params = realloc(
+                    node->lambda_expr.lambda_params, cap * sizeof(ASTNode*));
+            }
             node->lambda_expr.lambda_params[node->lambda_expr.lambda_param_count++] = param;
-    } while (match(p, 1, TOKEN_COMMA)); }
-    if (!check_pipe_lambda(p)) { error(p, "Esperado '|'"); return NULL; }
-    advance(p); node->lambda_expr.lambda_body = parse_expression(p); return node;
+            
+        } while (match(p, 1, TOKEN_COMMA));
+    }
+    
+    // Closing pipe
+    if (!check_pipe_lambda(p)) {
+        error(p, "Esperado '|' de fechamento");
+        return NULL;
+    }
+    advance(p);
+    
+    // Parse lambda body
+    node->lambda_expr.lambda_body = parse_expression(p);
+    
+    return node;
 }
 
 // Primary = Literal | Ident | LambdaExpr | LoadExpr | SaveExpr | "(" Expr ")" | "[" [ ExprList ] "]"
@@ -368,17 +404,41 @@ static ASTNode* parse_primary(Parser* p) {
         Token* id = previous(p); ASTNode* node = create_node(AST_IDENTIFIER, id->line, id->column);
         node->identifier.id_name = strdup(id->lexema ? id->lexema : "unknown"); return node;
     }
+    // Treat aggregate keywords as identifiers when used as function names
+    if (match(p, 5, TOKEN_SUM, TOKEN_MEAN, TOKEN_COUNT, TOKEN_MIN, TOKEN_MAX)) {
+        Token* id = previous(p); ASTNode* node = create_node(AST_IDENTIFIER, id->line, id->column);
+        node->identifier.id_name = strdup(id->lexema ? id->lexema : "unknown"); return node;
+    }
     if (check_pipe_lambda(p)) return parse_lambda_expr(p);
     if (match(p, 1, TOKEN_LOAD)) {
-        Token* l = previous(p); consume(p, TOKEN_LPAREN, "("); Token* path = consume(p, TOKEN_STRING, "Path"); consume(p, TOKEN_RPAREN, ")");
-        ASTNode* n = create_node(AST_LOAD_EXPR, l->line, l->column); n->load_expr.file_path = strdup(path ? path->lexema : ""); return n;
+        Token* l = previous(p); 
+        consume(p, TOKEN_LPAREN, "("); 
+        Token* path = consume(p, TOKEN_STRING, "Path"); 
+        consume(p, TOKEN_RPAREN, ")");
+        
+        ASTNode* n = create_node(AST_LOAD_EXPR, l->line, l->column); 
+        n->load_expr.file_path = path ? process_string_literal(path->lexema) : strdup("");
+        return n;
     }
     if (match(p, 1, TOKEN_SAVE)) {
-        Token* s = previous(p); consume(p, TOKEN_LPAREN, "("); ASTNode* data = parse_expression(p); consume(p, TOKEN_COMMA, ",");
-        Token* path = consume(p, TOKEN_STRING, "Path"); consume(p, TOKEN_RPAREN, ")");
-        ASTNode* n = create_node(AST_SAVE_EXPR, s->line, s->column); n->save_expr.data = data; n->save_expr.save_path = strdup(path ? path->lexema : ""); return n;
+        Token* s = previous(p); 
+        consume(p, TOKEN_LPAREN, "("); 
+        ASTNode* data = parse_expression(p); 
+        consume(p, TOKEN_COMMA, ",");
+        Token* path = consume(p, TOKEN_STRING, "Path"); 
+        consume(p, TOKEN_RPAREN, ")");
+        
+        ASTNode* n = create_node(AST_SAVE_EXPR, s->line, s->column); 
+        n->save_expr.data = data;
+        n->save_expr.save_path = path ? process_string_literal(path->lexema) : strdup("");
+        return n;
     }
-    if (match(p, 1, TOKEN_LPAREN)) { ASTNode* e = parse_expression(p); consume(p, TOKEN_RPAREN, ")"); return e; }
+    
+    if (match(p, 1, TOKEN_LPAREN)) { 
+        ASTNode* e = parse_expression(p); 
+        consume(p, TOKEN_RPAREN, ")"); 
+        return e; 
+    }
     if (match(p, 1, TOKEN_LBRACKET)) {
         Token* b = previous(p); ASTNode* n = create_node(AST_ARRAY_LITERAL, b->line, b->column);
         int cap = 5; n->array_literal.elements = malloc(cap * sizeof(ASTNode*)); n->array_literal.element_count = 0;

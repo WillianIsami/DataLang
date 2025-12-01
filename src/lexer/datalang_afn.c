@@ -274,7 +274,7 @@ int integrate_afd_to_afn(
 /* ============================================================================
    CRIAÇÃO DO AFN UNIFICADO PARA DATALANG
    
-   Integra todos os AFDs definidos em datalang_lexer.c em um único AFN.
+   Integra todos os AFDs definidos em um único AFN.
    ============================================================================ */
 
 AFN* create_unified_datalang_afn() {
@@ -288,7 +288,7 @@ AFN* create_unified_datalang_afn() {
     int total_states = 1 + 
                        2 +   // whitespace
                        2 +   // identifier
-                       9 +   // number (CORRIGIDO: 8 -> 9)
+                       9 +   // number
                        4 +   // string
                        22 +  // operator
                        12 +  // delimiter
@@ -379,7 +379,7 @@ AFN* create_unified_datalang_afn() {
     }
     
     /* ────────────────────────────────────────────────────────────
-       NÚMEROS (inteiros, decimais, científicos) - CORRIGIDO
+       NÚMEROS (inteiros, decimais, científicos)
        ──────────────────────────────────────────────────────────── */
     {
         printf("\n3. NÚMEROS\n");
@@ -673,8 +673,8 @@ AFN* create_unified_datalang_afn() {
     }
     
     printf("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n");
-    printf("\n✓ AFN unificado criado com %d estados\n", next_state);
-    printf("✓ Total de transições epsilon: %d\n", afn->transition_counts[0]);
+    printf("\nAFN unificado criado com %d estados\n", next_state);
+    printf("Total de transições epsilon: %d\n", afn->transition_counts[0]);
     
     afn->num_states = next_state;
     

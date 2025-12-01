@@ -1,0 +1,135 @@
+// test_fixes.datalang
+// Teste incremental das correções
+
+// ==================== TESTE 1: PRINT MÚLTIPLO ====================
+fn test_print_multiple() -> Int {
+    print("Teste", "de", "print", "múltiplo");
+    print("Números:", 42, 3.14, true);
+    print("Arrays:", [1, 2, 3]);
+    return 0;
+}
+
+// ==================== TESTE 2: DATA TYPES ====================
+data Person {
+    name: String;
+    age: Int;
+    active: Bool;
+}
+
+fn test_data_types() -> Int {
+    let p: Person = Person("Alice", 30, true);
+    
+    print("PERSON:", p);
+    print("Nome:", p.name);
+    print("Idade:", p.age);
+    print("Ativo:", p.active);
+    
+    if p.name == "Alice" && p.age == 30 && p.active == true {
+        print("✓ Data type funcionando");
+        return 0;
+    } else {
+        print("✗ Data type com erro");
+        return 1;
+    }
+}
+
+// ==================== TESTE 3: FILTER/MAP/REDUCE ====================
+fn test_transforms() -> Int {
+    let nums: [Int] = [1, 2, 3, 4, 5, 6];
+    
+    // Filter: apenas pares
+    let pares: [Int] = nums |> filter(|x: Int| x % 2 == 0);
+    print("Pares:", pares);
+    
+    // Map: quadrados
+    let quadrados: [Int] = pares |> map(|x: Int| x * x);
+    print("Quadrados:", quadrados);
+    
+    // Reduce: soma
+    let soma: Int = quadrados |> reduce(0, |acc: Int, val: Int| acc + val);
+    print("Soma dos quadrados dos pares:", soma);
+    
+    // Esperado: 2² + 4² + 6² = 4 + 16 + 36 = 56
+    if soma == 56 {
+        print("✓ Transforms funcionando");
+        return 0;
+    } else {
+        print("✗ Transforms com erro, esperado 56, obtido:", soma);
+        return 1;
+    }
+}
+
+// ==================== TESTE 4: AGREGAÇÕES ====================
+fn test_aggregates() -> Int {
+    let nums: [Int] = [10, 20, 30, 40, 50];
+    
+    let total: Int = sum(nums);
+    let media: Float = mean(nums);
+    let minimo: Int = min(nums);
+    let maximo: Int = max(nums);
+    let quantidade: Int = count(nums);
+    
+    print("Sum:", total);
+    print("Mean:", media);
+    print("Min:", minimo);
+    print("Max:", maximo);
+    print("Count:", quantidade);
+    
+    if total == 150 && minimo == 10 && maximo == 50 && quantidade == 5 {
+        print("✓ Agregações funcionando");
+        return 0;
+    } else {
+        print("✗ Agregações com erro");
+        return 1;
+    }
+}
+
+// ==================== TESTE 5: LOAD/SAVE ====================
+fn test_load_save() -> Int {
+    let df: DataFrame = load("test_input.csv");
+    
+    print("DataFrame carregado");
+    
+    save(df, "test_output_2.csv");
+    
+    print("DataFrame salvo");
+    print("Load/Save funcionando");
+    
+    return 0;
+}
+
+// ==================== MAIN ====================
+fn main() -> Int {
+    print("=== Iniciando Testes de Correções ===");
+    print();
+    
+    let failures: Int = 0;
+    
+    print("--- Teste 1: Print Múltiplo ---");
+    failures = failures + test_print_multiple();
+    print();
+    
+    print("--- Teste 2: Data Types ---");
+    failures = failures + test_data_types();
+    print();
+    
+    print("--- Teste 3: Filter/Map/Reduce ---");
+    failures = failures + test_transforms();
+    print();
+    
+    print("--- Teste 4: Agregações ---");
+    failures = failures + test_aggregates();
+    print();
+    
+    print("--- Teste 5: Load/Save ---");
+    failures = failures + test_load_save();
+    print();
+    
+    if failures == 0 {
+        print("=== TODOS OS TESTES PASSARAM ===");
+    } else {
+        print("=== FALHAS:", failures, "===");
+    }
+    
+    return failures;
+}

@@ -50,7 +50,7 @@ if area > 100 {
 // ==================== OPERAÇÕES COM ARRAYS ====================
 
 let numeros = [1, 2, 3, 4, 5];
-print(numeros);            // [1, 2, 3, 4, 5]
+print(numeros);
 
 let valores = [10, 20, 30, 40, 50];
 let primeiro = valores[0];
@@ -65,7 +65,14 @@ print(nomes);              // [Ana, Bia, Carlos]
 print(flags);              // [true, false, true]
 
 for nome in nomes {
-    print(nome);
+    print("Nome:", nome);
+}
+
+print("Numeros pares:");
+for n in 1..10 {
+    if n % 2 == 0 {
+       print(n);
+    }
 }
 
 // ==================== EXPRESSÕES LAMBDA E PIPELINES ====================
@@ -76,16 +83,19 @@ let dobrados = valores
 let filtrados = valores
     |> filter(|x| x > 25);
 
-// ==================== DATAFRAME (OPERAÇÕES BÁSICAS) ====================
-
-// Nota: load() e save() requerem implementação de I/O
-// let dados = load("arquivo.csv");
-// save(dados, "saida.csv");
+print("TESTE EXPRESSÕES LAMBDA E PIPELINES EM VALORES:", valores);
+print("Filtrados maiores que 25:", filtrados);
+print("Dobrados:", dobrados);
 
 // ==================== AGREGAÇÕES ====================
 
 let total = sum(valores);
 let media = mean(valores);
+let minimo = min(valores);
+let maximo = max(valores);
 
-print(total);
-print(media);
+print("Funções da Linguagem:", valores);
+print("Soma total:", total);
+print("Media:", media);
+print("Minimo:", minimo);
+print("Maximo:", maximo);

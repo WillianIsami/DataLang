@@ -1,7 +1,4 @@
-// ============================================================
-// DataLang - Exemplo Completo CORRIGIDO
-// Demonstra todas as funcionalidades funcionando corretamente
-// ============================================================
+// DataLang - Exemplo 01
 
 // ------------------------------------------------------------
 // 1. DECLARAÇÕES BÁSICAS
@@ -145,6 +142,3 @@ fn main() -> Int {
     
     return 0;
 }
-
-// Chama main
-main();

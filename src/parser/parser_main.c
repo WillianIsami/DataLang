@@ -31,10 +31,12 @@ void free_ast(ASTNode* node) {
             free_ast(node->let_decl.type_annotation);
             free_ast(node->let_decl.initializer);
             break;
-        
-        // Print Statement
+            
         case AST_PRINT_STMT:
-            free_ast(node->print_stmt.expression);
+            for (int i = 0; i < node->print_stmt.expr_count; i++) {
+                free_ast(node->print_stmt.expressions[i]);
+            }
+            free(node->print_stmt.expressions);
             break;
             
         case AST_FN_DECL:
@@ -63,15 +65,6 @@ void free_ast(ASTNode* node) {
         case AST_PARAM:
             free(node->param.param_name);
             free_ast(node->param.param_type);
-            break;
-            
-        case AST_IMPORT_DECL:
-            free(node->import_decl.module_path);
-            if (node->import_decl.alias) free(node->import_decl.alias);
-            break;
-            
-        case AST_EXPORT_DECL:
-            free(node->export_decl.export_name);
             break;
             
         case AST_IF_STMT:
@@ -128,11 +121,6 @@ void free_ast(ASTNode* node) {
             free(node->member_expr.member);
             break;
             
-        case AST_ASSIGN_EXPR:
-            free_ast(node->assign_expr.target);
-            free_ast(node->assign_expr.value);
-            break;
-            
         case AST_LAMBDA_EXPR:
             for (int i = 0; i < node->lambda_expr.lambda_param_count; i++) {
                 free_ast(node->lambda_expr.lambda_params[i]);
@@ -161,20 +149,6 @@ void free_ast(ASTNode* node) {
             free_ast(node->reduce_transform.reducer);
             break;
             
-        case AST_SELECT_TRANSFORM:
-            for (int i = 0; i < node->select_transform.column_count; i++) {
-                free(node->select_transform.columns[i]);
-            }
-            free(node->select_transform.columns);
-            break;
-            
-        case AST_GROUPBY_TRANSFORM:
-            for (int i = 0; i < node->groupby_transform.group_column_count; i++) {
-                free(node->groupby_transform.group_columns[i]);
-            }
-            free(node->groupby_transform.group_columns);
-            break;
-            
         case AST_AGGREGATE_TRANSFORM:
             for (int i = 0; i < node->aggregate_transform.agg_arg_count; i++) {
                 free_ast(node->aggregate_transform.agg_args[i]);
@@ -183,7 +157,7 @@ void free_ast(ASTNode* node) {
             break;
             
         case AST_LITERAL:
-            if (node->literal.literal_type == TOKEN_STRING && node->literal.string_value) {
+            if (node->literal.literal_type == TOKEN_STRING) {
                 free(node->literal.string_value);
             }
             break;
@@ -214,14 +188,12 @@ void free_ast(ASTNode* node) {
             break;
             
         case AST_TYPE:
-            if (node->type_node.type_name) free(node->type_node.type_name);
+            free(node->type_node.type_name);
             free_ast(node->type_node.inner_type);
-            if (node->type_node.tuple_types) {
-                for (int i = 0; i < node->type_node.tuple_type_count; i++) {
-                    free_ast(node->type_node.tuple_types[i]);
-                }
-                free(node->type_node.tuple_types);
+            for (int i = 0; i < node->type_node.tuple_type_count; i++) {
+                free_ast(node->type_node.tuple_types[i]);
             }
+            free(node->type_node.tuple_types);
             break;
             
         default:
@@ -280,6 +252,7 @@ static const char* ast_node_type_name(ASTNodeType type) {
     }
 }
 
+
 void print_ast(ASTNode* node, int indent) {
     if (!node) {
         print_indent(indent);
@@ -306,9 +279,13 @@ void print_ast(ASTNode* node, int indent) {
         // Print Statement
         case AST_PRINT_STMT:
             printf("\n");
-            print_indent(indent + 1);
-            printf("├─ Expressão:\n");
-            print_ast(node->print_stmt.expression, indent + 2);
+            if (node->print_stmt.expr_count > 0) {
+                for (int i = 0; i < node->print_stmt.expr_count; i++) {
+                    print_indent(indent + 1);
+                    printf("├─ Expressão %d:\n", i + 1);
+                    print_ast(node->print_stmt.expressions[i], indent + 2);
+                }
+            }
             break;
             
         case AST_LET_DECL:
@@ -599,7 +576,7 @@ void test_parser_with_code(const char* code) {
         printf("║                   ÁRVORE SINTÁTICA ABSTRATA                ║\n");
         printf("╚════════════════════════════════════════════════════════════╝\n\n");
         print_ast(ast, 0);
-        printf("\n✓ AST construída com sucesso!\n");
+        printf("\nAST construída com sucesso\n");
     }
     
     if (ast) free_ast(ast);

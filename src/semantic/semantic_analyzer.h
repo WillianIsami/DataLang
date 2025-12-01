@@ -1,8 +1,3 @@
-/*
- * DataLang - Analisador Semântico
- * Interface principal para análise semântica e inferência de tipos
- */
-
 #ifndef SEMANTIC_ANALYZER_H
 #define SEMANTIC_ANALYZER_H
 

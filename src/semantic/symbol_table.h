@@ -36,6 +36,8 @@ typedef struct Symbol {
     // Para tipos de dados (struct)
     int field_count;
     struct Symbol** fields;
+    bool is_lambda_variable;
+    char lambda_func_name[128];
 } Symbol;
 
 typedef struct Scope {

@@ -1,3 +1,14 @@
 let x = 42;
 let soma = x + 10;
-print(soma);
+print("Soma simples:", soma);
+
+print("CARREGANDO DADOS.CSV");
+let dados: DataFrame = load("dados.csv");
+let filtrado: DataFrame = dados |> filter(|row: Row| row.idade > 30);
+let salarios: [Float] = filtrado |> map(|row: Row| row.salario * 1.1);
+let total: Int = count(filtrado);
+let media: Float = mean(salarios);
+print("TOTAL:", total);
+print("MEDIA DOS SALARIOS:", salarios);
+print(media);
+save(filtrado, "resultado.csv");

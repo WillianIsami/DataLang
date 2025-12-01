@@ -2,6 +2,15 @@
 
 Linguagem de programação especializada em processamento de dados, desenvolvida como parte do projeto de Compiladores e Linguagens Formais.
 
+## Acesso Rápido (IMPORTANTE)
+- [Manual de utilização](docs/manual_uso.md)
+- [Manual de instalação](docs/manual_instalacao.md)
+- [Analisador léxico](src/lexer/)
+- [Analisador sintático (AST)](src/parser/)
+- [Analisador semântico](src/semantic/)
+- [Gerador de código (LLVM IR)](src/codegen/)
+- [Gramática Refatorada](docs/gramatica_refatorada.md)
+
 ## Visão Geral
 
 - DataLang é uma linguagem de programação projetada para facilitar a manipulação e transformação de dados
@@ -12,7 +21,7 @@ Linguagem de programação especializada em processamento de dados, desenvolvida
 
 ## Estrutura do Projeto
 
-```
+```bash
 DataLang/
 ├── Makefile              # Build system principal
 ├── README.md             # Este arquivo
@@ -25,7 +34,7 @@ DataLang/
 ├── examples/             # Programas de exemplo
 │   ├── exemplo_01.datalang
 │   ├── exemplo_02.datalang
-│   └── teste_*.datalang
+│   └── *.datalang
 └── src/
     ├── main.c            # Ponto de entrada
     ├── lexer/            # Analisador léxico
@@ -42,7 +51,9 @@ DataLang/
     │   ├── type_system.c
     │   └── type_inference.c
     └── codegen/          # Geração de código
+    │   ├── runtime.c
         └── codegen.c
+
 ```
 
 ---
@@ -185,7 +196,7 @@ Isso compila `examples/exemplo_01.datalang`.
 ./bin/datalang examples/exemplo_01.datalang -o output.ll
 
 # Compilar LLVM IR para executável
-clang output.ll -o programa
+clang -Wno-override-module output.ll src/codegen/runtime.c -o programa -lm
 
 # Executar
 ./programa
@@ -223,7 +234,7 @@ Se houver erros de sintaxe ou tipos, serão exibidos aqui.
 #### Passo 3: Compilar e Executar
 
 ```bash
-clang meu_programa.ll -o meu_programa
+clang -Wno-override-module meu_programa.ll src/codegen/runtime.c -o meu_programa -lm
 ./meu_programa
 ```
 
@@ -247,7 +258,7 @@ make run
 make compile-example
 
 # Testar arquivo específico
-make test-file FILE=examples/exemplo_02.datalang
+make test-file FILE=examples/exemplo_completo.datalang
 
 # Recompilar do zero
 make rebuild
@@ -289,6 +300,28 @@ let resultado = fatorial(5);
 print(resultado);
 ```
 
+### Comandos para testar os exemplos
+Execute cada um conforme desejado:
+```bash
+make clean && make test-file FILE=examples/exemplo_01.datalang
+make clean && make test-file FILE=examples/exemplo_02.datalang
+make clean && make test-file FILE=examples/exemplo_03.datalang
+make clean && make test-file FILE=examples/exemplo_04.datalang
+make clean && make test-file FILE=examples/exemplo_05.datalang
+make clean && make test-file FILE=examples/exemplo_06.datalang
+make clean && make test-file FILE=examples/exemplo_avancado.datalang
+make clean && make test-file FILE=examples/exemplo_completo.datalang
+make clean && make test-file FILE=examples/exemplo_completo_2.datalang
+make clean && make test-file FILE=examples/test_fixes.datalang
+make clean && make test-file FILE=examples/teste_erro_global.datalang
+make clean && make test-file FILE=examples/teste_erro_local.datalang
+make clean && make test-file FILE=examples/teste_erro_retorno.datalang
+make clean && make test-file FILE=examples/teste_erro_tipo.datalang
+make clean && make test-file FILE=examples/teste_livre.datalang
+make clean && make test-file FILE=examples/teste_pipeline.datalang
+make clean && make test-file FILE=examples/teste_shadowing.datalang
+```
+
 ---
 
 ## Solução de Problemas
@@ -311,7 +344,7 @@ sudo apt install clang llvm
 ### Erro ao executar ./programa
 Verifique se você compilou o LLVM IR:
 ```bash
-clang output.ll -o programa
+clang -Wno-override-module output.ll src/codegen/runtime.c -o programa -lm
 ```
 
 ### Programa compila mas não executa
@@ -333,8 +366,8 @@ ls   # Deve listar Makefile, src/, examples/, etc.
 ## Documentação Adicional
 
 - [Gramática Refatorada](docs/gramatica_refatorada.md)
-- [Gramática Formal](docs/gramatica_formal.md)
-- [Gramática LL(1) Refatorada](docs/gramatica_refatorada.md)
 - [Definição da Linguagem](docs/2_definicao_formal_linguagem.md)
 - [Expressões Regulares](docs/4_expressoes_regulares_.md)
 - [Diagramas AFDs](docs/diagramas/)
+- [Manual de utilização](docs/manual_uso.md)
+- [Manual de instalação](docs/manual_instalacao.md)

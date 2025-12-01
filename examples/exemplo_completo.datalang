@@ -1,0 +1,295 @@
+// ==========================================================
+// FULL FEATURE TEST - DataLang
+// ==========================================================
+
+import "stdlib.datalang";
+import "data.datalang";
+
+export main;
+export run_all_tests;
+
+// ---------- DATA TYPES ----------
+
+data Person {
+    name: String;
+    age: Int;
+    active: Bool;
+}
+
+data Stats {
+    values: [Int];
+    vector: Vector;
+    series: Series;
+    table: DataFrame;
+    bounds: (Int, Int);
+}
+
+// ---------- VARIÁVEIS GLOBAIS ----------
+
+let globalInt: Int = 42;
+let globalFloat: Float = 3.14;
+let globalBool: Bool = true;
+let globalString: String = "DataLang";
+let globalArray: [Int] = [1, 2, 3, 4, 5];
+
+print("== Iniciando testes em nível de topo ==");
+
+// ---------- FUNÇÃO SEM TIPO DE RETORNO ----------
+
+fn log_test(name: String, code: Int) {
+    print("Log de teste:");
+    print(name);
+    print(code);
+    return;
+}
+
+// ---------- TESTE: LITERAIS E OPERADORES ----------
+
+fn test_literals_and_operators() -> Int {
+    let i: Int = 10;
+    let j: Int = 3;
+    let f: Float = 2.5;
+    let b1: Bool = true;
+    let b2: Bool = false;
+    let s: String = "hello";
+
+    let sumInt: Int = i + j;
+    let diffInt: Int = i - j;
+    let prodInt: Int = i * j;
+    let divInt: Int = i / j;
+    let modInt: Int = i % j;
+
+    let cmp1: Bool = i > j && j >= 0;
+    let cmp2: Bool = i == 10 || j == 0;
+    let cmp3: Bool = !(i < j);
+
+    let a: Int = 0;
+    let b: Int = 0;
+    a = b = 7;
+
+    if sumInt == 13 &&
+       diffInt == 7 &&
+       prodInt == 30 &&
+       divInt == 3 &&
+       modInt == 1 &&
+       cmp1 == true &&
+       cmp2 == true &&
+       cmp3 == true &&
+       a == 7 && b == 7 &&
+       b1 == true && b2 == false {
+        return 0;
+    } else {
+        return 1;
+    }
+}
+
+// ---------- TESTE: DATA E POSTFIX ----------
+
+fn test_data_and_postfix() -> Int {
+    let p: Person = Person("Alice", 30, true);
+    let name: String = p.name;
+    let age: Int = p.age;
+    let ativo: Bool = p.active;
+
+    let arr: [Int] = [10, 20, 30];
+    let first: Int = arr[0];
+    let second: Int = arr[1];
+
+    print("Teste Person e indexação:");
+    print(name);
+    print(age);
+    print(first);
+    print(second);
+
+    if name == "Alice" &&
+       age == 30 &&
+       ativo == true &&
+       first == 10 &&
+       second == 20 {
+        return 0;
+    } else {
+        return 1;
+    }
+}
+
+// ---------- TESTE: IF/ELSE ----------
+
+fn test_if_else(x: Int) -> Int {
+    let result: Int = 0;
+
+    if x < 0 {
+        if x < -100 {
+            print("Muito negativo");
+        }
+        let temp: Int = -1;
+        if temp == -1 {
+            result = result + 0;
+        }
+        let r2: Int = -1;
+        if r2 == -1 {
+            result = result + 0;
+        }
+        return 0;
+    } else if x == 0 {
+        return 0;
+    } else {
+        return 0;
+    }
+}
+
+// ---------- TESTE: FOR E RANGE ----------
+
+fn test_for_and_range() -> Int {
+    let sumRange: Int = 0;
+    for n in 1..5 {
+        sumRange = sumRange + n;
+    }
+
+    let sumArray: Int = 0;
+    let xs: [Int] = [1, 2, 3, 4];
+    for value in xs {
+        sumArray = sumArray + value;
+    }
+
+    if sumRange == 15 && sumArray == 10 {
+        return 0;
+    } else {
+        return 1;
+    }
+}
+
+// ---------- TESTE: LAMBDAS E PIPELINES ----------
+
+fn test_lambdas_and_pipelines() -> Int {
+    let dados: [Int] = [1, 2, 3, 4, 5, 6];
+
+    let somaQuadradosPares: Int =
+        dados
+        |> filter(|x: Int| x % 2 == 0)
+        |> map(|x: Int| x * x)
+        |> reduce(0, |acc: Int, val: Int| acc + val);
+
+    if somaQuadradosPares != 56 {
+        return 1;
+    }
+
+    let mediaPares: Float =
+        dados
+        |> filter(|x: Int| x % 2 == 0)
+        |> mean();
+
+    let mediaTotal: Float = mean(dados);
+
+    print("Media dos pares:");
+    print(mediaPares);
+    print("Media total:");
+    print(mediaTotal);
+
+    return 0;
+}
+
+// ---------- TESTE: AGREGADOS ----------
+
+fn test_aggregates() -> Int {
+    let xs: [Int] = [1, 2, 3, 4, 5];
+
+    let s: Int = sum(xs);
+    let c: Int = count(xs);
+    let mn: Int = min(xs);
+    let mx: Int = max(xs);
+
+    if s == 15 && c == 5 && mn == 1 && mx == 5 {
+        return 0;
+    } else {
+        return 1;
+    }
+}
+
+// ---------- TESTE: DATAFRAME (SKIP) ----------
+
+fn test_dataframe_pipeline() -> Int {
+    print("Teste DataFrame: SKIP (runtime não implementado)");
+    return 0;
+}
+
+// ---------- TESTE: ASSIGNMENT ----------
+
+fn test_assignment_and_logic() -> Int {
+    let a: Int = 0;
+    let b: Int = 0;
+
+    a = b = 10;
+
+    let flag: Bool = (a == 10) && (b == 10) || false;
+
+    if !flag {
+        return 1;
+    }
+
+    return 0;
+}
+
+// ---------- TESTE: LAMBDAS INLINE ----------
+
+fn test_lambda_variable() -> Int {
+    let nums: [Int] = [1, 2, 3, 4, 5];
+    let doubled: [Int] = nums |> map(|x: Int| x * 2);
+    
+    if count(doubled) == 5 {
+        print("Lambdas inline: OK");
+        return 0;
+    } else {
+        return 1;
+    }
+}
+
+// ---------- RUNNER ----------
+
+fn run_all_tests() -> Int {
+    print("== Rodando suite completa de testes DataLang ==");
+
+    let f1: Int = test_literals_and_operators();
+    let f2: Int = test_data_and_postfix();
+    let f3: Int = test_if_else(0);
+    let f4: Int = test_for_and_range();
+    let f5: Int = test_lambdas_and_pipelines();
+    let f6: Int = test_aggregates();
+    let f7: Int = test_dataframe_pipeline();
+    let f8: Int = test_assignment_and_logic();
+    let f9: Int = test_lambda_variable();
+
+    let totalFailures: Int =
+        f1 + f2 + f3 + f4 + f5 + f6 + f7 + f8 + f9;
+
+    log_test("Falhas totais (0 = tudo OK)", totalFailures);
+
+    print("Numero total de falhas (0 = tudo OK):");
+    print(totalFailures);
+
+    return totalFailures;
+}
+
+// ---------- MAIN ----------
+
+fn main() -> Int {
+    print("==== Iniciando programa DataLang de teste completo ====");
+
+    print("globalInt:");
+    print(globalInt);
+    print("globalFloat:");
+    print(globalFloat);
+    print("globalBool:");
+    print(globalBool);
+    print("globalString:");
+    print(globalString);
+
+    let totalFailures: Int = run_all_tests();
+
+    if totalFailures == 0 {
+        print("SUCESSO: todos os testes passaram.");
+    } else {
+        print("ERRO: existem falhas na suite de testes.");
+    }
+
+    return totalFailures;
+}

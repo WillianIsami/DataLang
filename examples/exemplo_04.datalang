@@ -16,12 +16,11 @@ fn main() {
     
     // Teste de operações
     let soma = x + y;
-    print(soma);
+    print("Soma de", x, "+", y, "=", soma);
     
     // Teste de loop simples
     let range = 1..5;
-    print("RANGE?");
-    print(range);
+    print("RANGE?", range);
     for i in range {
         print(i);
     }
@@ -39,5 +38,3 @@ fn main() {
         print(0);
     }
 }
-
-main();

@@ -1,0 +1,596 @@
+// ============================================================
+// DataLang - Exemplo Avançado / Teste de Análise Semântica
+// Demonstra e testa vários recursos da gramatica_refatorada.md
+// ============================================================
+
+// ------------------------------------------------------------
+// 1. DECLARAÇÕES BÁSICAS COM INFERÊNCIA DE TIPOS
+// ------------------------------------------------------------
+
+let idade = 25;                    // Tipo inferido: Int
+let altura = 1.75;                 // Tipo inferido: Float
+let nome = "Alice";                // Tipo inferido: String
+let ativo = true;                  // Tipo inferido: Bool
+
+// ------------------------------------------------------------
+// 2. DECLARAÇÕES COM ANOTAÇÃO EXPLÍCITA DE TIPOS
+// ------------------------------------------------------------
+
+let anos: Int = 30;
+let peso: Float = 70.5;
+let cidade: String = "São Paulo";
+let estudante: Bool = false;
+
+// ------------------------------------------------------------
+// 3. ARRAYS E ESTRUTURAS DE DADOS
+// ------------------------------------------------------------
+
+let numeros = [1, 2, 3, 4, 5];              // [Int]
+let nomes = ["Ana", "Bruno", "Carlos"];     // [String]
+let temperaturas = [22.5, 23.0, 21.8];      // [Float]
+
+// ------------------------------------------------------------
+// 4. OPERAÇÕES ARITMÉTICAS
+// ------------------------------------------------------------
+
+let soma = 10 + 5;                 // 15
+let subtracao = 20 - 8;            // 12
+let multiplicacao = 6 * 7;         // 42
+let divisao = 100 / 4;             // 25
+let resto = 17 % 5;                // 2
+
+let expressao_complexa = (10 + 5) * 3 - 8 / 2;  // 41
+
+// ------------------------------------------------------------
+// 5. OPERAÇÕES DE COMPARAÇÃO
+// ------------------------------------------------------------
+
+let maior = 10 > 5;                // true
+let menor_igual = 8 <= 10;         // true
+let igual = 5 == 5;                // true
+let diferente = 10 != 20;          // true
+
+// ------------------------------------------------------------
+// 6. OPERAÇÕES LÓGICAS
+// ------------------------------------------------------------
+
+let e_logico = true && false;      // false
+let ou_logico = true || false;     // true
+let negacao = !true;               // false
+
+let condicao_composta = (idade > 18) && (ativo == true);
+
+// ------------------------------------------------------------
+// 7. FUNÇÕES SIMPLES
+// ------------------------------------------------------------
+
+fn quadrado(x: Int) -> Int {
+    return x * x;
+}
+
+fn dobro(n: Int) -> Int {
+    return n * 2;
+}
+
+// ------------------------------------------------------------
+// 8. FUNÇÕES COM MÚLTIPLOS PARÂMETROS
+// ------------------------------------------------------------
+
+fn soma_dois(a: Int, b: Int) -> Int {
+    return a + b;
+}
+
+fn area_retangulo(largura: Float, altura: Float) -> Float {
+    return largura * altura;
+}
+
+fn media_tres(a: Float, b: Float, c: Float) -> Float {
+    return (a + b + c) / 3.0;
+}
+
+// ------------------------------------------------------------
+// 9. FUNÇÕES COM LÓGICA CONDICIONAL
+// ------------------------------------------------------------
+
+fn maximo(a: Int, b: Int) -> Int {
+    if a > b {
+        return a;
+    } else {
+        return b;
+    }
+}
+
+fn absoluto(x: Int) -> Int {
+    if x < 0 {
+        return -x;
+    } else {
+        return x;
+    }
+}
+
+fn classificacao_idade(i: Int) -> String {
+    if i < 18 {
+        return "Menor de idade";
+    } else if i < 60 {
+        return "Adulto";
+    } else {
+        return "Idoso";
+    }
+}
+
+// ------------------------------------------------------------
+// 10. CHAMADAS DE FUNÇÃO (EXEMPLOS)
+// ------------------------------------------------------------
+
+let resultado1 = quadrado(5);                  // 25
+let resultado2 = soma_dois(10, 20);            // 30
+let resultado3 = area_retangulo(5.0, 3.0);     // 15.0
+let resultado4 = maximo(45, 23);               // 45
+
+// ------------------------------------------------------------
+// 11. LOOPS E ITERAÇÃO
+// ------------------------------------------------------------
+
+fn soma_array(arr: [Int]) -> Int {
+    let total: Int = 0;
+    for elemento in arr {
+        total = total + elemento;
+    }
+    return total;
+}
+
+fn conta_positivos(arr: [Int]) -> Int {
+    let contador: Int = 0;
+    for num in arr {
+        if num > 0 {
+            contador = contador + 1;
+        }
+    }
+    return contador;
+}
+
+// ------------------------------------------------------------
+// 12. PIPELINE DE DADOS COM DATAFRAME (filter / select / groupby)
+// ------------------------------------------------------------
+
+fn pipeline_dados_csv() -> DataFrame {
+    let df: DataFrame = load("dados.csv");
+
+    let filtrado: DataFrame =
+        df |> filter(|row: Row| row.idade > 18);
+
+    let selecionado: DataFrame =
+        filtrado |> select(nome, idade, salario, cidade);
+
+    let agrupado: DataFrame =
+        selecionado |> groupby(cidade);
+
+    return agrupado;
+}
+
+// ------------------------------------------------------------
+// 13. ESTRUTURAS DE DADOS CUSTOMIZADAS
+// ------------------------------------------------------------
+
+data Pessoa {
+    nome: String;
+    idade: Int;
+    altura: Float;
+}
+
+let pessoa1: Pessoa = Pessoa("João", 30, 1.80);
+
+// ------------------------------------------------------------
+// 14. EXEMPLOS DE ESCOPO E SHADOWING
+// ------------------------------------------------------------
+
+let x = 10;  // x global
+
+fn teste_escopo() -> Int {
+    let x = 20;  // x local
+
+    if x > 15 {
+        // reatribuição da variável local
+        let y: Int = x + 10;
+        return y;   // 30
+    } else {
+        return x;
+    }
+}
+
+let resultado_escopo = teste_escopo();  // 30
+
+// ------------------------------------------------------------
+// 15. COMPOSIÇÃO DE FUNÇÕES
+// ------------------------------------------------------------
+
+fn triplo(x: Int) -> Int {
+    return x * 3;
+}
+
+fn adiciona_dez(x: Int) -> Int {
+    return x + 10;
+}
+
+fn funcao_composta(v: Int) -> Int {
+    let passo1 = dobro(v);          // 2v
+    let passo2 = adiciona_dez(passo1); // 2v + 10
+    let passo3 = triplo(passo2);       // 3 * (2v + 10)
+    return passo3;
+}
+
+let resultado_composto = funcao_composta(5);  
+// 5 -> 10 -> 20 -> 60
+
+// ------------------------------------------------------------
+// 16. FUNÇÕES RECURSIVAS
+// ------------------------------------------------------------
+
+fn fatorial(n: Int) -> Int {
+    if n <= 1 {
+        return 1;
+    } else {
+        return n * fatorial(n - 1);
+    }
+}
+
+fn fibonacci(n: Int) -> Int {
+    if n <= 1 {
+        return n;
+    } else {
+        return fibonacci(n - 1) + fibonacci(n - 2);
+    }
+}
+
+// ------------------------------------------------------------
+// 17. OPERAÇÕES COM ARRAYS
+// ------------------------------------------------------------
+
+let lista = [10, 20, 30, 40, 50];
+let primeiro = lista[0];                // 10
+let terceiro = lista[2];                // 30
+
+// ------------------------------------------------------------
+// 18. EXPRESSÕES COMPLEXAS
+// ------------------------------------------------------------
+
+let calculo_complexo = ((10 + 5) * 3 - 8) / 2 + (4 * 7);
+// ((15 * 3) - 8) / 2 + 28 = (45 - 8) / 2 + 28 = 37 / 2 + 28
+// Dependendo da semântica de divisão inteira/float, isso pode
+// ser ajustado; aqui deixamos apenas como exemplo.
+
+let condicao_complexa =
+    (idade > 18) && (altura > 1.60) || (nome == "Admin");
+
+// ------------------------------------------------------------
+// 19. TESTES - IMPRIME OK / FAIL
+// ------------------------------------------------------------
+
+fn test_basicos() -> Int {
+    print("=== test_basicos ===");
+
+    let ok_idade: Bool = (idade == 25);
+    let ok_altura: Bool = (altura == 1.75);
+    let ok_nome: Bool = (nome == "Alice");
+    let ok_ativo: Bool = (ativo == true);
+
+    if ok_idade && ok_altura && ok_nome && ok_ativo {
+        print("test_basicos: OK");
+        return 0;
+    } else {
+        print("test_basicos: FAIL");
+        print("  idade:", idade, "altura:", altura, "nome:", nome, "ativo:", ativo);
+        return 1;
+    }
+}
+
+fn test_operacoes_aritmeticas() -> Int {
+    print("=== test_operacoes_aritmeticas ===");
+
+    if soma == 15 &&
+       subtracao == 12 &&
+       multiplicacao == 42 &&
+       divisao == 25 &&
+       resto == 2 &&
+       expressao_complexa == 41 {
+        print("test_operacoes_aritmeticas: OK");
+        return 0;
+    } else {
+        print("test_operacoes_aritmeticas: FAIL");
+        print("  soma:", soma,
+              "subtracao:", subtracao,
+              "multiplicacao:", multiplicacao,
+              "divisao:", divisao,
+              "resto:", resto,
+              "expr:", expressao_complexa);
+        return 1;
+    }
+}
+
+fn test_comparacao_logica() -> Int {
+    print("=== test_comparacao_logica ===");
+
+    let esperado_maior: Bool = true;
+    let esperado_menor_igual: Bool = true;
+    let esperado_igual: Bool = true;
+    let esperado_diferente: Bool = true;
+
+    let esperado_e_logico: Bool = false;
+    let esperado_ou_logico: Bool = true;
+    let esperado_negacao: Bool = false;
+
+    if maior == esperado_maior &&
+       menor_igual == esperado_menor_igual &&
+       igual == esperado_igual &&
+       diferente == esperado_diferente &&
+       e_logico == esperado_e_logico &&
+       ou_logico == esperado_ou_logico &&
+       negacao == esperado_negacao {
+        print("test_comparacao_logica: OK");
+        return 0;
+    } else {
+        print("test_comparacao_logica: FAIL");
+        print("  maior:", maior,
+              "menor_igual:", menor_igual,
+              "igual:", igual,
+              "diferente:", diferente);
+        print("  e_logico:", e_logico,
+              "ou_logico:", ou_logico,
+              "negacao:", negacao);
+        return 1;
+    }
+}
+
+fn test_funcoes_simples() -> Int {
+    print("=== test_funcoes_simples ===");
+
+    let r1: Int = quadrado(5);
+    let r2: Int = soma_dois(10, 20);
+    let r3: Float = area_retangulo(5.0, 3.0);
+    let r4: Int = maximo(45, 23);
+    let r5: Int = absoluto(-10);
+    let r6: String = classificacao_idade(25);
+
+    if r1 == 25 &&
+       r2 == 30 &&
+       r3 == 15.0 &&
+       r4 == 45 &&
+       r5 == 10 &&
+       r6 == "Adulto" {
+        print("test_funcoes_simples: OK");
+        return 0;
+    } else {
+        print("test_funcoes_simples: FAIL");
+        print("  quadrado(5):", r1,
+              "soma_dois(10,20):", r2,
+              "area_retangulo(5,3):", r3,
+              "maximo(45,23):", r4,
+              "absoluto(-10):", r5,
+              "classificacao_idade(25):", r6);
+        return 1;
+    }
+}
+
+fn test_loops_arrays() -> Int {
+    print("=== test_loops_arrays ===");
+
+    let arr: [Int] = [1, -2, 3, 4];
+    let s: Int = soma_array(arr);          // 1 -2 +3 +4 = 6
+    let c: Int = conta_positivos(arr);     // 3 positivos (1,3,4)
+
+    if s == 6 && c == 3 {
+        print("test_loops_arrays: OK");
+        return 0;
+    } else {
+        print("test_loops_arrays: FAIL");
+        print("  soma_array:", s, "conta_positivos:", c);
+        return 1;
+    }
+}
+
+fn test_pessoa_e_escopo() -> Int {
+    print("=== test_pessoa_e_escopo ===");
+
+    let ok_pessoa: Bool =
+        pessoa1.nome == "João" &&
+        pessoa1.idade == 30 &&
+        pessoa1.altura == 1.80;
+
+    let escopo: Int = teste_escopo();
+
+    if ok_pessoa && escopo == 30 {
+        print("test_pessoa_e_escopo: OK");
+        return 0;
+    } else {
+        print("test_pessoa_e_escopo: FAIL");
+        print("  pessoa1.nome:", pessoa1.nome,
+              "idade:", pessoa1.idade,
+              "altura:", pessoa1.altura);
+        print("  teste_escopo():", escopo);
+        return 1;
+    }
+}
+
+fn test_recursao() -> Int {
+    print("=== test_recursao ===");
+
+    let f5: Int = fatorial(5);    // 120
+    let f6: Int = fatorial(6);    // 720
+    let fib5: Int = fibonacci(5); // 5
+
+    if f5 == 120 && f6 == 720 && fib5 == 5 {
+        print("test_recursao: OK");
+        return 0;
+    } else {
+        print("test_recursao: FAIL");
+        print("  fatorial(5):", f5,
+              "fatorial(6):", f6,
+              "fibonacci(5):", fib5);
+        return 1;
+    }
+}
+
+fn test_pipeline_dataframe() -> Int {
+    print("=== test_pipeline_dataframe ===");
+
+    let agrupado: DataFrame = pipeline_dados_csv();
+
+    print("Resultado de pipeline_dados_csv (DataFrame agrupado):");
+    print(agrupado);
+    save(agrupado, "test_pipeline_dataframe.csv");
+
+    // Aqui consideramos OK se não crashar e retornar um DataFrame.
+    print("test_pipeline_dataframe: OK (sem validação de conteúdo)");
+    return 0;
+}
+
+fn test_dataframe_operations() -> Int {
+    print("=== test_dataframe_operations ===");
+
+    // 1) Carrega o DataFrame base
+    let df: DataFrame = load("employees.csv");
+    print("DataFrame original (employees.csv):");
+    print(df);
+
+    let total_rows: Int = count(df);
+    print("Total de linhas no df:", total_rows);
+
+    if total_rows <= 0 {
+        print("test_dataframe_operations: FAIL (DataFrame vazio)");
+        return 1;
+    }
+
+    // 2) Filtra apenas adultos (idade >= 18)
+    let adultos: DataFrame =
+        df |> filter(|row: Row| row.idade >= 18);
+
+    let adultos_rows: Int = count(adultos);
+    print("Linhas após filter(idade >= 18):", adultos_rows);
+
+    // Garantia genérica: filtro não cria linhas a mais
+    if adultos_rows > total_rows {
+        print("test_dataframe_operations: FAIL (filter aumentou o número de linhas)");
+        return 1;
+    }
+
+    // 3) Faz um select de colunas (projeção)
+    let proj: DataFrame =
+        adultos |> select(nome, idade, salario, cidade);
+
+    let proj_rows: Int = count(proj);
+    print("Linhas após select(nome, idade, salario, cidade):", proj_rows);
+
+    // select não deve mudar número de linhas
+    if proj_rows != adultos_rows {
+        print("test_dataframe_operations: FAIL (select alterou o número de linhas)");
+        return 1;
+    }
+
+    // 4) Groupby por cidade
+    let agrupado_por_cidade: DataFrame =
+        proj |> groupby(cidade);
+
+    let grupos_cidade: Int = count(agrupado_por_cidade);
+    print("Linhas após groupby(cidade):", grupos_cidade);
+    print("DataFrame agrupado por cidade:");
+    print(agrupado_por_cidade);
+
+    if grupos_cidade <= 0 {
+        print("test_dataframe_operations: FAIL (groupby(cidade) retornou 0 grupos)");
+        return 1;
+    }
+
+    if grupos_cidade > proj_rows {
+        print("test_dataframe_operations: FAIL (mais grupos do que linhas)");
+        return 1;
+    }
+
+    let adultos_com_faixa: DataFrame = adultos;
+
+    let agrupado_multi: DataFrame =
+        adultos_com_faixa |> groupby(cidade);
+
+    let grupos_multi: Int = count(agrupado_multi);
+    print("Linhas após groupby(cidade) em adultos_com_faixa:", grupos_multi);
+    print("DataFrame agrupado (múltiplo conceitual):");
+    print(agrupado_multi);
+
+    if grupos_multi <= 0 {
+        print("test_dataframe_operations: FAIL (groupby múltiplo retornou 0 grupos)");
+        return 1;
+    }
+
+    // 6) Pipeline com filter + map + reduce em cima do DataFrame:
+    //    soma dos salários ajustados (ex: +10% para adultos)
+    let total_salario_ajustado: Float =
+        df
+        |> filter(|row: Row| row.idade >= 18)
+        |> map(|row: Row| row.salario * 1.1)
+        |> reduce(0.0, |acc: Float, val: Float| acc + val);
+
+    print("Total de salários ajustados (+10% para adultos):", total_salario_ajustado);
+
+    // Checagem bem genérica: salário ajustado deve ser > 0 se há adultos
+    if adultos_rows > 0 && total_salario_ajustado <= 0.0 {
+        print("test_dataframe_operations: FAIL (total_salario_ajustado <= 0 com adultos > 0)");
+        return 1;
+    }
+
+    // 7) Salvar resultados em CSVs diferentes para validar save()
+    save(proj, "employees_proj.csv");
+    print("DataFrame proj salvo em employees_proj.csv");
+    print(proj);
+
+    save(agrupado_por_cidade, "employees_grouped_by_city.csv");
+    print("DataFrame agrupado_por_cidade salvo em employees_grouped_by_city.csv");
+    print(agrupado_por_cidade);
+
+    save(agrupado_multi, "employees_grouped_multi.csv");
+    print("DataFrame agrupado_multi salvo em employees_grouped_multi.csv");
+    print(agrupado_multi);
+
+    print("test_dataframe_operations: OK");
+    return 0;
+}
+
+// ------------------------------------------------------------
+// 20. RUN_ALL_TESTS E MAIN
+// ------------------------------------------------------------
+
+fn run_all_tests() -> Int {
+    print("== Rodando exemplo_avancado.datalang - Testes == ");
+
+    let f1: Int = test_basicos();
+    let f2: Int = test_operacoes_aritmeticas();
+    let f3: Int = test_comparacao_logica();
+    let f4: Int = test_funcoes_simples();
+    let f5: Int = test_loops_arrays();
+    let f6: Int = test_pessoa_e_escopo();
+    let f7: Int = test_recursao();
+    let f8: Int = test_pipeline_dataframe();
+    let f9: Int = test_dataframe_operations();
+
+    let totalFailures: Int =
+        f1 + f2 + f3 + f4 +
+        f5 + f6 + f7 + f8 + f9;
+
+    print("Resultados individuais:");
+    print("f1:", f1, "f2:", f2, "f3:", f3, "f4:", f4);
+    print("f5:", f5, "f6:", f6, "f7:", f7, "f8:", f8);
+    print("f9:", f9);
+
+    if totalFailures == 0 {
+        print("=== SUCESSO: todos os testes do exemplo_avancado passaram. ===");
+    } else {
+        print("=== ERRO: existem", totalFailures, "falhas no exemplo_avancado. ===");
+    }
+
+    return totalFailures;
+}
+
+fn main() -> Int {
+    let total: Int = run_all_tests();
+    return total;
+}
+
+main();

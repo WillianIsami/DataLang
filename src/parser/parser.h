@@ -1,8 +1,3 @@
-/*
- * DataLang - Parser Header
- * Declarações públicas do parser LL(1) recursivo descendente
- */
-
 #ifndef DATALANG_PARSER_H
 #define DATALANG_PARSER_H
 
@@ -99,7 +94,8 @@ struct ASTNode {
 
         // Print Statement
         struct {
-            ASTNode* expression;
+            ASTNode** expressions;  // array de ponteiros
+            int expr_count;         // Contador
         } print_stmt;
         
         // Function Declaration

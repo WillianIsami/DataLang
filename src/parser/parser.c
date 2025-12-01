@@ -344,7 +344,14 @@ ASTNode* parse_import_decl(Parser* p) {
     node->import_decl.module_path = strdup(path->lexema);
     
     if (match(p, 1, TOKEN_AS)) {
-        Token* alias = consume(p, TOKEN_IDENTIFIER, "Esperado identificador após 'as'");
+        Token* alias = NULL;
+        if (check(p, TOKEN_IDENTIFIER)) {
+            alias = advance(p);
+        } else if (check(p, TOKEN_DATA)) { // permitir 'data' como alias
+            alias = advance(p);
+        } else {
+            alias = consume(p, TOKEN_IDENTIFIER, "Esperado identificador após 'as'");
+        }
         if (alias) {
             node->import_decl.alias = strdup(alias->lexema);
         }
@@ -547,9 +554,29 @@ ASTNode* parse_print_statement(Parser* p) {
     ASTNode* node = create_node(AST_PRINT_STMT, print_token->line, print_token->column);
     
     consume(p, TOKEN_LPAREN, "Esperado '(' após 'print'");
-    node->print_stmt.expression = parse_expression(p);
-    consume(p, TOKEN_RPAREN, "Esperado ')' após expressão");
+    
+    // Parse lista de expressões
+    int capacity = 4;
+    ASTNode** expressions = malloc(capacity * sizeof(ASTNode*));
+    int expr_count = 0;
+    
+    if (!check(p, TOKEN_RPAREN)) {
+        expressions[expr_count++] = parse_expression(p);
+        
+        while (match(p, 1, TOKEN_COMMA)) {
+            if (expr_count >= capacity) {
+                capacity *= 2;
+                expressions = realloc(expressions, capacity * sizeof(ASTNode*));
+            }
+            expressions[expr_count++] = parse_expression(p);
+        }
+    }
+    
+    consume(p, TOKEN_RPAREN, "Esperado ')' após argumentos de print");
     consume(p, TOKEN_SEMICOLON, "Esperado ';' após print");
+    
+    node->print_stmt.expressions = expressions;
+    node->print_stmt.expr_count = expr_count;
     
     return node;
 }
@@ -605,13 +632,13 @@ ASTNode* parse(Parser* parser) {
     ASTNode* ast = parse_program(parser);
     
     if (parser->had_error) {
-        printf("\n❌ Parsing concluído com %d erro(s)\n", parser->error_count);
+        printf("\nParsing concluído com %d erro(s)\n", parser->error_count);
         printf("\nErros encontrados:\n");
         for (int i = 0; i < parser->error_count; i++) {
             printf("  %d. %s\n", i + 1, parser->error_messages[i]);
         }
     } else {
-        printf("\n✓ Parsing concluído com sucesso!\n");
+        printf("\nParsing concluído com sucesso\n");
     }
     
     return ast;

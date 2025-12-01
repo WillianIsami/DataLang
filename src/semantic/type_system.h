@@ -18,13 +18,13 @@ typedef enum {
     TYPE_DATAFRAME,
     TYPE_VECTOR,
     TYPE_SERIES,
-    TYPE_ARRAY,         // [T]
-    TYPE_TUPLE,         // (T1, T2, ...)
-    TYPE_FUNCTION,      // (T1, T2, ...) -> R
-    TYPE_CUSTOM,        // Tipos definidos pelo usuário (data)
-    TYPE_VAR,           // Variável de tipo (para inferência)
-    TYPE_ERROR,         // Tipo erro (para recuperação)
-    TYPE_VOID           // Tipo void (para funções sem retorno)
+    TYPE_ARRAY,
+    TYPE_TUPLE,
+    TYPE_FUNCTION,
+    TYPE_CUSTOM,
+    TYPE_VAR,
+    TYPE_ERROR,
+    TYPE_VOID
 } TypeKind;
 
 typedef struct Type {
