@@ -60,9 +60,18 @@ cd DataLang
 - `examples/exemplo_avancado.datalang`
 
 Comando típico:
-```
+- Modifique o exemplo_avancado.datalang para o arquivo de teste que você quiser, se quiser criar o seu próprio, só criar o arquivo .datalang e mandar compilar no lugar de examples/exemplo_avancado.datalang dessa forma:
+```bash
 make && ./bin/datalang examples/exemplo_avancado.datalang -o output.ll && \
 clang -Wno-override-module output.ll src/codegen/runtime.c -o programa -lm && ./programa
+```
+
+- Ou se quiser um jeito mais simples utilizando make e mudando o FILE que é o nome do caminho
+```bash
+make clean && make test-file FILE=examples/exemplo_completo.datalang
+make clean && make test-file FILE=examples/exemplo_completo_2.datalang
+make clean && make test-file FILE=examples/exemplo_06.datalang
+make clean && make test-file FILE=examples/exemplo_avancado.datalang
 ```
 
 ## Dicas de solução de problemas
