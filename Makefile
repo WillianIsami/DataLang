@@ -379,6 +379,14 @@ cr: clean run
 
 # Teste rápido
 quick: compile-example
-	@$(CLANG) $(CLANG_FLAGS) output.ll $(RUNTIME_SOURCE) -o programa -lm && ./programa
+	@$(CLANG) $(CLANG_FLAGS) output.ll $(LINK_OBJECTS) -o programa -lm && ./programa
 
-.PHONY: version cr quick debug valgrind show-ir compiler-only test-ir test-validate test-csv
+verify-idris:
+	@echo "🔨 Compilando verificador Idris (verify/datalang_verify)..."
+	@if command -v idris2 >/dev/null 2>&1; then \
+		cd verify && idris2 --build datalang_verify.ipkg; \
+	else \
+		echo "❌ idris2 não encontrado. Instale ou aponte outro comando com --verify-cmd no compilador."; \
+	fi
+
+.PHONY: version cr quick debug valgrind show-ir compiler-only test-ir test-validate test-csv verify-idris

@@ -52,6 +52,8 @@ fn test_literals_and_operators() -> Int {
     let b1: Bool = true;
     let b2: Bool = false;
     let s: String = "hello";
+    let doubleF: Float = f * 2.0;
+    let greetOk: Bool = s == "hello";
 
     let sumInt: Int = i + j;
     let diffInt: Int = i - j;
@@ -76,7 +78,9 @@ fn test_literals_and_operators() -> Int {
        cmp2 == true &&
        cmp3 == true &&
        a == 7 && b == 7 &&
-       b1 == true && b2 == false {
+       b1 == true && b2 == false &&
+       doubleF == 5.0 &&
+       greetOk == true {
         return 0;
     } else {
         return 1;
@@ -135,6 +139,8 @@ fn test_if_else(x: Int) -> Int {
     } else {
         return 0;
     }
+    
+    return result;
 }
 
 // ---------- TESTE: FOR E RANGE ----------
@@ -282,6 +288,8 @@ fn main() -> Int {
     print(globalBool);
     print("globalString:");
     print(globalString);
+    print("globalArray[0]:");
+    print(globalArray[0]);
 
     let totalFailures: Int = run_all_tests();
 

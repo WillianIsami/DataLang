@@ -363,6 +363,29 @@ ls   # Deve listar Makefile, src/, examples/, etc.
 
 ---
 
+## Verificação externa com Idris
+
+- Execute o compilador com `--verify` para exportar a AST em JSON (padrão: `ast.json`) e chamar um verificador externo.
+- Comandos úteis:
+  - `--verify` ou `-V`: habilita a etapa.
+  - `--verify-json <arquivo>`: caminho do JSON gerado.
+  - `--verify-cmd "<comando>"`: comando de verificação (padrão: `verify/run_verifier.sh`).
+- Estrutura sugerida do verificador Idris: veja `verify/README.md`. Compile seu verificador para `verify/datalang_verify` ou passe outro comando via `--verify-cmd`.
+
+Exemplo:
+```bash
+./bin/datalang examples/exemplo_01.datalang --verify \
+  --verify-json /tmp/ast.json \
+  --verify-cmd "verify/run_verifier.sh"
+
+# Para compilar o verificador padrão em Idris:
+make verify-idris
+```
+
+Se o comando do verificador retornar código != 0, a compilação é interrompida antes da geração de LLVM.
+
+---
+
 ## Documentação Adicional
 
 - [Gramática Refatorada](docs/gramatica_refatorada.md)

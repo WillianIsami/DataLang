@@ -343,6 +343,7 @@ ASTNode* parse_block(Parser* p);
 // Funções para liberar AST
 void free_ast(ASTNode* node);
 void print_ast(ASTNode* node, int indent);
+bool write_ast_json(ASTNode* node, const char* filepath);
 
 
 #endif // DATALANG_PARSER_H

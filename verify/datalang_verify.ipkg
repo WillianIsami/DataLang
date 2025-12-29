@@ -1,0 +1,10 @@
+package datalang_verify
+
+version = 0.1.0
+modules = Main
+
+executable = datalang_verify
+main = Main
+sourcedir = "."
+
+depends = base

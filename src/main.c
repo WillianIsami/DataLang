@@ -24,7 +24,10 @@ void print_usage(const char* program_name) {
     printf("Opções:\n");
     printf("  -o <arquivo>    Especifica arquivo de saída LLVM IR\n");
     printf("  -h, --help      Mostra esta ajuda\n");
-    printf("  -v, --verbose   Modo verboso\n\n");
+    printf("  -v, --verbose   Modo verboso\n");
+    printf("  -V, --verify    Exporta AST para JSON e chama verificador externo (Idris)\n");
+    printf("  --verify-json <arquivo>  Caminho do JSON de AST (padrão: ast.json)\n");
+    printf("  --verify-cmd <cmd>       Comando para verificação (padrão: verify/run_verifier.sh)\n\n");
 }
 
 char* read_file(const char* filename) {
@@ -61,6 +64,9 @@ int main(int argc, char** argv) {
     char* input_file = NULL;
     char* output_file = NULL;
     bool verbose = false;
+    bool verify = false;
+    char* verify_json = "ast.json";
+    char* verify_cmd = NULL;
     
     for (int i = 1; i < argc; i++) {
         if (strcmp(argv[i], "-h") == 0 || strcmp(argv[i], "--help") == 0) {
@@ -68,6 +74,24 @@ int main(int argc, char** argv) {
             return 0;
         } else if (strcmp(argv[i], "-v") == 0 || strcmp(argv[i], "--verbose") == 0) {
             verbose = true;
+        } else if (strcmp(argv[i], "-V") == 0 || strcmp(argv[i], "--verify") == 0) {
+            verify = true;
+        } else if (strcmp(argv[i], "--verify-json") == 0) {
+            if (i + 1 < argc) {
+                verify_json = argv[++i];
+                verify = true;
+            } else {
+                fprintf(stderr, "Erro: --verify-json requer um caminho\n");
+                return 1;
+            }
+        } else if (strcmp(argv[i], "--verify-cmd") == 0) {
+            if (i + 1 < argc) {
+                verify_cmd = argv[++i];
+                verify = true;
+            } else {
+                fprintf(stderr, "Erro: --verify-cmd requer um comando\n");
+                return 1;
+            }
         } else if (strcmp(argv[i], "-o") == 0) {
             if (i + 1 < argc) {
                 output_file = argv[++i];
@@ -141,6 +165,35 @@ int main(int argc, char** argv) {
         free_afd(afd);
         free(source_code);
         return 1;
+    }
+
+    if (verify) {
+        const char* cmd = verify_cmd ? verify_cmd : "verify/run_verifier.sh";
+        if (!write_ast_json(ast, verify_json)) {
+            fprintf(stderr, "Erro: não foi possível salvar AST em %s\n", verify_json);
+            free_semantic_analyzer(analyzer);
+            free_ast(ast);
+            free_parser(parser);
+            free_token_stream(tokens);
+            free_afd(afd);
+            free(source_code);
+            return 1;
+        }
+        char command[1024];
+        snprintf(command, sizeof(command), "%s %s", cmd, verify_json);
+        printf("[Verify] Executando: %s\n", command);
+        int rc = system(command);
+        if (rc != 0) {
+            fprintf(stderr, "Verificador externo retornou código %d\n", rc);
+            free_semantic_analyzer(analyzer);
+            free_ast(ast);
+            free_parser(parser);
+            free_token_stream(tokens);
+            free_afd(afd);
+            free(source_code);
+            return 1;
+        }
+        printf("[Verify] Verificação externa concluída com sucesso\n");
     }
     
     // FASE 5: GERAÇÃO DE CÓDIGO
