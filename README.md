@@ -5,6 +5,7 @@ Linguagem de programação especializada em processamento de dados, desenvolvida
 ## Acesso Rápido (IMPORTANTE)
 - [Manual de utilização](docs/manual_uso.md)
 - [Manual de instalação](docs/manual_instalacao.md)
+- [Verificação Idris (AST + tipos)](docs/verify-idris.md)
 - [Analisador léxico](src/lexer/)
 - [Analisador sintático (AST)](src/parser/)
 - [Analisador semântico](src/semantic/)
@@ -201,6 +202,14 @@ clang -Wno-override-module output.ll src/codegen/runtime.c -o programa -lm
 # Executar
 ./programa
 ```
+
+## Verificação formal com Idris
+
+- Compile o verificador: `make verify-idris`.
+- Execute o compilador já rodando o verificador externo:  
+  `./bin/datalang examples/exemplo_completo.datalang --verify --verify-cmd "verify/run_verifier.sh"`.
+- Use o atalho completo: `make verify-full` (compila o compilador, o verificador Idris e roda no exemplo completo).
+- Em caso de falha, o verificador lista invariantes violadas (tipos indefinidos, funções sem retorno, chamadas incompatíveis, etc.). Consulte [docs/verify-idris.md](docs/verify-idris.md) para detalhes.
 
 ---
 

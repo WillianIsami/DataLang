@@ -1100,8 +1100,9 @@ static char* generate_filter_transform(CodeGenContext* ctx, ASTNode* node, char*
         }
         
         if (!is_symbol_in_current_scope(ctx->analyzer->symbol_table, param_name)) {
-            declare_symbol(ctx->analyzer->symbol_table, param_name, SYMBOL_VARIABLE, 
+            Symbol* ps = declare_symbol(ctx->analyzer->symbol_table, param_name, SYMBOL_PARAMETER, 
                         param_type ? param_type : create_primitive_type(TYPE_INT), 0, 0);
+            if (ps) ps->initialized = true;
         }
         
         if (param_type && param_type->kind == TYPE_CUSTOM) {
@@ -1242,8 +1243,9 @@ static char* generate_map_transform(CodeGenContext* ctx, ASTNode* node, char* in
                 param_type = create_primitive_type(TYPE_INT);
             }
             
-            declare_symbol(ctx->analyzer->symbol_table, param_name, SYMBOL_VARIABLE, 
+            Symbol* ps = declare_symbol(ctx->analyzer->symbol_table, param_name, SYMBOL_PARAMETER, 
                           param_type, 0, 0);
+            if (ps) ps->initialized = true;
             
             // Now analyze the body with parameter in scope
             output_elem_type = analyze_expression(ctx->analyzer, lambda->lambda_expr.lambda_body);
@@ -1294,8 +1296,9 @@ static char* generate_map_transform(CodeGenContext* ctx, ASTNode* node, char* in
         }
         
         if (!is_symbol_in_current_scope(ctx->analyzer->symbol_table, param_name)) {
-            declare_symbol(ctx->analyzer->symbol_table, param_name, SYMBOL_VARIABLE, 
+            Symbol* ps = declare_symbol(ctx->analyzer->symbol_table, param_name, SYMBOL_PARAMETER, 
                           param_type ? param_type : create_primitive_type(TYPE_INT), 0, 0);
+            if (ps) ps->initialized = true;
         }
         
         if (param_type && param_type->kind == TYPE_CUSTOM) {

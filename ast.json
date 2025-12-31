@@ -1,0 +1,339 @@
+{
+  "type": "Program",
+  "declarations": [
+    {
+      "type": "FnDecl",
+      "name": "main",
+      "params": [
+
+      ],
+      "returnType":       {"kind": "Int"},
+      "body":       {
+        "type": "Block",
+        "statements": [
+          {
+            "type": "LetDecl",
+            "name": "notas",
+            "typeAnnotation": null,
+            "initializer":             {
+              "type": "ArrayLiteral",
+              "elements": [
+                {
+                  "type": "Literal",
+                  "literalType": "Int",
+                  "value": 65
+                },
+                {
+                  "type": "Literal",
+                  "literalType": "Int",
+                  "value": 90
+                },
+                {
+                  "type": "Literal",
+                  "literalType": "Int",
+                  "value": 78
+                },
+                {
+                  "type": "Literal",
+                  "literalType": "Int",
+                  "value": 45
+                },
+                {
+                  "type": "Literal",
+                  "literalType": "Int",
+                  "value": 88
+                },
+                {
+                  "type": "Literal",
+                  "literalType": "Int",
+                  "value": 92
+                },
+                {
+                  "type": "Literal",
+                  "literalType": "Int",
+                  "value": 50
+                }
+              ]
+            }
+          },
+          {
+            "type": "LetDecl",
+            "name": "total",
+            "typeAnnotation": null,
+            "initializer":             {
+              "type": "CallExpr",
+              "callee":               {
+                "type": "Identifier",
+                "name": "sum"
+              },
+              "args": [
+                {
+                  "type": "Identifier",
+                  "name": "notas"
+                }
+              ]
+            }
+          },
+          {
+            "type": "PrintStmt",
+            "args": [
+              {
+                "type": "Literal",
+                "literalType": "String",
+                "value": "NOTAS:"
+              },
+              {
+                "type": "Identifier",
+                "name": "notas"
+              }
+            ]
+          },
+          {
+            "type": "LetDecl",
+            "name": "media",
+            "typeAnnotation": null,
+            "initializer":             {
+              "type": "CallExpr",
+              "callee":               {
+                "type": "Identifier",
+                "name": "mean"
+              },
+              "args": [
+                {
+                  "type": "Identifier",
+                  "name": "notas"
+                }
+              ]
+            }
+          },
+          {
+            "type": "LetDecl",
+            "name": "menor_nota",
+            "typeAnnotation": null,
+            "initializer":             {
+              "type": "CallExpr",
+              "callee":               {
+                "type": "Identifier",
+                "name": "min"
+              },
+              "args": [
+                {
+                  "type": "Identifier",
+                  "name": "notas"
+                }
+              ]
+            }
+          },
+          {
+            "type": "LetDecl",
+            "name": "maior_nota",
+            "typeAnnotation": null,
+            "initializer":             {
+              "type": "CallExpr",
+              "callee":               {
+                "type": "Identifier",
+                "name": "max"
+              },
+              "args": [
+                {
+                  "type": "Identifier",
+                  "name": "notas"
+                }
+              ]
+            }
+          },
+          {
+            "type": "LetDecl",
+            "name": "qtd_alunos",
+            "typeAnnotation": null,
+            "initializer":             {
+              "type": "CallExpr",
+              "callee":               {
+                "type": "Identifier",
+                "name": "count"
+              },
+              "args": [
+                {
+                  "type": "Identifier",
+                  "name": "notas"
+                }
+              ]
+            }
+          },
+          {
+            "type": "PrintStmt",
+            "args": [
+              {
+                "type": "Literal",
+                "literalType": "String",
+                "value": "=== Relatorio da Turma ==="
+              }
+            ]
+          },
+          {
+            "type": "PrintStmt",
+            "args": [
+              {
+                "type": "Literal",
+                "literalType": "String",
+                "value": "Quantidade de alunos:"
+              }
+            ]
+          },
+          {
+            "type": "PrintStmt",
+            "args": [
+              {
+                "type": "Identifier",
+                "name": "qtd_alunos"
+              }
+            ]
+          },
+          {
+            "type": "PrintStmt",
+            "args": [
+              {
+                "type": "Literal",
+                "literalType": "String",
+                "value": "Soma total das notas:"
+              }
+            ]
+          },
+          {
+            "type": "PrintStmt",
+            "args": [
+              {
+                "type": "Identifier",
+                "name": "total"
+              }
+            ]
+          },
+          {
+            "type": "PrintStmt",
+            "args": [
+              {
+                "type": "Literal",
+                "literalType": "String",
+                "value": "Nota Media:"
+              }
+            ]
+          },
+          {
+            "type": "PrintStmt",
+            "args": [
+              {
+                "type": "Identifier",
+                "name": "media"
+              }
+            ]
+          },
+          {
+            "type": "PrintStmt",
+            "args": [
+              {
+                "type": "Literal",
+                "literalType": "String",
+                "value": "Menor Nota:"
+              }
+            ]
+          },
+          {
+            "type": "PrintStmt",
+            "args": [
+              {
+                "type": "Identifier",
+                "name": "menor_nota"
+              }
+            ]
+          },
+          {
+            "type": "PrintStmt",
+            "args": [
+              {
+                "type": "Literal",
+                "literalType": "String",
+                "value": "Maior Nota:"
+              }
+            ]
+          },
+          {
+            "type": "PrintStmt",
+            "args": [
+              {
+                "type": "Identifier",
+                "name": "maior_nota"
+              }
+            ]
+          },
+          {
+            "type": "IfStmt",
+            "condition":             {
+              "type": "BinaryExpr",
+              "op": ">=",
+              "left":               {
+                "type": "Identifier",
+                "name": "media"
+              },
+              "right":               {
+                "type": "Literal",
+                "literalType": "Float",
+                "value": 70.000000
+              }
+            },
+            "then":             {
+              "type": "Block",
+              "statements": [
+                {
+                  "type": "PrintStmt",
+                  "args": [
+                    {
+                      "type": "Literal",
+                      "literalType": "String",
+                      "value": "Status da turma (media = 70.0): APROVADA"
+                    }
+                  ]
+                }
+              ]
+            },
+            "else":             {
+              "type": "Block",
+              "statements": [
+                {
+                  "type": "PrintStmt",
+                  "args": [
+                    {
+                      "type": "Literal",
+                      "literalType": "String",
+                      "value": "Status da turma (media = 70.0): REPROVADA"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "type": "ReturnStmt",
+            "value":             {
+              "type": "Literal",
+              "literalType": "Int",
+              "value": 0
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "ExprStmt",
+      "expression":       {
+        "type": "CallExpr",
+        "callee":         {
+          "type": "Identifier",
+          "name": "main"
+        },
+        "args": [
+
+        ]
+      }
+    }
+  ]
+}

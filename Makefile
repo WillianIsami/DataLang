@@ -389,4 +389,8 @@ verify-idris:
 		echo "❌ idris2 não encontrado. Instale ou aponte outro comando com --verify-cmd no compilador."; \
 	fi
 
-.PHONY: version cr quick debug valgrind show-ir compiler-only test-ir test-validate test-csv verify-idris
+verify-full: all verify-idris
+	@echo "🔍 Rodando compilador com verificação Idris no exemplo completo..."
+	@$(BIN_DIR)/datalang examples/exemplo_completo.datalang --verify --verify-cmd "verify/run_verifier.sh"
+
+.PHONY: version cr quick debug valgrind show-ir compiler-only test-ir test-validate test-csv verify-idris verify-full
