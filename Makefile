@@ -319,6 +319,7 @@ help:
 	@echo "  test-ir          - Gera apenas IR: make test-ir FILE=<arquivo>"
 	@echo "  test-validate    - Teste completo com validação"
 	@echo "  test-csv         - Teste completo de load/save CSV"
+	@echo "  verify-run       - Compila e verifica com Idris: make verify-run FILE=<arquivo>"
 	@echo ""
 	@echo "DEBUG:"
 	@echo "  debug            - Build com símbolos de debug"
@@ -393,4 +394,10 @@ verify-full: all verify-idris
 	@echo "🔍 Rodando compilador com verificação Idris no exemplo completo..."
 	@$(BIN_DIR)/datalang examples/exemplo_completo.datalang --verify --verify-cmd "verify/run_verifier.sh"
 
-.PHONY: version cr quick debug valgrind show-ir compiler-only test-ir test-validate test-csv verify-idris verify-full
+verify-run: verify-idris $(COMPILER)
+	@file="$(if $(FILE),$(FILE),$(DEFAULT_EXAMPLE))"; \
+	echo "🔎 Verificando com Idris: $$file"; \
+	if [ ! -f "$$file" ]; then echo "❌ Arquivo não encontrado: $$file"; exit 1; fi; \
+	$(COMPILER) "$$file" --verify --verify-cmd "verify/run_verifier.sh"
+
+.PHONY: version cr quick debug valgrind show-ir compiler-only test-ir test-validate test-csv verify-idris verify-full verify-run

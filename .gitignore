@@ -57,3 +57,16 @@ dkms.conf
 *.dwo
 
 logs/
+
+# Build artefacts
+/build/
+/bin/
+/verify/build/
+/verify/datalang_verify
+*.ibc
+*.ipkg~
+
+# Generated outputs
+*.ll
+ast.json
+tmp.json
