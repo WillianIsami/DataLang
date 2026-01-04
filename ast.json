@@ -2,8 +2,1306 @@
   "type": "Program",
   "declarations": [
     {
+      "type": "LetDecl",
+      "name": "idade",
+      "typeAnnotation": null,
+      "initializer":       {
+        "type": "Literal",
+        "literalType": "Int",
+        "value": 25
+      }
+    },
+    {
+      "type": "LetDecl",
+      "name": "altura",
+      "typeAnnotation": null,
+      "initializer":       {
+        "type": "Literal",
+        "literalType": "Float",
+        "value": 1.750000
+      }
+    },
+    {
+      "type": "LetDecl",
+      "name": "nome",
+      "typeAnnotation": null,
+      "initializer":       {
+        "type": "Literal",
+        "literalType": "String",
+        "value": "Alice"
+      }
+    },
+    {
+      "type": "LetDecl",
+      "name": "ativo",
+      "typeAnnotation": null,
+      "initializer":       {
+        "type": "Literal",
+        "literalType": "Bool",
+        "value": true
+      }
+    },
+    {
+      "type": "LetDecl",
+      "name": "anos",
+      "typeAnnotation":       {"kind": "Int"},
+      "initializer":       {
+        "type": "Literal",
+        "literalType": "Int",
+        "value": 30
+      }
+    },
+    {
+      "type": "LetDecl",
+      "name": "peso",
+      "typeAnnotation":       {"kind": "Float"},
+      "initializer":       {
+        "type": "Literal",
+        "literalType": "Float",
+        "value": 70.500000
+      }
+    },
+    {
+      "type": "LetDecl",
+      "name": "cidade",
+      "typeAnnotation":       {"kind": "String"},
+      "initializer":       {
+        "type": "Literal",
+        "literalType": "String",
+        "value": "São Paulo"
+      }
+    },
+    {
+      "type": "LetDecl",
+      "name": "estudante",
+      "typeAnnotation":       {"kind": "Bool"},
+      "initializer":       {
+        "type": "Literal",
+        "literalType": "Bool",
+        "value": false
+      }
+    },
+    {
+      "type": "LetDecl",
+      "name": "numeros",
+      "typeAnnotation": null,
+      "initializer":       {
+        "type": "ArrayLiteral",
+        "elements": [
+          {
+            "type": "Literal",
+            "literalType": "Int",
+            "value": 1
+          },
+          {
+            "type": "Literal",
+            "literalType": "Int",
+            "value": 2
+          },
+          {
+            "type": "Literal",
+            "literalType": "Int",
+            "value": 3
+          },
+          {
+            "type": "Literal",
+            "literalType": "Int",
+            "value": 4
+          },
+          {
+            "type": "Literal",
+            "literalType": "Int",
+            "value": 5
+          }
+        ]
+      }
+    },
+    {
+      "type": "LetDecl",
+      "name": "nomes",
+      "typeAnnotation": null,
+      "initializer":       {
+        "type": "ArrayLiteral",
+        "elements": [
+          {
+            "type": "Literal",
+            "literalType": "String",
+            "value": "Ana"
+          },
+          {
+            "type": "Literal",
+            "literalType": "String",
+            "value": "Bruno"
+          },
+          {
+            "type": "Literal",
+            "literalType": "String",
+            "value": "Carlos"
+          }
+        ]
+      }
+    },
+    {
+      "type": "LetDecl",
+      "name": "temperaturas",
+      "typeAnnotation": null,
+      "initializer":       {
+        "type": "ArrayLiteral",
+        "elements": [
+          {
+            "type": "Literal",
+            "literalType": "Float",
+            "value": 22.500000
+          },
+          {
+            "type": "Literal",
+            "literalType": "Float",
+            "value": 23.000000
+          },
+          {
+            "type": "Literal",
+            "literalType": "Float",
+            "value": 21.800000
+          }
+        ]
+      }
+    },
+    {
+      "type": "LetDecl",
+      "name": "soma",
+      "typeAnnotation": null,
+      "initializer":       {
+        "type": "BinaryExpr",
+        "op": "+",
+        "left":         {
+          "type": "Literal",
+          "literalType": "Int",
+          "value": 10
+        },
+        "right":         {
+          "type": "Literal",
+          "literalType": "Int",
+          "value": 5
+        }
+      }
+    },
+    {
+      "type": "LetDecl",
+      "name": "subtracao",
+      "typeAnnotation": null,
+      "initializer":       {
+        "type": "BinaryExpr",
+        "op": "-",
+        "left":         {
+          "type": "Literal",
+          "literalType": "Int",
+          "value": 20
+        },
+        "right":         {
+          "type": "Literal",
+          "literalType": "Int",
+          "value": 8
+        }
+      }
+    },
+    {
+      "type": "LetDecl",
+      "name": "multiplicacao",
+      "typeAnnotation": null,
+      "initializer":       {
+        "type": "BinaryExpr",
+        "op": "*",
+        "left":         {
+          "type": "Literal",
+          "literalType": "Int",
+          "value": 6
+        },
+        "right":         {
+          "type": "Literal",
+          "literalType": "Int",
+          "value": 7
+        }
+      }
+    },
+    {
+      "type": "LetDecl",
+      "name": "divisao",
+      "typeAnnotation": null,
+      "initializer":       {
+        "type": "BinaryExpr",
+        "op": "/",
+        "left":         {
+          "type": "Literal",
+          "literalType": "Int",
+          "value": 100
+        },
+        "right":         {
+          "type": "Literal",
+          "literalType": "Int",
+          "value": 4
+        }
+      }
+    },
+    {
+      "type": "LetDecl",
+      "name": "resto",
+      "typeAnnotation": null,
+      "initializer":       {
+        "type": "BinaryExpr",
+        "op": "%",
+        "left":         {
+          "type": "Literal",
+          "literalType": "Int",
+          "value": 17
+        },
+        "right":         {
+          "type": "Literal",
+          "literalType": "Int",
+          "value": 5
+        }
+      }
+    },
+    {
+      "type": "LetDecl",
+      "name": "expressao_complexa",
+      "typeAnnotation": null,
+      "initializer":       {
+        "type": "BinaryExpr",
+        "op": "-",
+        "left":         {
+          "type": "BinaryExpr",
+          "op": "*",
+          "left":           {
+            "type": "BinaryExpr",
+            "op": "+",
+            "left":             {
+              "type": "Literal",
+              "literalType": "Int",
+              "value": 10
+            },
+            "right":             {
+              "type": "Literal",
+              "literalType": "Int",
+              "value": 5
+            }
+          },
+          "right":           {
+            "type": "Literal",
+            "literalType": "Int",
+            "value": 3
+          }
+        },
+        "right":         {
+          "type": "BinaryExpr",
+          "op": "/",
+          "left":           {
+            "type": "Literal",
+            "literalType": "Int",
+            "value": 8
+          },
+          "right":           {
+            "type": "Literal",
+            "literalType": "Int",
+            "value": 2
+          }
+        }
+      }
+    },
+    {
+      "type": "LetDecl",
+      "name": "maior",
+      "typeAnnotation": null,
+      "initializer":       {
+        "type": "BinaryExpr",
+        "op": ">",
+        "left":         {
+          "type": "Literal",
+          "literalType": "Int",
+          "value": 10
+        },
+        "right":         {
+          "type": "Literal",
+          "literalType": "Int",
+          "value": 5
+        }
+      }
+    },
+    {
+      "type": "LetDecl",
+      "name": "menor_igual",
+      "typeAnnotation": null,
+      "initializer":       {
+        "type": "BinaryExpr",
+        "op": "<=",
+        "left":         {
+          "type": "Literal",
+          "literalType": "Int",
+          "value": 8
+        },
+        "right":         {
+          "type": "Literal",
+          "literalType": "Int",
+          "value": 10
+        }
+      }
+    },
+    {
+      "type": "LetDecl",
+      "name": "igual",
+      "typeAnnotation": null,
+      "initializer":       {
+        "type": "BinaryExpr",
+        "op": "==",
+        "left":         {
+          "type": "Literal",
+          "literalType": "Int",
+          "value": 5
+        },
+        "right":         {
+          "type": "Literal",
+          "literalType": "Int",
+          "value": 5
+        }
+      }
+    },
+    {
+      "type": "LetDecl",
+      "name": "diferente",
+      "typeAnnotation": null,
+      "initializer":       {
+        "type": "BinaryExpr",
+        "op": "!=",
+        "left":         {
+          "type": "Literal",
+          "literalType": "Int",
+          "value": 10
+        },
+        "right":         {
+          "type": "Literal",
+          "literalType": "Int",
+          "value": 20
+        }
+      }
+    },
+    {
+      "type": "LetDecl",
+      "name": "e_logico",
+      "typeAnnotation": null,
+      "initializer":       {
+        "type": "BinaryExpr",
+        "op": "&&",
+        "left":         {
+          "type": "Literal",
+          "literalType": "Bool",
+          "value": true
+        },
+        "right":         {
+          "type": "Literal",
+          "literalType": "Bool",
+          "value": false
+        }
+      }
+    },
+    {
+      "type": "LetDecl",
+      "name": "ou_logico",
+      "typeAnnotation": null,
+      "initializer":       {
+        "type": "BinaryExpr",
+        "op": "||",
+        "left":         {
+          "type": "Literal",
+          "literalType": "Bool",
+          "value": true
+        },
+        "right":         {
+          "type": "Literal",
+          "literalType": "Bool",
+          "value": false
+        }
+      }
+    },
+    {
+      "type": "LetDecl",
+      "name": "negacao",
+      "typeAnnotation": null,
+      "initializer":       {
+        "type": "UnaryExpr",
+        "op": "!",
+        "operand":         {
+          "type": "Literal",
+          "literalType": "Bool",
+          "value": true
+        }
+      }
+    },
+    {
+      "type": "LetDecl",
+      "name": "condicao_composta",
+      "typeAnnotation": null,
+      "initializer":       {
+        "type": "BinaryExpr",
+        "op": "&&",
+        "left":         {
+          "type": "BinaryExpr",
+          "op": ">",
+          "left":           {
+            "type": "Identifier",
+            "name": "idade"
+          },
+          "right":           {
+            "type": "Literal",
+            "literalType": "Int",
+            "value": 18
+          }
+        },
+        "right":         {
+          "type": "BinaryExpr",
+          "op": "==",
+          "left":           {
+            "type": "Identifier",
+            "name": "ativo"
+          },
+          "right":           {
+            "type": "Literal",
+            "literalType": "Bool",
+            "value": true
+          }
+        }
+      }
+    },
+    {
       "type": "FnDecl",
-      "name": "main",
+      "name": "quadrado",
+      "params": [
+        {
+          "type": "Param",
+          "name": "x",
+          "paramType":           {"kind": "Int"}
+        }
+      ],
+      "returnType":       {"kind": "Int"},
+      "body":       {
+        "type": "Block",
+        "statements": [
+          {
+            "type": "ReturnStmt",
+            "value":             {
+              "type": "BinaryExpr",
+              "op": "*",
+              "left":               {
+                "type": "Identifier",
+                "name": "x"
+              },
+              "right":               {
+                "type": "Identifier",
+                "name": "x"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "FnDecl",
+      "name": "dobro",
+      "params": [
+        {
+          "type": "Param",
+          "name": "n",
+          "paramType":           {"kind": "Int"}
+        }
+      ],
+      "returnType":       {"kind": "Int"},
+      "body":       {
+        "type": "Block",
+        "statements": [
+          {
+            "type": "ReturnStmt",
+            "value":             {
+              "type": "BinaryExpr",
+              "op": "*",
+              "left":               {
+                "type": "Identifier",
+                "name": "n"
+              },
+              "right":               {
+                "type": "Literal",
+                "literalType": "Int",
+                "value": 2
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "FnDecl",
+      "name": "soma_dois",
+      "params": [
+        {
+          "type": "Param",
+          "name": "a",
+          "paramType":           {"kind": "Int"}
+        },
+        {
+          "type": "Param",
+          "name": "b",
+          "paramType":           {"kind": "Int"}
+        }
+      ],
+      "returnType":       {"kind": "Int"},
+      "body":       {
+        "type": "Block",
+        "statements": [
+          {
+            "type": "ReturnStmt",
+            "value":             {
+              "type": "BinaryExpr",
+              "op": "+",
+              "left":               {
+                "type": "Identifier",
+                "name": "a"
+              },
+              "right":               {
+                "type": "Identifier",
+                "name": "b"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "FnDecl",
+      "name": "area_retangulo",
+      "params": [
+        {
+          "type": "Param",
+          "name": "largura",
+          "paramType":           {"kind": "Float"}
+        },
+        {
+          "type": "Param",
+          "name": "altura",
+          "paramType":           {"kind": "Float"}
+        }
+      ],
+      "returnType":       {"kind": "Float"},
+      "body":       {
+        "type": "Block",
+        "statements": [
+          {
+            "type": "ReturnStmt",
+            "value":             {
+              "type": "BinaryExpr",
+              "op": "*",
+              "left":               {
+                "type": "Identifier",
+                "name": "largura"
+              },
+              "right":               {
+                "type": "Identifier",
+                "name": "altura"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "FnDecl",
+      "name": "media_tres",
+      "params": [
+        {
+          "type": "Param",
+          "name": "a",
+          "paramType":           {"kind": "Float"}
+        },
+        {
+          "type": "Param",
+          "name": "b",
+          "paramType":           {"kind": "Float"}
+        },
+        {
+          "type": "Param",
+          "name": "c",
+          "paramType":           {"kind": "Float"}
+        }
+      ],
+      "returnType":       {"kind": "Float"},
+      "body":       {
+        "type": "Block",
+        "statements": [
+          {
+            "type": "ReturnStmt",
+            "value":             {
+              "type": "BinaryExpr",
+              "op": "/",
+              "left":               {
+                "type": "BinaryExpr",
+                "op": "+",
+                "left":                 {
+                  "type": "BinaryExpr",
+                  "op": "+",
+                  "left":                   {
+                    "type": "Identifier",
+                    "name": "a"
+                  },
+                  "right":                   {
+                    "type": "Identifier",
+                    "name": "b"
+                  }
+                },
+                "right":                 {
+                  "type": "Identifier",
+                  "name": "c"
+                }
+              },
+              "right":               {
+                "type": "Literal",
+                "literalType": "Float",
+                "value": 3.000000
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "FnDecl",
+      "name": "maximo",
+      "params": [
+        {
+          "type": "Param",
+          "name": "a",
+          "paramType":           {"kind": "Int"}
+        },
+        {
+          "type": "Param",
+          "name": "b",
+          "paramType":           {"kind": "Int"}
+        }
+      ],
+      "returnType":       {"kind": "Int"},
+      "body":       {
+        "type": "Block",
+        "statements": [
+          {
+            "type": "IfStmt",
+            "condition":             {
+              "type": "BinaryExpr",
+              "op": ">",
+              "left":               {
+                "type": "Identifier",
+                "name": "a"
+              },
+              "right":               {
+                "type": "Identifier",
+                "name": "b"
+              }
+            },
+            "then":             {
+              "type": "Block",
+              "statements": [
+                {
+                  "type": "ReturnStmt",
+                  "value":                   {
+                    "type": "Identifier",
+                    "name": "a"
+                  }
+                }
+              ]
+            },
+            "else":             {
+              "type": "Block",
+              "statements": [
+                {
+                  "type": "ReturnStmt",
+                  "value":                   {
+                    "type": "Identifier",
+                    "name": "b"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "FnDecl",
+      "name": "absoluto",
+      "params": [
+        {
+          "type": "Param",
+          "name": "x",
+          "paramType":           {"kind": "Int"}
+        }
+      ],
+      "returnType":       {"kind": "Int"},
+      "body":       {
+        "type": "Block",
+        "statements": [
+          {
+            "type": "IfStmt",
+            "condition":             {
+              "type": "BinaryExpr",
+              "op": "<",
+              "left":               {
+                "type": "Identifier",
+                "name": "x"
+              },
+              "right":               {
+                "type": "Literal",
+                "literalType": "Int",
+                "value": 0
+              }
+            },
+            "then":             {
+              "type": "Block",
+              "statements": [
+                {
+                  "type": "ReturnStmt",
+                  "value":                   {
+                    "type": "UnaryExpr",
+                    "op": "-",
+                    "operand":                     {
+                      "type": "Identifier",
+                      "name": "x"
+                    }
+                  }
+                }
+              ]
+            },
+            "else":             {
+              "type": "Block",
+              "statements": [
+                {
+                  "type": "ReturnStmt",
+                  "value":                   {
+                    "type": "Identifier",
+                    "name": "x"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "FnDecl",
+      "name": "classificacao_idade",
+      "params": [
+        {
+          "type": "Param",
+          "name": "i",
+          "paramType":           {"kind": "Int"}
+        }
+      ],
+      "returnType":       {"kind": "String"},
+      "body":       {
+        "type": "Block",
+        "statements": [
+          {
+            "type": "IfStmt",
+            "condition":             {
+              "type": "BinaryExpr",
+              "op": "<",
+              "left":               {
+                "type": "Identifier",
+                "name": "i"
+              },
+              "right":               {
+                "type": "Literal",
+                "literalType": "Int",
+                "value": 18
+              }
+            },
+            "then":             {
+              "type": "Block",
+              "statements": [
+                {
+                  "type": "ReturnStmt",
+                  "value":                   {
+                    "type": "Literal",
+                    "literalType": "String",
+                    "value": "Menor de idade"
+                  }
+                }
+              ]
+            },
+            "else":             {
+              "type": "IfStmt",
+              "condition":               {
+                "type": "BinaryExpr",
+                "op": "<",
+                "left":                 {
+                  "type": "Identifier",
+                  "name": "i"
+                },
+                "right":                 {
+                  "type": "Literal",
+                  "literalType": "Int",
+                  "value": 60
+                }
+              },
+              "then":               {
+                "type": "Block",
+                "statements": [
+                  {
+                    "type": "ReturnStmt",
+                    "value":                     {
+                      "type": "Literal",
+                      "literalType": "String",
+                      "value": "Adulto"
+                    }
+                  }
+                ]
+              },
+              "else":               {
+                "type": "Block",
+                "statements": [
+                  {
+                    "type": "ReturnStmt",
+                    "value":                     {
+                      "type": "Literal",
+                      "literalType": "String",
+                      "value": "Idoso"
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "LetDecl",
+      "name": "resultado1",
+      "typeAnnotation": null,
+      "initializer":       {
+        "type": "CallExpr",
+        "callee":         {
+          "type": "Identifier",
+          "name": "quadrado"
+        },
+        "args": [
+          {
+            "type": "Literal",
+            "literalType": "Int",
+            "value": 5
+          }
+        ]
+      }
+    },
+    {
+      "type": "LetDecl",
+      "name": "resultado2",
+      "typeAnnotation": null,
+      "initializer":       {
+        "type": "CallExpr",
+        "callee":         {
+          "type": "Identifier",
+          "name": "soma_dois"
+        },
+        "args": [
+          {
+            "type": "Literal",
+            "literalType": "Int",
+            "value": 10
+          },
+          {
+            "type": "Literal",
+            "literalType": "Int",
+            "value": 20
+          }
+        ]
+      }
+    },
+    {
+      "type": "LetDecl",
+      "name": "resultado3",
+      "typeAnnotation": null,
+      "initializer":       {
+        "type": "CallExpr",
+        "callee":         {
+          "type": "Identifier",
+          "name": "area_retangulo"
+        },
+        "args": [
+          {
+            "type": "Literal",
+            "literalType": "Float",
+            "value": 5.000000
+          },
+          {
+            "type": "Literal",
+            "literalType": "Float",
+            "value": 3.000000
+          }
+        ]
+      }
+    },
+    {
+      "type": "LetDecl",
+      "name": "resultado4",
+      "typeAnnotation": null,
+      "initializer":       {
+        "type": "CallExpr",
+        "callee":         {
+          "type": "Identifier",
+          "name": "maximo"
+        },
+        "args": [
+          {
+            "type": "Literal",
+            "literalType": "Int",
+            "value": 45
+          },
+          {
+            "type": "Literal",
+            "literalType": "Int",
+            "value": 23
+          }
+        ]
+      }
+    },
+    {
+      "type": "FnDecl",
+      "name": "soma_array",
+      "params": [
+        {
+          "type": "Param",
+          "name": "arr",
+          "paramType":           {"kind": "?", "arrayOf": {"kind": "Int"}}
+        }
+      ],
+      "returnType":       {"kind": "Int"},
+      "body":       {
+        "type": "Block",
+        "statements": [
+          {
+            "type": "LetDecl",
+            "name": "total",
+            "typeAnnotation":             {"kind": "Int"},
+            "initializer":             {
+              "type": "Literal",
+              "literalType": "Int",
+              "value": 0
+            }
+          },
+          {
+            "type": "ForStmt",
+            "iterator": "elemento",
+            "iterable":             {
+              "type": "Identifier",
+              "name": "arr"
+            },
+            "body":             {
+              "type": "Block",
+              "statements": [
+                {
+                  "type": "ExprStmt",
+                  "expression":                   {
+                    "type": "AssignExpr",
+                    "target":                     {
+                      "type": "Identifier",
+                      "name": "total"
+                    },
+                    "value":                     {
+                      "type": "BinaryExpr",
+                      "op": "+",
+                      "left":                       {
+                        "type": "Identifier",
+                        "name": "total"
+                      },
+                      "right":                       {
+                        "type": "Identifier",
+                        "name": "elemento"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "type": "ReturnStmt",
+            "value":             {
+              "type": "Identifier",
+              "name": "total"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "FnDecl",
+      "name": "conta_positivos",
+      "params": [
+        {
+          "type": "Param",
+          "name": "arr",
+          "paramType":           {"kind": "?", "arrayOf": {"kind": "Int"}}
+        }
+      ],
+      "returnType":       {"kind": "Int"},
+      "body":       {
+        "type": "Block",
+        "statements": [
+          {
+            "type": "LetDecl",
+            "name": "contador",
+            "typeAnnotation":             {"kind": "Int"},
+            "initializer":             {
+              "type": "Literal",
+              "literalType": "Int",
+              "value": 0
+            }
+          },
+          {
+            "type": "ForStmt",
+            "iterator": "num",
+            "iterable":             {
+              "type": "Identifier",
+              "name": "arr"
+            },
+            "body":             {
+              "type": "Block",
+              "statements": [
+                {
+                  "type": "IfStmt",
+                  "condition":                   {
+                    "type": "BinaryExpr",
+                    "op": ">",
+                    "left":                     {
+                      "type": "Identifier",
+                      "name": "num"
+                    },
+                    "right":                     {
+                      "type": "Literal",
+                      "literalType": "Int",
+                      "value": 0
+                    }
+                  },
+                  "then":                   {
+                    "type": "Block",
+                    "statements": [
+                      {
+                        "type": "ExprStmt",
+                        "expression":                         {
+                          "type": "AssignExpr",
+                          "target":                           {
+                            "type": "Identifier",
+                            "name": "contador"
+                          },
+                          "value":                           {
+                            "type": "BinaryExpr",
+                            "op": "+",
+                            "left":                             {
+                              "type": "Identifier",
+                              "name": "contador"
+                            },
+                            "right":                             {
+                              "type": "Literal",
+                              "literalType": "Int",
+                              "value": 1
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "else": null
+                }
+              ]
+            }
+          },
+          {
+            "type": "ReturnStmt",
+            "value":             {
+              "type": "Identifier",
+              "name": "contador"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "FnDecl",
+      "name": "pipeline_dados_csv",
+      "params": [
+
+      ],
+      "returnType":       {"kind": "DataFrame"},
+      "body":       {
+        "type": "Block",
+        "statements": [
+          {
+            "type": "LetDecl",
+            "name": "df",
+            "typeAnnotation":             {"kind": "DataFrame"},
+            "initializer":             {
+              "type": "LoadExpr",
+              "path": "dados.csv"
+            }
+          },
+          {
+            "type": "LetDecl",
+            "name": "filtrado",
+            "typeAnnotation":             {"kind": "DataFrame"},
+            "initializer":             {
+              "type": "PipelineExpr",
+              "stages": [
+                {
+                  "type": "Identifier",
+                  "name": "df"
+                },
+                {
+                  "type": "FilterTransform",
+                  "predicate":                   {
+                    "type": "LambdaExpr",
+                    "params": [
+                      {
+                        "type": "Param",
+                        "name": "row",
+                        "paramType":                         {"kind": "Row"}
+                      }
+                    ],
+                    "body":                     {
+                      "type": "BinaryExpr",
+                      "op": ">",
+                      "left":                       {
+                        "type": "MemberExpr",
+                        "object":                         {
+                          "type": "Identifier",
+                          "name": "row"
+                        },
+                        "member": "idade"
+                      },
+                      "right":                       {
+                        "type": "Literal",
+                        "literalType": "Int",
+                        "value": 18
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "type": "LetDecl",
+            "name": "selecionado",
+            "typeAnnotation":             {"kind": "DataFrame"},
+            "initializer":             {
+              "type": "PipelineExpr",
+              "stages": [
+                {
+                  "type": "Identifier",
+                  "name": "filtrado"
+                },
+                {
+                  "type": "SelectTransform",
+                  "columns": ["nome", "idade", "salario", "cidade"]
+                }
+              ]
+            }
+          },
+          {
+            "type": "LetDecl",
+            "name": "agrupado",
+            "typeAnnotation":             {"kind": "DataFrame"},
+            "initializer":             {
+              "type": "PipelineExpr",
+              "stages": [
+                {
+                  "type": "Identifier",
+                  "name": "selecionado"
+                },
+                {
+                  "type": "GroupByTransform",
+                  "groupColumns": ["cidade"]
+                }
+              ]
+            }
+          },
+          {
+            "type": "ReturnStmt",
+            "value":             {
+              "type": "Identifier",
+              "name": "agrupado"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "DataDecl",
+      "name": "Pessoa",
+      "fields": [
+        {
+          "type": "FieldDecl",
+          "name": "nome",
+          "fieldType":           {"kind": "String"}
+        },
+        {
+          "type": "FieldDecl",
+          "name": "idade",
+          "fieldType":           {"kind": "Int"}
+        },
+        {
+          "type": "FieldDecl",
+          "name": "altura",
+          "fieldType":           {"kind": "Float"}
+        }
+      ]
+    },
+    {
+      "type": "LetDecl",
+      "name": "pessoa1",
+      "typeAnnotation":       {"kind": "Pessoa"},
+      "initializer":       {
+        "type": "CallExpr",
+        "callee":         {
+          "type": "Identifier",
+          "name": "Pessoa"
+        },
+        "args": [
+          {
+            "type": "Literal",
+            "literalType": "String",
+            "value": "João"
+          },
+          {
+            "type": "Literal",
+            "literalType": "Int",
+            "value": 30
+          },
+          {
+            "type": "Literal",
+            "literalType": "Float",
+            "value": 1.800000
+          }
+        ]
+      }
+    },
+    {
+      "type": "LetDecl",
+      "name": "x",
+      "typeAnnotation": null,
+      "initializer":       {
+        "type": "Literal",
+        "literalType": "Int",
+        "value": 10
+      }
+    },
+    {
+      "type": "FnDecl",
+      "name": "teste_escopo",
       "params": [
 
       ],
@@ -13,271 +1311,743 @@
         "statements": [
           {
             "type": "LetDecl",
-            "name": "notas",
+            "name": "x",
             "typeAnnotation": null,
             "initializer":             {
-              "type": "ArrayLiteral",
-              "elements": [
-                {
-                  "type": "Literal",
-                  "literalType": "Int",
-                  "value": 65
-                },
-                {
-                  "type": "Literal",
-                  "literalType": "Int",
-                  "value": 90
-                },
-                {
-                  "type": "Literal",
-                  "literalType": "Int",
-                  "value": 78
-                },
-                {
-                  "type": "Literal",
-                  "literalType": "Int",
-                  "value": 45
-                },
-                {
-                  "type": "Literal",
-                  "literalType": "Int",
-                  "value": 88
-                },
-                {
-                  "type": "Literal",
-                  "literalType": "Int",
-                  "value": 92
-                },
-                {
-                  "type": "Literal",
-                  "literalType": "Int",
-                  "value": 50
-                }
-              ]
+              "type": "Literal",
+              "literalType": "Int",
+              "value": 20
             }
-          },
-          {
-            "type": "LetDecl",
-            "name": "total",
-            "typeAnnotation": null,
-            "initializer":             {
-              "type": "CallExpr",
-              "callee":               {
-                "type": "Identifier",
-                "name": "sum"
-              },
-              "args": [
-                {
-                  "type": "Identifier",
-                  "name": "notas"
-                }
-              ]
-            }
-          },
-          {
-            "type": "PrintStmt",
-            "args": [
-              {
-                "type": "Literal",
-                "literalType": "String",
-                "value": "NOTAS:"
-              },
-              {
-                "type": "Identifier",
-                "name": "notas"
-              }
-            ]
-          },
-          {
-            "type": "LetDecl",
-            "name": "media",
-            "typeAnnotation": null,
-            "initializer":             {
-              "type": "CallExpr",
-              "callee":               {
-                "type": "Identifier",
-                "name": "mean"
-              },
-              "args": [
-                {
-                  "type": "Identifier",
-                  "name": "notas"
-                }
-              ]
-            }
-          },
-          {
-            "type": "LetDecl",
-            "name": "menor_nota",
-            "typeAnnotation": null,
-            "initializer":             {
-              "type": "CallExpr",
-              "callee":               {
-                "type": "Identifier",
-                "name": "min"
-              },
-              "args": [
-                {
-                  "type": "Identifier",
-                  "name": "notas"
-                }
-              ]
-            }
-          },
-          {
-            "type": "LetDecl",
-            "name": "maior_nota",
-            "typeAnnotation": null,
-            "initializer":             {
-              "type": "CallExpr",
-              "callee":               {
-                "type": "Identifier",
-                "name": "max"
-              },
-              "args": [
-                {
-                  "type": "Identifier",
-                  "name": "notas"
-                }
-              ]
-            }
-          },
-          {
-            "type": "LetDecl",
-            "name": "qtd_alunos",
-            "typeAnnotation": null,
-            "initializer":             {
-              "type": "CallExpr",
-              "callee":               {
-                "type": "Identifier",
-                "name": "count"
-              },
-              "args": [
-                {
-                  "type": "Identifier",
-                  "name": "notas"
-                }
-              ]
-            }
-          },
-          {
-            "type": "PrintStmt",
-            "args": [
-              {
-                "type": "Literal",
-                "literalType": "String",
-                "value": "=== Relatorio da Turma ==="
-              }
-            ]
-          },
-          {
-            "type": "PrintStmt",
-            "args": [
-              {
-                "type": "Literal",
-                "literalType": "String",
-                "value": "Quantidade de alunos:"
-              }
-            ]
-          },
-          {
-            "type": "PrintStmt",
-            "args": [
-              {
-                "type": "Identifier",
-                "name": "qtd_alunos"
-              }
-            ]
-          },
-          {
-            "type": "PrintStmt",
-            "args": [
-              {
-                "type": "Literal",
-                "literalType": "String",
-                "value": "Soma total das notas:"
-              }
-            ]
-          },
-          {
-            "type": "PrintStmt",
-            "args": [
-              {
-                "type": "Identifier",
-                "name": "total"
-              }
-            ]
-          },
-          {
-            "type": "PrintStmt",
-            "args": [
-              {
-                "type": "Literal",
-                "literalType": "String",
-                "value": "Nota Media:"
-              }
-            ]
-          },
-          {
-            "type": "PrintStmt",
-            "args": [
-              {
-                "type": "Identifier",
-                "name": "media"
-              }
-            ]
-          },
-          {
-            "type": "PrintStmt",
-            "args": [
-              {
-                "type": "Literal",
-                "literalType": "String",
-                "value": "Menor Nota:"
-              }
-            ]
-          },
-          {
-            "type": "PrintStmt",
-            "args": [
-              {
-                "type": "Identifier",
-                "name": "menor_nota"
-              }
-            ]
-          },
-          {
-            "type": "PrintStmt",
-            "args": [
-              {
-                "type": "Literal",
-                "literalType": "String",
-                "value": "Maior Nota:"
-              }
-            ]
-          },
-          {
-            "type": "PrintStmt",
-            "args": [
-              {
-                "type": "Identifier",
-                "name": "maior_nota"
-              }
-            ]
           },
           {
             "type": "IfStmt",
             "condition":             {
               "type": "BinaryExpr",
-              "op": ">=",
+              "op": ">",
               "left":               {
                 "type": "Identifier",
-                "name": "media"
+                "name": "x"
+              },
+              "right":               {
+                "type": "Literal",
+                "literalType": "Int",
+                "value": 15
+              }
+            },
+            "then":             {
+              "type": "Block",
+              "statements": [
+                {
+                  "type": "LetDecl",
+                  "name": "y",
+                  "typeAnnotation":                   {"kind": "Int"},
+                  "initializer":                   {
+                    "type": "BinaryExpr",
+                    "op": "+",
+                    "left":                     {
+                      "type": "Identifier",
+                      "name": "x"
+                    },
+                    "right":                     {
+                      "type": "Literal",
+                      "literalType": "Int",
+                      "value": 10
+                    }
+                  }
+                },
+                {
+                  "type": "ReturnStmt",
+                  "value":                   {
+                    "type": "Identifier",
+                    "name": "y"
+                  }
+                }
+              ]
+            },
+            "else":             {
+              "type": "Block",
+              "statements": [
+                {
+                  "type": "ReturnStmt",
+                  "value":                   {
+                    "type": "Identifier",
+                    "name": "x"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "LetDecl",
+      "name": "resultado_escopo",
+      "typeAnnotation": null,
+      "initializer":       {
+        "type": "CallExpr",
+        "callee":         {
+          "type": "Identifier",
+          "name": "teste_escopo"
+        },
+        "args": [
+
+        ]
+      }
+    },
+    {
+      "type": "FnDecl",
+      "name": "triplo",
+      "params": [
+        {
+          "type": "Param",
+          "name": "x",
+          "paramType":           {"kind": "Int"}
+        }
+      ],
+      "returnType":       {"kind": "Int"},
+      "body":       {
+        "type": "Block",
+        "statements": [
+          {
+            "type": "ReturnStmt",
+            "value":             {
+              "type": "BinaryExpr",
+              "op": "*",
+              "left":               {
+                "type": "Identifier",
+                "name": "x"
+              },
+              "right":               {
+                "type": "Literal",
+                "literalType": "Int",
+                "value": 3
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "FnDecl",
+      "name": "adiciona_dez",
+      "params": [
+        {
+          "type": "Param",
+          "name": "x",
+          "paramType":           {"kind": "Int"}
+        }
+      ],
+      "returnType":       {"kind": "Int"},
+      "body":       {
+        "type": "Block",
+        "statements": [
+          {
+            "type": "ReturnStmt",
+            "value":             {
+              "type": "BinaryExpr",
+              "op": "+",
+              "left":               {
+                "type": "Identifier",
+                "name": "x"
+              },
+              "right":               {
+                "type": "Literal",
+                "literalType": "Int",
+                "value": 10
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "FnDecl",
+      "name": "funcao_composta",
+      "params": [
+        {
+          "type": "Param",
+          "name": "v",
+          "paramType":           {"kind": "Int"}
+        }
+      ],
+      "returnType":       {"kind": "Int"},
+      "body":       {
+        "type": "Block",
+        "statements": [
+          {
+            "type": "LetDecl",
+            "name": "passo1",
+            "typeAnnotation": null,
+            "initializer":             {
+              "type": "CallExpr",
+              "callee":               {
+                "type": "Identifier",
+                "name": "dobro"
+              },
+              "args": [
+                {
+                  "type": "Identifier",
+                  "name": "v"
+                }
+              ]
+            }
+          },
+          {
+            "type": "LetDecl",
+            "name": "passo2",
+            "typeAnnotation": null,
+            "initializer":             {
+              "type": "CallExpr",
+              "callee":               {
+                "type": "Identifier",
+                "name": "adiciona_dez"
+              },
+              "args": [
+                {
+                  "type": "Identifier",
+                  "name": "passo1"
+                }
+              ]
+            }
+          },
+          {
+            "type": "LetDecl",
+            "name": "passo3",
+            "typeAnnotation": null,
+            "initializer":             {
+              "type": "CallExpr",
+              "callee":               {
+                "type": "Identifier",
+                "name": "triplo"
+              },
+              "args": [
+                {
+                  "type": "Identifier",
+                  "name": "passo2"
+                }
+              ]
+            }
+          },
+          {
+            "type": "ReturnStmt",
+            "value":             {
+              "type": "Identifier",
+              "name": "passo3"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "LetDecl",
+      "name": "resultado_composto",
+      "typeAnnotation": null,
+      "initializer":       {
+        "type": "CallExpr",
+        "callee":         {
+          "type": "Identifier",
+          "name": "funcao_composta"
+        },
+        "args": [
+          {
+            "type": "Literal",
+            "literalType": "Int",
+            "value": 5
+          }
+        ]
+      }
+    },
+    {
+      "type": "FnDecl",
+      "name": "fatorial",
+      "params": [
+        {
+          "type": "Param",
+          "name": "n",
+          "paramType":           {"kind": "Int"}
+        }
+      ],
+      "returnType":       {"kind": "Int"},
+      "body":       {
+        "type": "Block",
+        "statements": [
+          {
+            "type": "IfStmt",
+            "condition":             {
+              "type": "BinaryExpr",
+              "op": "<=",
+              "left":               {
+                "type": "Identifier",
+                "name": "n"
+              },
+              "right":               {
+                "type": "Literal",
+                "literalType": "Int",
+                "value": 1
+              }
+            },
+            "then":             {
+              "type": "Block",
+              "statements": [
+                {
+                  "type": "ReturnStmt",
+                  "value":                   {
+                    "type": "Literal",
+                    "literalType": "Int",
+                    "value": 1
+                  }
+                }
+              ]
+            },
+            "else":             {
+              "type": "Block",
+              "statements": [
+                {
+                  "type": "ReturnStmt",
+                  "value":                   {
+                    "type": "BinaryExpr",
+                    "op": "*",
+                    "left":                     {
+                      "type": "Identifier",
+                      "name": "n"
+                    },
+                    "right":                     {
+                      "type": "CallExpr",
+                      "callee":                       {
+                        "type": "Identifier",
+                        "name": "fatorial"
+                      },
+                      "args": [
+                        {
+                          "type": "BinaryExpr",
+                          "op": "-",
+                          "left":                           {
+                            "type": "Identifier",
+                            "name": "n"
+                          },
+                          "right":                           {
+                            "type": "Literal",
+                            "literalType": "Int",
+                            "value": 1
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "FnDecl",
+      "name": "fibonacci",
+      "params": [
+        {
+          "type": "Param",
+          "name": "n",
+          "paramType":           {"kind": "Int"}
+        }
+      ],
+      "returnType":       {"kind": "Int"},
+      "body":       {
+        "type": "Block",
+        "statements": [
+          {
+            "type": "IfStmt",
+            "condition":             {
+              "type": "BinaryExpr",
+              "op": "<=",
+              "left":               {
+                "type": "Identifier",
+                "name": "n"
+              },
+              "right":               {
+                "type": "Literal",
+                "literalType": "Int",
+                "value": 1
+              }
+            },
+            "then":             {
+              "type": "Block",
+              "statements": [
+                {
+                  "type": "ReturnStmt",
+                  "value":                   {
+                    "type": "Identifier",
+                    "name": "n"
+                  }
+                }
+              ]
+            },
+            "else":             {
+              "type": "Block",
+              "statements": [
+                {
+                  "type": "ReturnStmt",
+                  "value":                   {
+                    "type": "BinaryExpr",
+                    "op": "+",
+                    "left":                     {
+                      "type": "CallExpr",
+                      "callee":                       {
+                        "type": "Identifier",
+                        "name": "fibonacci"
+                      },
+                      "args": [
+                        {
+                          "type": "BinaryExpr",
+                          "op": "-",
+                          "left":                           {
+                            "type": "Identifier",
+                            "name": "n"
+                          },
+                          "right":                           {
+                            "type": "Literal",
+                            "literalType": "Int",
+                            "value": 1
+                          }
+                        }
+                      ]
+                    },
+                    "right":                     {
+                      "type": "CallExpr",
+                      "callee":                       {
+                        "type": "Identifier",
+                        "name": "fibonacci"
+                      },
+                      "args": [
+                        {
+                          "type": "BinaryExpr",
+                          "op": "-",
+                          "left":                           {
+                            "type": "Identifier",
+                            "name": "n"
+                          },
+                          "right":                           {
+                            "type": "Literal",
+                            "literalType": "Int",
+                            "value": 2
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "LetDecl",
+      "name": "lista",
+      "typeAnnotation": null,
+      "initializer":       {
+        "type": "ArrayLiteral",
+        "elements": [
+          {
+            "type": "Literal",
+            "literalType": "Int",
+            "value": 10
+          },
+          {
+            "type": "Literal",
+            "literalType": "Int",
+            "value": 20
+          },
+          {
+            "type": "Literal",
+            "literalType": "Int",
+            "value": 30
+          },
+          {
+            "type": "Literal",
+            "literalType": "Int",
+            "value": 40
+          },
+          {
+            "type": "Literal",
+            "literalType": "Int",
+            "value": 50
+          }
+        ]
+      }
+    },
+    {
+      "type": "LetDecl",
+      "name": "primeiro",
+      "typeAnnotation": null,
+      "initializer":       {
+        "type": "IndexExpr",
+        "object":         {
+          "type": "Identifier",
+          "name": "lista"
+        },
+        "index":         {
+          "type": "Literal",
+          "literalType": "Int",
+          "value": 0
+        }
+      }
+    },
+    {
+      "type": "LetDecl",
+      "name": "terceiro",
+      "typeAnnotation": null,
+      "initializer":       {
+        "type": "IndexExpr",
+        "object":         {
+          "type": "Identifier",
+          "name": "lista"
+        },
+        "index":         {
+          "type": "Literal",
+          "literalType": "Int",
+          "value": 2
+        }
+      }
+    },
+    {
+      "type": "LetDecl",
+      "name": "calculo_complexo",
+      "typeAnnotation": null,
+      "initializer":       {
+        "type": "BinaryExpr",
+        "op": "+",
+        "left":         {
+          "type": "BinaryExpr",
+          "op": "/",
+          "left":           {
+            "type": "BinaryExpr",
+            "op": "-",
+            "left":             {
+              "type": "BinaryExpr",
+              "op": "*",
+              "left":               {
+                "type": "BinaryExpr",
+                "op": "+",
+                "left":                 {
+                  "type": "Literal",
+                  "literalType": "Int",
+                  "value": 10
+                },
+                "right":                 {
+                  "type": "Literal",
+                  "literalType": "Int",
+                  "value": 5
+                }
+              },
+              "right":               {
+                "type": "Literal",
+                "literalType": "Int",
+                "value": 3
+              }
+            },
+            "right":             {
+              "type": "Literal",
+              "literalType": "Int",
+              "value": 8
+            }
+          },
+          "right":           {
+            "type": "Literal",
+            "literalType": "Int",
+            "value": 2
+          }
+        },
+        "right":         {
+          "type": "BinaryExpr",
+          "op": "*",
+          "left":           {
+            "type": "Literal",
+            "literalType": "Int",
+            "value": 4
+          },
+          "right":           {
+            "type": "Literal",
+            "literalType": "Int",
+            "value": 7
+          }
+        }
+      }
+    },
+    {
+      "type": "LetDecl",
+      "name": "condicao_complexa",
+      "typeAnnotation": null,
+      "initializer":       {
+        "type": "BinaryExpr",
+        "op": "||",
+        "left":         {
+          "type": "BinaryExpr",
+          "op": "&&",
+          "left":           {
+            "type": "BinaryExpr",
+            "op": ">",
+            "left":             {
+              "type": "Identifier",
+              "name": "idade"
+            },
+            "right":             {
+              "type": "Literal",
+              "literalType": "Int",
+              "value": 18
+            }
+          },
+          "right":           {
+            "type": "BinaryExpr",
+            "op": ">",
+            "left":             {
+              "type": "Identifier",
+              "name": "altura"
+            },
+            "right":             {
+              "type": "Literal",
+              "literalType": "Float",
+              "value": 1.600000
+            }
+          }
+        },
+        "right":         {
+          "type": "BinaryExpr",
+          "op": "==",
+          "left":           {
+            "type": "Identifier",
+            "name": "nome"
+          },
+          "right":           {
+            "type": "Literal",
+            "literalType": "String",
+            "value": "Admin"
+          }
+        }
+      }
+    },
+    {
+      "type": "FnDecl",
+      "name": "test_basicos",
+      "params": [
+
+      ],
+      "returnType":       {"kind": "Int"},
+      "body":       {
+        "type": "Block",
+        "statements": [
+          {
+            "type": "PrintStmt",
+            "args": [
+              {
+                "type": "Literal",
+                "literalType": "String",
+                "value": "=== test_basicos ==="
+              }
+            ]
+          },
+          {
+            "type": "LetDecl",
+            "name": "ok_idade",
+            "typeAnnotation":             {"kind": "Bool"},
+            "initializer":             {
+              "type": "BinaryExpr",
+              "op": "==",
+              "left":               {
+                "type": "Identifier",
+                "name": "idade"
+              },
+              "right":               {
+                "type": "Literal",
+                "literalType": "Int",
+                "value": 25
+              }
+            }
+          },
+          {
+            "type": "LetDecl",
+            "name": "ok_altura",
+            "typeAnnotation":             {"kind": "Bool"},
+            "initializer":             {
+              "type": "BinaryExpr",
+              "op": "==",
+              "left":               {
+                "type": "Identifier",
+                "name": "altura"
               },
               "right":               {
                 "type": "Literal",
                 "literalType": "Float",
-                "value": 70.000000
+                "value": 1.750000
+              }
+            }
+          },
+          {
+            "type": "LetDecl",
+            "name": "ok_nome",
+            "typeAnnotation":             {"kind": "Bool"},
+            "initializer":             {
+              "type": "BinaryExpr",
+              "op": "==",
+              "left":               {
+                "type": "Identifier",
+                "name": "nome"
+              },
+              "right":               {
+                "type": "Literal",
+                "literalType": "String",
+                "value": "Alice"
+              }
+            }
+          },
+          {
+            "type": "LetDecl",
+            "name": "ok_ativo",
+            "typeAnnotation":             {"kind": "Bool"},
+            "initializer":             {
+              "type": "BinaryExpr",
+              "op": "==",
+              "left":               {
+                "type": "Identifier",
+                "name": "ativo"
+              },
+              "right":               {
+                "type": "Literal",
+                "literalType": "Bool",
+                "value": true
+              }
+            }
+          },
+          {
+            "type": "IfStmt",
+            "condition":             {
+              "type": "BinaryExpr",
+              "op": "&&",
+              "left":               {
+                "type": "BinaryExpr",
+                "op": "&&",
+                "left":                 {
+                  "type": "BinaryExpr",
+                  "op": "&&",
+                  "left":                   {
+                    "type": "Identifier",
+                    "name": "ok_idade"
+                  },
+                  "right":                   {
+                    "type": "Identifier",
+                    "name": "ok_altura"
+                  }
+                },
+                "right":                 {
+                  "type": "Identifier",
+                  "name": "ok_nome"
+                }
+              },
+              "right":               {
+                "type": "Identifier",
+                "name": "ok_ativo"
               }
             },
             "then":             {
@@ -289,7 +2059,2953 @@
                     {
                       "type": "Literal",
                       "literalType": "String",
-                      "value": "Status da turma (media = 70.0): APROVADA"
+                      "value": "test_basicos: OK"
+                    }
+                  ]
+                },
+                {
+                  "type": "ReturnStmt",
+                  "value":                   {
+                    "type": "Literal",
+                    "literalType": "Int",
+                    "value": 0
+                  }
+                }
+              ]
+            },
+            "else":             {
+              "type": "Block",
+              "statements": [
+                {
+                  "type": "PrintStmt",
+                  "args": [
+                    {
+                      "type": "Literal",
+                      "literalType": "String",
+                      "value": "test_basicos: FAIL"
+                    }
+                  ]
+                },
+                {
+                  "type": "PrintStmt",
+                  "args": [
+                    {
+                      "type": "Literal",
+                      "literalType": "String",
+                      "value": "  idade:"
+                    },
+                    {
+                      "type": "Identifier",
+                      "name": "idade"
+                    },
+                    {
+                      "type": "Literal",
+                      "literalType": "String",
+                      "value": "altura:"
+                    },
+                    {
+                      "type": "Identifier",
+                      "name": "altura"
+                    },
+                    {
+                      "type": "Literal",
+                      "literalType": "String",
+                      "value": "nome:"
+                    },
+                    {
+                      "type": "Identifier",
+                      "name": "nome"
+                    },
+                    {
+                      "type": "Literal",
+                      "literalType": "String",
+                      "value": "ativo:"
+                    },
+                    {
+                      "type": "Identifier",
+                      "name": "ativo"
+                    }
+                  ]
+                },
+                {
+                  "type": "ReturnStmt",
+                  "value":                   {
+                    "type": "Literal",
+                    "literalType": "Int",
+                    "value": 1
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "FnDecl",
+      "name": "test_operacoes_aritmeticas",
+      "params": [
+
+      ],
+      "returnType":       {"kind": "Int"},
+      "body":       {
+        "type": "Block",
+        "statements": [
+          {
+            "type": "PrintStmt",
+            "args": [
+              {
+                "type": "Literal",
+                "literalType": "String",
+                "value": "=== test_operacoes_aritmeticas ==="
+              }
+            ]
+          },
+          {
+            "type": "IfStmt",
+            "condition":             {
+              "type": "BinaryExpr",
+              "op": "&&",
+              "left":               {
+                "type": "BinaryExpr",
+                "op": "&&",
+                "left":                 {
+                  "type": "BinaryExpr",
+                  "op": "&&",
+                  "left":                   {
+                    "type": "BinaryExpr",
+                    "op": "&&",
+                    "left":                     {
+                      "type": "BinaryExpr",
+                      "op": "&&",
+                      "left":                       {
+                        "type": "BinaryExpr",
+                        "op": "==",
+                        "left":                         {
+                          "type": "Identifier",
+                          "name": "soma"
+                        },
+                        "right":                         {
+                          "type": "Literal",
+                          "literalType": "Int",
+                          "value": 15
+                        }
+                      },
+                      "right":                       {
+                        "type": "BinaryExpr",
+                        "op": "==",
+                        "left":                         {
+                          "type": "Identifier",
+                          "name": "subtracao"
+                        },
+                        "right":                         {
+                          "type": "Literal",
+                          "literalType": "Int",
+                          "value": 12
+                        }
+                      }
+                    },
+                    "right":                     {
+                      "type": "BinaryExpr",
+                      "op": "==",
+                      "left":                       {
+                        "type": "Identifier",
+                        "name": "multiplicacao"
+                      },
+                      "right":                       {
+                        "type": "Literal",
+                        "literalType": "Int",
+                        "value": 42
+                      }
+                    }
+                  },
+                  "right":                   {
+                    "type": "BinaryExpr",
+                    "op": "==",
+                    "left":                     {
+                      "type": "Identifier",
+                      "name": "divisao"
+                    },
+                    "right":                     {
+                      "type": "Literal",
+                      "literalType": "Int",
+                      "value": 25
+                    }
+                  }
+                },
+                "right":                 {
+                  "type": "BinaryExpr",
+                  "op": "==",
+                  "left":                   {
+                    "type": "Identifier",
+                    "name": "resto"
+                  },
+                  "right":                   {
+                    "type": "Literal",
+                    "literalType": "Int",
+                    "value": 2
+                  }
+                }
+              },
+              "right":               {
+                "type": "BinaryExpr",
+                "op": "==",
+                "left":                 {
+                  "type": "Identifier",
+                  "name": "expressao_complexa"
+                },
+                "right":                 {
+                  "type": "Literal",
+                  "literalType": "Int",
+                  "value": 41
+                }
+              }
+            },
+            "then":             {
+              "type": "Block",
+              "statements": [
+                {
+                  "type": "PrintStmt",
+                  "args": [
+                    {
+                      "type": "Literal",
+                      "literalType": "String",
+                      "value": "test_operacoes_aritmeticas: OK"
+                    }
+                  ]
+                },
+                {
+                  "type": "ReturnStmt",
+                  "value":                   {
+                    "type": "Literal",
+                    "literalType": "Int",
+                    "value": 0
+                  }
+                }
+              ]
+            },
+            "else":             {
+              "type": "Block",
+              "statements": [
+                {
+                  "type": "PrintStmt",
+                  "args": [
+                    {
+                      "type": "Literal",
+                      "literalType": "String",
+                      "value": "test_operacoes_aritmeticas: FAIL"
+                    }
+                  ]
+                },
+                {
+                  "type": "PrintStmt",
+                  "args": [
+                    {
+                      "type": "Literal",
+                      "literalType": "String",
+                      "value": "  soma:"
+                    },
+                    {
+                      "type": "Identifier",
+                      "name": "soma"
+                    },
+                    {
+                      "type": "Literal",
+                      "literalType": "String",
+                      "value": "subtracao:"
+                    },
+                    {
+                      "type": "Identifier",
+                      "name": "subtracao"
+                    },
+                    {
+                      "type": "Literal",
+                      "literalType": "String",
+                      "value": "multiplicacao:"
+                    },
+                    {
+                      "type": "Identifier",
+                      "name": "multiplicacao"
+                    },
+                    {
+                      "type": "Literal",
+                      "literalType": "String",
+                      "value": "divisao:"
+                    },
+                    {
+                      "type": "Identifier",
+                      "name": "divisao"
+                    },
+                    {
+                      "type": "Literal",
+                      "literalType": "String",
+                      "value": "resto:"
+                    },
+                    {
+                      "type": "Identifier",
+                      "name": "resto"
+                    },
+                    {
+                      "type": "Literal",
+                      "literalType": "String",
+                      "value": "expr:"
+                    },
+                    {
+                      "type": "Identifier",
+                      "name": "expressao_complexa"
+                    }
+                  ]
+                },
+                {
+                  "type": "ReturnStmt",
+                  "value":                   {
+                    "type": "Literal",
+                    "literalType": "Int",
+                    "value": 1
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "FnDecl",
+      "name": "test_comparacao_logica",
+      "params": [
+
+      ],
+      "returnType":       {"kind": "Int"},
+      "body":       {
+        "type": "Block",
+        "statements": [
+          {
+            "type": "PrintStmt",
+            "args": [
+              {
+                "type": "Literal",
+                "literalType": "String",
+                "value": "=== test_comparacao_logica ==="
+              }
+            ]
+          },
+          {
+            "type": "LetDecl",
+            "name": "esperado_maior",
+            "typeAnnotation":             {"kind": "Bool"},
+            "initializer":             {
+              "type": "Literal",
+              "literalType": "Bool",
+              "value": true
+            }
+          },
+          {
+            "type": "LetDecl",
+            "name": "esperado_menor_igual",
+            "typeAnnotation":             {"kind": "Bool"},
+            "initializer":             {
+              "type": "Literal",
+              "literalType": "Bool",
+              "value": true
+            }
+          },
+          {
+            "type": "LetDecl",
+            "name": "esperado_igual",
+            "typeAnnotation":             {"kind": "Bool"},
+            "initializer":             {
+              "type": "Literal",
+              "literalType": "Bool",
+              "value": true
+            }
+          },
+          {
+            "type": "LetDecl",
+            "name": "esperado_diferente",
+            "typeAnnotation":             {"kind": "Bool"},
+            "initializer":             {
+              "type": "Literal",
+              "literalType": "Bool",
+              "value": true
+            }
+          },
+          {
+            "type": "LetDecl",
+            "name": "esperado_e_logico",
+            "typeAnnotation":             {"kind": "Bool"},
+            "initializer":             {
+              "type": "Literal",
+              "literalType": "Bool",
+              "value": false
+            }
+          },
+          {
+            "type": "LetDecl",
+            "name": "esperado_ou_logico",
+            "typeAnnotation":             {"kind": "Bool"},
+            "initializer":             {
+              "type": "Literal",
+              "literalType": "Bool",
+              "value": true
+            }
+          },
+          {
+            "type": "LetDecl",
+            "name": "esperado_negacao",
+            "typeAnnotation":             {"kind": "Bool"},
+            "initializer":             {
+              "type": "Literal",
+              "literalType": "Bool",
+              "value": false
+            }
+          },
+          {
+            "type": "IfStmt",
+            "condition":             {
+              "type": "BinaryExpr",
+              "op": "&&",
+              "left":               {
+                "type": "BinaryExpr",
+                "op": "&&",
+                "left":                 {
+                  "type": "BinaryExpr",
+                  "op": "&&",
+                  "left":                   {
+                    "type": "BinaryExpr",
+                    "op": "&&",
+                    "left":                     {
+                      "type": "BinaryExpr",
+                      "op": "&&",
+                      "left":                       {
+                        "type": "BinaryExpr",
+                        "op": "&&",
+                        "left":                         {
+                          "type": "BinaryExpr",
+                          "op": "==",
+                          "left":                           {
+                            "type": "Identifier",
+                            "name": "maior"
+                          },
+                          "right":                           {
+                            "type": "Identifier",
+                            "name": "esperado_maior"
+                          }
+                        },
+                        "right":                         {
+                          "type": "BinaryExpr",
+                          "op": "==",
+                          "left":                           {
+                            "type": "Identifier",
+                            "name": "menor_igual"
+                          },
+                          "right":                           {
+                            "type": "Identifier",
+                            "name": "esperado_menor_igual"
+                          }
+                        }
+                      },
+                      "right":                       {
+                        "type": "BinaryExpr",
+                        "op": "==",
+                        "left":                         {
+                          "type": "Identifier",
+                          "name": "igual"
+                        },
+                        "right":                         {
+                          "type": "Identifier",
+                          "name": "esperado_igual"
+                        }
+                      }
+                    },
+                    "right":                     {
+                      "type": "BinaryExpr",
+                      "op": "==",
+                      "left":                       {
+                        "type": "Identifier",
+                        "name": "diferente"
+                      },
+                      "right":                       {
+                        "type": "Identifier",
+                        "name": "esperado_diferente"
+                      }
+                    }
+                  },
+                  "right":                   {
+                    "type": "BinaryExpr",
+                    "op": "==",
+                    "left":                     {
+                      "type": "Identifier",
+                      "name": "e_logico"
+                    },
+                    "right":                     {
+                      "type": "Identifier",
+                      "name": "esperado_e_logico"
+                    }
+                  }
+                },
+                "right":                 {
+                  "type": "BinaryExpr",
+                  "op": "==",
+                  "left":                   {
+                    "type": "Identifier",
+                    "name": "ou_logico"
+                  },
+                  "right":                   {
+                    "type": "Identifier",
+                    "name": "esperado_ou_logico"
+                  }
+                }
+              },
+              "right":               {
+                "type": "BinaryExpr",
+                "op": "==",
+                "left":                 {
+                  "type": "Identifier",
+                  "name": "negacao"
+                },
+                "right":                 {
+                  "type": "Identifier",
+                  "name": "esperado_negacao"
+                }
+              }
+            },
+            "then":             {
+              "type": "Block",
+              "statements": [
+                {
+                  "type": "PrintStmt",
+                  "args": [
+                    {
+                      "type": "Literal",
+                      "literalType": "String",
+                      "value": "test_comparacao_logica: OK"
+                    }
+                  ]
+                },
+                {
+                  "type": "ReturnStmt",
+                  "value":                   {
+                    "type": "Literal",
+                    "literalType": "Int",
+                    "value": 0
+                  }
+                }
+              ]
+            },
+            "else":             {
+              "type": "Block",
+              "statements": [
+                {
+                  "type": "PrintStmt",
+                  "args": [
+                    {
+                      "type": "Literal",
+                      "literalType": "String",
+                      "value": "test_comparacao_logica: FAIL"
+                    }
+                  ]
+                },
+                {
+                  "type": "PrintStmt",
+                  "args": [
+                    {
+                      "type": "Literal",
+                      "literalType": "String",
+                      "value": "  maior:"
+                    },
+                    {
+                      "type": "Identifier",
+                      "name": "maior"
+                    },
+                    {
+                      "type": "Literal",
+                      "literalType": "String",
+                      "value": "menor_igual:"
+                    },
+                    {
+                      "type": "Identifier",
+                      "name": "menor_igual"
+                    },
+                    {
+                      "type": "Literal",
+                      "literalType": "String",
+                      "value": "igual:"
+                    },
+                    {
+                      "type": "Identifier",
+                      "name": "igual"
+                    },
+                    {
+                      "type": "Literal",
+                      "literalType": "String",
+                      "value": "diferente:"
+                    },
+                    {
+                      "type": "Identifier",
+                      "name": "diferente"
+                    }
+                  ]
+                },
+                {
+                  "type": "PrintStmt",
+                  "args": [
+                    {
+                      "type": "Literal",
+                      "literalType": "String",
+                      "value": "  e_logico:"
+                    },
+                    {
+                      "type": "Identifier",
+                      "name": "e_logico"
+                    },
+                    {
+                      "type": "Literal",
+                      "literalType": "String",
+                      "value": "ou_logico:"
+                    },
+                    {
+                      "type": "Identifier",
+                      "name": "ou_logico"
+                    },
+                    {
+                      "type": "Literal",
+                      "literalType": "String",
+                      "value": "negacao:"
+                    },
+                    {
+                      "type": "Identifier",
+                      "name": "negacao"
+                    }
+                  ]
+                },
+                {
+                  "type": "ReturnStmt",
+                  "value":                   {
+                    "type": "Literal",
+                    "literalType": "Int",
+                    "value": 1
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "FnDecl",
+      "name": "test_funcoes_simples",
+      "params": [
+
+      ],
+      "returnType":       {"kind": "Int"},
+      "body":       {
+        "type": "Block",
+        "statements": [
+          {
+            "type": "PrintStmt",
+            "args": [
+              {
+                "type": "Literal",
+                "literalType": "String",
+                "value": "=== test_funcoes_simples ==="
+              }
+            ]
+          },
+          {
+            "type": "LetDecl",
+            "name": "r1",
+            "typeAnnotation":             {"kind": "Int"},
+            "initializer":             {
+              "type": "CallExpr",
+              "callee":               {
+                "type": "Identifier",
+                "name": "quadrado"
+              },
+              "args": [
+                {
+                  "type": "Literal",
+                  "literalType": "Int",
+                  "value": 5
+                }
+              ]
+            }
+          },
+          {
+            "type": "LetDecl",
+            "name": "r2",
+            "typeAnnotation":             {"kind": "Int"},
+            "initializer":             {
+              "type": "CallExpr",
+              "callee":               {
+                "type": "Identifier",
+                "name": "soma_dois"
+              },
+              "args": [
+                {
+                  "type": "Literal",
+                  "literalType": "Int",
+                  "value": 10
+                },
+                {
+                  "type": "Literal",
+                  "literalType": "Int",
+                  "value": 20
+                }
+              ]
+            }
+          },
+          {
+            "type": "LetDecl",
+            "name": "r3",
+            "typeAnnotation":             {"kind": "Float"},
+            "initializer":             {
+              "type": "CallExpr",
+              "callee":               {
+                "type": "Identifier",
+                "name": "area_retangulo"
+              },
+              "args": [
+                {
+                  "type": "Literal",
+                  "literalType": "Float",
+                  "value": 5.000000
+                },
+                {
+                  "type": "Literal",
+                  "literalType": "Float",
+                  "value": 3.000000
+                }
+              ]
+            }
+          },
+          {
+            "type": "LetDecl",
+            "name": "r4",
+            "typeAnnotation":             {"kind": "Int"},
+            "initializer":             {
+              "type": "CallExpr",
+              "callee":               {
+                "type": "Identifier",
+                "name": "maximo"
+              },
+              "args": [
+                {
+                  "type": "Literal",
+                  "literalType": "Int",
+                  "value": 45
+                },
+                {
+                  "type": "Literal",
+                  "literalType": "Int",
+                  "value": 23
+                }
+              ]
+            }
+          },
+          {
+            "type": "LetDecl",
+            "name": "r5",
+            "typeAnnotation":             {"kind": "Int"},
+            "initializer":             {
+              "type": "CallExpr",
+              "callee":               {
+                "type": "Identifier",
+                "name": "absoluto"
+              },
+              "args": [
+                {
+                  "type": "Literal",
+                  "literalType": "Int",
+                  "value": -10
+                }
+              ]
+            }
+          },
+          {
+            "type": "LetDecl",
+            "name": "r6",
+            "typeAnnotation":             {"kind": "String"},
+            "initializer":             {
+              "type": "CallExpr",
+              "callee":               {
+                "type": "Identifier",
+                "name": "classificacao_idade"
+              },
+              "args": [
+                {
+                  "type": "Literal",
+                  "literalType": "Int",
+                  "value": 25
+                }
+              ]
+            }
+          },
+          {
+            "type": "IfStmt",
+            "condition":             {
+              "type": "BinaryExpr",
+              "op": "&&",
+              "left":               {
+                "type": "BinaryExpr",
+                "op": "&&",
+                "left":                 {
+                  "type": "BinaryExpr",
+                  "op": "&&",
+                  "left":                   {
+                    "type": "BinaryExpr",
+                    "op": "&&",
+                    "left":                     {
+                      "type": "BinaryExpr",
+                      "op": "&&",
+                      "left":                       {
+                        "type": "BinaryExpr",
+                        "op": "==",
+                        "left":                         {
+                          "type": "Identifier",
+                          "name": "r1"
+                        },
+                        "right":                         {
+                          "type": "Literal",
+                          "literalType": "Int",
+                          "value": 25
+                        }
+                      },
+                      "right":                       {
+                        "type": "BinaryExpr",
+                        "op": "==",
+                        "left":                         {
+                          "type": "Identifier",
+                          "name": "r2"
+                        },
+                        "right":                         {
+                          "type": "Literal",
+                          "literalType": "Int",
+                          "value": 30
+                        }
+                      }
+                    },
+                    "right":                     {
+                      "type": "BinaryExpr",
+                      "op": "==",
+                      "left":                       {
+                        "type": "Identifier",
+                        "name": "r3"
+                      },
+                      "right":                       {
+                        "type": "Literal",
+                        "literalType": "Float",
+                        "value": 15.000000
+                      }
+                    }
+                  },
+                  "right":                   {
+                    "type": "BinaryExpr",
+                    "op": "==",
+                    "left":                     {
+                      "type": "Identifier",
+                      "name": "r4"
+                    },
+                    "right":                     {
+                      "type": "Literal",
+                      "literalType": "Int",
+                      "value": 45
+                    }
+                  }
+                },
+                "right":                 {
+                  "type": "BinaryExpr",
+                  "op": "==",
+                  "left":                   {
+                    "type": "Identifier",
+                    "name": "r5"
+                  },
+                  "right":                   {
+                    "type": "Literal",
+                    "literalType": "Int",
+                    "value": 10
+                  }
+                }
+              },
+              "right":               {
+                "type": "BinaryExpr",
+                "op": "==",
+                "left":                 {
+                  "type": "Identifier",
+                  "name": "r6"
+                },
+                "right":                 {
+                  "type": "Literal",
+                  "literalType": "String",
+                  "value": "Adulto"
+                }
+              }
+            },
+            "then":             {
+              "type": "Block",
+              "statements": [
+                {
+                  "type": "PrintStmt",
+                  "args": [
+                    {
+                      "type": "Literal",
+                      "literalType": "String",
+                      "value": "test_funcoes_simples: OK"
+                    }
+                  ]
+                },
+                {
+                  "type": "ReturnStmt",
+                  "value":                   {
+                    "type": "Literal",
+                    "literalType": "Int",
+                    "value": 0
+                  }
+                }
+              ]
+            },
+            "else":             {
+              "type": "Block",
+              "statements": [
+                {
+                  "type": "PrintStmt",
+                  "args": [
+                    {
+                      "type": "Literal",
+                      "literalType": "String",
+                      "value": "test_funcoes_simples: FAIL"
+                    }
+                  ]
+                },
+                {
+                  "type": "PrintStmt",
+                  "args": [
+                    {
+                      "type": "Literal",
+                      "literalType": "String",
+                      "value": "  quadrado(5):"
+                    },
+                    {
+                      "type": "Identifier",
+                      "name": "r1"
+                    },
+                    {
+                      "type": "Literal",
+                      "literalType": "String",
+                      "value": "soma_dois(10,20):"
+                    },
+                    {
+                      "type": "Identifier",
+                      "name": "r2"
+                    },
+                    {
+                      "type": "Literal",
+                      "literalType": "String",
+                      "value": "area_retangulo(5,3):"
+                    },
+                    {
+                      "type": "Identifier",
+                      "name": "r3"
+                    },
+                    {
+                      "type": "Literal",
+                      "literalType": "String",
+                      "value": "maximo(45,23):"
+                    },
+                    {
+                      "type": "Identifier",
+                      "name": "r4"
+                    },
+                    {
+                      "type": "Literal",
+                      "literalType": "String",
+                      "value": "absoluto(-10):"
+                    },
+                    {
+                      "type": "Identifier",
+                      "name": "r5"
+                    },
+                    {
+                      "type": "Literal",
+                      "literalType": "String",
+                      "value": "classificacao_idade(25):"
+                    },
+                    {
+                      "type": "Identifier",
+                      "name": "r6"
+                    }
+                  ]
+                },
+                {
+                  "type": "ReturnStmt",
+                  "value":                   {
+                    "type": "Literal",
+                    "literalType": "Int",
+                    "value": 1
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "FnDecl",
+      "name": "test_loops_arrays",
+      "params": [
+
+      ],
+      "returnType":       {"kind": "Int"},
+      "body":       {
+        "type": "Block",
+        "statements": [
+          {
+            "type": "PrintStmt",
+            "args": [
+              {
+                "type": "Literal",
+                "literalType": "String",
+                "value": "=== test_loops_arrays ==="
+              }
+            ]
+          },
+          {
+            "type": "LetDecl",
+            "name": "arr",
+            "typeAnnotation":             {"kind": "?", "arrayOf": {"kind": "Int"}},
+            "initializer":             {
+              "type": "ArrayLiteral",
+              "elements": [
+                {
+                  "type": "Literal",
+                  "literalType": "Int",
+                  "value": 1
+                },
+                {
+                  "type": "Literal",
+                  "literalType": "Int",
+                  "value": -2
+                },
+                {
+                  "type": "Literal",
+                  "literalType": "Int",
+                  "value": 3
+                },
+                {
+                  "type": "Literal",
+                  "literalType": "Int",
+                  "value": 4
+                }
+              ]
+            }
+          },
+          {
+            "type": "LetDecl",
+            "name": "s",
+            "typeAnnotation":             {"kind": "Int"},
+            "initializer":             {
+              "type": "CallExpr",
+              "callee":               {
+                "type": "Identifier",
+                "name": "soma_array"
+              },
+              "args": [
+                {
+                  "type": "Identifier",
+                  "name": "arr"
+                }
+              ]
+            }
+          },
+          {
+            "type": "LetDecl",
+            "name": "c",
+            "typeAnnotation":             {"kind": "Int"},
+            "initializer":             {
+              "type": "CallExpr",
+              "callee":               {
+                "type": "Identifier",
+                "name": "conta_positivos"
+              },
+              "args": [
+                {
+                  "type": "Identifier",
+                  "name": "arr"
+                }
+              ]
+            }
+          },
+          {
+            "type": "IfStmt",
+            "condition":             {
+              "type": "BinaryExpr",
+              "op": "&&",
+              "left":               {
+                "type": "BinaryExpr",
+                "op": "==",
+                "left":                 {
+                  "type": "Identifier",
+                  "name": "s"
+                },
+                "right":                 {
+                  "type": "Literal",
+                  "literalType": "Int",
+                  "value": 6
+                }
+              },
+              "right":               {
+                "type": "BinaryExpr",
+                "op": "==",
+                "left":                 {
+                  "type": "Identifier",
+                  "name": "c"
+                },
+                "right":                 {
+                  "type": "Literal",
+                  "literalType": "Int",
+                  "value": 3
+                }
+              }
+            },
+            "then":             {
+              "type": "Block",
+              "statements": [
+                {
+                  "type": "PrintStmt",
+                  "args": [
+                    {
+                      "type": "Literal",
+                      "literalType": "String",
+                      "value": "test_loops_arrays: OK"
+                    }
+                  ]
+                },
+                {
+                  "type": "ReturnStmt",
+                  "value":                   {
+                    "type": "Literal",
+                    "literalType": "Int",
+                    "value": 0
+                  }
+                }
+              ]
+            },
+            "else":             {
+              "type": "Block",
+              "statements": [
+                {
+                  "type": "PrintStmt",
+                  "args": [
+                    {
+                      "type": "Literal",
+                      "literalType": "String",
+                      "value": "test_loops_arrays: FAIL"
+                    }
+                  ]
+                },
+                {
+                  "type": "PrintStmt",
+                  "args": [
+                    {
+                      "type": "Literal",
+                      "literalType": "String",
+                      "value": "  soma_array:"
+                    },
+                    {
+                      "type": "Identifier",
+                      "name": "s"
+                    },
+                    {
+                      "type": "Literal",
+                      "literalType": "String",
+                      "value": "conta_positivos:"
+                    },
+                    {
+                      "type": "Identifier",
+                      "name": "c"
+                    }
+                  ]
+                },
+                {
+                  "type": "ReturnStmt",
+                  "value":                   {
+                    "type": "Literal",
+                    "literalType": "Int",
+                    "value": 1
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "FnDecl",
+      "name": "test_pessoa_e_escopo",
+      "params": [
+
+      ],
+      "returnType":       {"kind": "Int"},
+      "body":       {
+        "type": "Block",
+        "statements": [
+          {
+            "type": "PrintStmt",
+            "args": [
+              {
+                "type": "Literal",
+                "literalType": "String",
+                "value": "=== test_pessoa_e_escopo ==="
+              }
+            ]
+          },
+          {
+            "type": "LetDecl",
+            "name": "ok_pessoa",
+            "typeAnnotation":             {"kind": "Bool"},
+            "initializer":             {
+              "type": "BinaryExpr",
+              "op": "&&",
+              "left":               {
+                "type": "BinaryExpr",
+                "op": "&&",
+                "left":                 {
+                  "type": "BinaryExpr",
+                  "op": "==",
+                  "left":                   {
+                    "type": "MemberExpr",
+                    "object":                     {
+                      "type": "Identifier",
+                      "name": "pessoa1"
+                    },
+                    "member": "nome"
+                  },
+                  "right":                   {
+                    "type": "Literal",
+                    "literalType": "String",
+                    "value": "João"
+                  }
+                },
+                "right":                 {
+                  "type": "BinaryExpr",
+                  "op": "==",
+                  "left":                   {
+                    "type": "MemberExpr",
+                    "object":                     {
+                      "type": "Identifier",
+                      "name": "pessoa1"
+                    },
+                    "member": "idade"
+                  },
+                  "right":                   {
+                    "type": "Literal",
+                    "literalType": "Int",
+                    "value": 30
+                  }
+                }
+              },
+              "right":               {
+                "type": "BinaryExpr",
+                "op": "==",
+                "left":                 {
+                  "type": "MemberExpr",
+                  "object":                   {
+                    "type": "Identifier",
+                    "name": "pessoa1"
+                  },
+                  "member": "altura"
+                },
+                "right":                 {
+                  "type": "Literal",
+                  "literalType": "Float",
+                  "value": 1.800000
+                }
+              }
+            }
+          },
+          {
+            "type": "LetDecl",
+            "name": "escopo",
+            "typeAnnotation":             {"kind": "Int"},
+            "initializer":             {
+              "type": "CallExpr",
+              "callee":               {
+                "type": "Identifier",
+                "name": "teste_escopo"
+              },
+              "args": [
+
+              ]
+            }
+          },
+          {
+            "type": "IfStmt",
+            "condition":             {
+              "type": "BinaryExpr",
+              "op": "&&",
+              "left":               {
+                "type": "Identifier",
+                "name": "ok_pessoa"
+              },
+              "right":               {
+                "type": "BinaryExpr",
+                "op": "==",
+                "left":                 {
+                  "type": "Identifier",
+                  "name": "escopo"
+                },
+                "right":                 {
+                  "type": "Literal",
+                  "literalType": "Int",
+                  "value": 30
+                }
+              }
+            },
+            "then":             {
+              "type": "Block",
+              "statements": [
+                {
+                  "type": "PrintStmt",
+                  "args": [
+                    {
+                      "type": "Literal",
+                      "literalType": "String",
+                      "value": "test_pessoa_e_escopo: OK"
+                    }
+                  ]
+                },
+                {
+                  "type": "ReturnStmt",
+                  "value":                   {
+                    "type": "Literal",
+                    "literalType": "Int",
+                    "value": 0
+                  }
+                }
+              ]
+            },
+            "else":             {
+              "type": "Block",
+              "statements": [
+                {
+                  "type": "PrintStmt",
+                  "args": [
+                    {
+                      "type": "Literal",
+                      "literalType": "String",
+                      "value": "test_pessoa_e_escopo: FAIL"
+                    }
+                  ]
+                },
+                {
+                  "type": "PrintStmt",
+                  "args": [
+                    {
+                      "type": "Literal",
+                      "literalType": "String",
+                      "value": "  pessoa1.nome:"
+                    },
+                    {
+                      "type": "MemberExpr",
+                      "object":                       {
+                        "type": "Identifier",
+                        "name": "pessoa1"
+                      },
+                      "member": "nome"
+                    },
+                    {
+                      "type": "Literal",
+                      "literalType": "String",
+                      "value": "idade:"
+                    },
+                    {
+                      "type": "MemberExpr",
+                      "object":                       {
+                        "type": "Identifier",
+                        "name": "pessoa1"
+                      },
+                      "member": "idade"
+                    },
+                    {
+                      "type": "Literal",
+                      "literalType": "String",
+                      "value": "altura:"
+                    },
+                    {
+                      "type": "MemberExpr",
+                      "object":                       {
+                        "type": "Identifier",
+                        "name": "pessoa1"
+                      },
+                      "member": "altura"
+                    }
+                  ]
+                },
+                {
+                  "type": "PrintStmt",
+                  "args": [
+                    {
+                      "type": "Literal",
+                      "literalType": "String",
+                      "value": "  teste_escopo():"
+                    },
+                    {
+                      "type": "Identifier",
+                      "name": "escopo"
+                    }
+                  ]
+                },
+                {
+                  "type": "ReturnStmt",
+                  "value":                   {
+                    "type": "Literal",
+                    "literalType": "Int",
+                    "value": 1
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "FnDecl",
+      "name": "test_recursao",
+      "params": [
+
+      ],
+      "returnType":       {"kind": "Int"},
+      "body":       {
+        "type": "Block",
+        "statements": [
+          {
+            "type": "PrintStmt",
+            "args": [
+              {
+                "type": "Literal",
+                "literalType": "String",
+                "value": "=== test_recursao ==="
+              }
+            ]
+          },
+          {
+            "type": "LetDecl",
+            "name": "f5",
+            "typeAnnotation":             {"kind": "Int"},
+            "initializer":             {
+              "type": "CallExpr",
+              "callee":               {
+                "type": "Identifier",
+                "name": "fatorial"
+              },
+              "args": [
+                {
+                  "type": "Literal",
+                  "literalType": "Int",
+                  "value": 5
+                }
+              ]
+            }
+          },
+          {
+            "type": "LetDecl",
+            "name": "f6",
+            "typeAnnotation":             {"kind": "Int"},
+            "initializer":             {
+              "type": "CallExpr",
+              "callee":               {
+                "type": "Identifier",
+                "name": "fatorial"
+              },
+              "args": [
+                {
+                  "type": "Literal",
+                  "literalType": "Int",
+                  "value": 6
+                }
+              ]
+            }
+          },
+          {
+            "type": "LetDecl",
+            "name": "fib5",
+            "typeAnnotation":             {"kind": "Int"},
+            "initializer":             {
+              "type": "CallExpr",
+              "callee":               {
+                "type": "Identifier",
+                "name": "fibonacci"
+              },
+              "args": [
+                {
+                  "type": "Literal",
+                  "literalType": "Int",
+                  "value": 5
+                }
+              ]
+            }
+          },
+          {
+            "type": "IfStmt",
+            "condition":             {
+              "type": "BinaryExpr",
+              "op": "&&",
+              "left":               {
+                "type": "BinaryExpr",
+                "op": "&&",
+                "left":                 {
+                  "type": "BinaryExpr",
+                  "op": "==",
+                  "left":                   {
+                    "type": "Identifier",
+                    "name": "f5"
+                  },
+                  "right":                   {
+                    "type": "Literal",
+                    "literalType": "Int",
+                    "value": 120
+                  }
+                },
+                "right":                 {
+                  "type": "BinaryExpr",
+                  "op": "==",
+                  "left":                   {
+                    "type": "Identifier",
+                    "name": "f6"
+                  },
+                  "right":                   {
+                    "type": "Literal",
+                    "literalType": "Int",
+                    "value": 720
+                  }
+                }
+              },
+              "right":               {
+                "type": "BinaryExpr",
+                "op": "==",
+                "left":                 {
+                  "type": "Identifier",
+                  "name": "fib5"
+                },
+                "right":                 {
+                  "type": "Literal",
+                  "literalType": "Int",
+                  "value": 5
+                }
+              }
+            },
+            "then":             {
+              "type": "Block",
+              "statements": [
+                {
+                  "type": "PrintStmt",
+                  "args": [
+                    {
+                      "type": "Literal",
+                      "literalType": "String",
+                      "value": "test_recursao: OK"
+                    }
+                  ]
+                },
+                {
+                  "type": "ReturnStmt",
+                  "value":                   {
+                    "type": "Literal",
+                    "literalType": "Int",
+                    "value": 0
+                  }
+                }
+              ]
+            },
+            "else":             {
+              "type": "Block",
+              "statements": [
+                {
+                  "type": "PrintStmt",
+                  "args": [
+                    {
+                      "type": "Literal",
+                      "literalType": "String",
+                      "value": "test_recursao: FAIL"
+                    }
+                  ]
+                },
+                {
+                  "type": "PrintStmt",
+                  "args": [
+                    {
+                      "type": "Literal",
+                      "literalType": "String",
+                      "value": "  fatorial(5):"
+                    },
+                    {
+                      "type": "Identifier",
+                      "name": "f5"
+                    },
+                    {
+                      "type": "Literal",
+                      "literalType": "String",
+                      "value": "fatorial(6):"
+                    },
+                    {
+                      "type": "Identifier",
+                      "name": "f6"
+                    },
+                    {
+                      "type": "Literal",
+                      "literalType": "String",
+                      "value": "fibonacci(5):"
+                    },
+                    {
+                      "type": "Identifier",
+                      "name": "fib5"
+                    }
+                  ]
+                },
+                {
+                  "type": "ReturnStmt",
+                  "value":                   {
+                    "type": "Literal",
+                    "literalType": "Int",
+                    "value": 1
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "FnDecl",
+      "name": "test_pipeline_dataframe",
+      "params": [
+
+      ],
+      "returnType":       {"kind": "Int"},
+      "body":       {
+        "type": "Block",
+        "statements": [
+          {
+            "type": "PrintStmt",
+            "args": [
+              {
+                "type": "Literal",
+                "literalType": "String",
+                "value": "=== test_pipeline_dataframe ==="
+              }
+            ]
+          },
+          {
+            "type": "LetDecl",
+            "name": "agrupado",
+            "typeAnnotation":             {"kind": "DataFrame"},
+            "initializer":             {
+              "type": "CallExpr",
+              "callee":               {
+                "type": "Identifier",
+                "name": "pipeline_dados_csv"
+              },
+              "args": [
+
+              ]
+            }
+          },
+          {
+            "type": "PrintStmt",
+            "args": [
+              {
+                "type": "Literal",
+                "literalType": "String",
+                "value": "Resultado de pipeline_dados_csv (DataFrame agrupado):"
+              }
+            ]
+          },
+          {
+            "type": "PrintStmt",
+            "args": [
+              {
+                "type": "Identifier",
+                "name": "agrupado"
+              }
+            ]
+          },
+          {
+            "type": "ExprStmt",
+            "expression":             {
+              "type": "SaveExpr",
+              "data":               {
+                "type": "Identifier",
+                "name": "agrupado"
+              },
+              "path": "test_pipeline_dataframe.csv"
+            }
+          },
+          {
+            "type": "PrintStmt",
+            "args": [
+              {
+                "type": "Literal",
+                "literalType": "String",
+                "value": "test_pipeline_dataframe: OK (sem validação de conteúdo)"
+              }
+            ]
+          },
+          {
+            "type": "ReturnStmt",
+            "value":             {
+              "type": "Literal",
+              "literalType": "Int",
+              "value": 0
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "FnDecl",
+      "name": "test_dataframe_operations",
+      "params": [
+
+      ],
+      "returnType":       {"kind": "Int"},
+      "body":       {
+        "type": "Block",
+        "statements": [
+          {
+            "type": "PrintStmt",
+            "args": [
+              {
+                "type": "Literal",
+                "literalType": "String",
+                "value": "=== test_dataframe_operations ==="
+              }
+            ]
+          },
+          {
+            "type": "LetDecl",
+            "name": "df",
+            "typeAnnotation":             {"kind": "DataFrame"},
+            "initializer":             {
+              "type": "LoadExpr",
+              "path": "employees.csv"
+            }
+          },
+          {
+            "type": "PrintStmt",
+            "args": [
+              {
+                "type": "Literal",
+                "literalType": "String",
+                "value": "DataFrame original (employees.csv):"
+              }
+            ]
+          },
+          {
+            "type": "PrintStmt",
+            "args": [
+              {
+                "type": "Identifier",
+                "name": "df"
+              }
+            ]
+          },
+          {
+            "type": "LetDecl",
+            "name": "total_rows",
+            "typeAnnotation":             {"kind": "Int"},
+            "initializer":             {
+              "type": "CallExpr",
+              "callee":               {
+                "type": "Identifier",
+                "name": "count"
+              },
+              "args": [
+                {
+                  "type": "Identifier",
+                  "name": "df"
+                }
+              ]
+            }
+          },
+          {
+            "type": "PrintStmt",
+            "args": [
+              {
+                "type": "Literal",
+                "literalType": "String",
+                "value": "Total de linhas no df:"
+              },
+              {
+                "type": "Identifier",
+                "name": "total_rows"
+              }
+            ]
+          },
+          {
+            "type": "IfStmt",
+            "condition":             {
+              "type": "BinaryExpr",
+              "op": "<=",
+              "left":               {
+                "type": "Identifier",
+                "name": "total_rows"
+              },
+              "right":               {
+                "type": "Literal",
+                "literalType": "Int",
+                "value": 0
+              }
+            },
+            "then":             {
+              "type": "Block",
+              "statements": [
+                {
+                  "type": "PrintStmt",
+                  "args": [
+                    {
+                      "type": "Literal",
+                      "literalType": "String",
+                      "value": "test_dataframe_operations: FAIL (DataFrame vazio)"
+                    }
+                  ]
+                },
+                {
+                  "type": "ReturnStmt",
+                  "value":                   {
+                    "type": "Literal",
+                    "literalType": "Int",
+                    "value": 1
+                  }
+                }
+              ]
+            },
+            "else": null
+          },
+          {
+            "type": "LetDecl",
+            "name": "adultos",
+            "typeAnnotation":             {"kind": "DataFrame"},
+            "initializer":             {
+              "type": "PipelineExpr",
+              "stages": [
+                {
+                  "type": "Identifier",
+                  "name": "df"
+                },
+                {
+                  "type": "FilterTransform",
+                  "predicate":                   {
+                    "type": "LambdaExpr",
+                    "params": [
+                      {
+                        "type": "Param",
+                        "name": "row",
+                        "paramType":                         {"kind": "Row"}
+                      }
+                    ],
+                    "body":                     {
+                      "type": "BinaryExpr",
+                      "op": ">=",
+                      "left":                       {
+                        "type": "MemberExpr",
+                        "object":                         {
+                          "type": "Identifier",
+                          "name": "row"
+                        },
+                        "member": "idade"
+                      },
+                      "right":                       {
+                        "type": "Literal",
+                        "literalType": "Int",
+                        "value": 18
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "type": "LetDecl",
+            "name": "adultos_rows",
+            "typeAnnotation":             {"kind": "Int"},
+            "initializer":             {
+              "type": "CallExpr",
+              "callee":               {
+                "type": "Identifier",
+                "name": "count"
+              },
+              "args": [
+                {
+                  "type": "Identifier",
+                  "name": "adultos"
+                }
+              ]
+            }
+          },
+          {
+            "type": "PrintStmt",
+            "args": [
+              {
+                "type": "Literal",
+                "literalType": "String",
+                "value": "Linhas após filter(idade >= 18):"
+              },
+              {
+                "type": "Identifier",
+                "name": "adultos_rows"
+              }
+            ]
+          },
+          {
+            "type": "IfStmt",
+            "condition":             {
+              "type": "BinaryExpr",
+              "op": ">",
+              "left":               {
+                "type": "Identifier",
+                "name": "adultos_rows"
+              },
+              "right":               {
+                "type": "Identifier",
+                "name": "total_rows"
+              }
+            },
+            "then":             {
+              "type": "Block",
+              "statements": [
+                {
+                  "type": "PrintStmt",
+                  "args": [
+                    {
+                      "type": "Literal",
+                      "literalType": "String",
+                      "value": "test_dataframe_operations: FAIL (filter aumentou o número de linhas)"
+                    }
+                  ]
+                },
+                {
+                  "type": "ReturnStmt",
+                  "value":                   {
+                    "type": "Literal",
+                    "literalType": "Int",
+                    "value": 1
+                  }
+                }
+              ]
+            },
+            "else": null
+          },
+          {
+            "type": "LetDecl",
+            "name": "proj",
+            "typeAnnotation":             {"kind": "DataFrame"},
+            "initializer":             {
+              "type": "PipelineExpr",
+              "stages": [
+                {
+                  "type": "Identifier",
+                  "name": "adultos"
+                },
+                {
+                  "type": "SelectTransform",
+                  "columns": ["nome", "idade", "salario", "cidade"]
+                }
+              ]
+            }
+          },
+          {
+            "type": "LetDecl",
+            "name": "proj_rows",
+            "typeAnnotation":             {"kind": "Int"},
+            "initializer":             {
+              "type": "CallExpr",
+              "callee":               {
+                "type": "Identifier",
+                "name": "count"
+              },
+              "args": [
+                {
+                  "type": "Identifier",
+                  "name": "proj"
+                }
+              ]
+            }
+          },
+          {
+            "type": "PrintStmt",
+            "args": [
+              {
+                "type": "Literal",
+                "literalType": "String",
+                "value": "Linhas após select(nome, idade, salario, cidade):"
+              },
+              {
+                "type": "Identifier",
+                "name": "proj_rows"
+              }
+            ]
+          },
+          {
+            "type": "IfStmt",
+            "condition":             {
+              "type": "BinaryExpr",
+              "op": "!=",
+              "left":               {
+                "type": "Identifier",
+                "name": "proj_rows"
+              },
+              "right":               {
+                "type": "Identifier",
+                "name": "adultos_rows"
+              }
+            },
+            "then":             {
+              "type": "Block",
+              "statements": [
+                {
+                  "type": "PrintStmt",
+                  "args": [
+                    {
+                      "type": "Literal",
+                      "literalType": "String",
+                      "value": "test_dataframe_operations: FAIL (select alterou o número de linhas)"
+                    }
+                  ]
+                },
+                {
+                  "type": "ReturnStmt",
+                  "value":                   {
+                    "type": "Literal",
+                    "literalType": "Int",
+                    "value": 1
+                  }
+                }
+              ]
+            },
+            "else": null
+          },
+          {
+            "type": "LetDecl",
+            "name": "agrupado_por_cidade",
+            "typeAnnotation":             {"kind": "DataFrame"},
+            "initializer":             {
+              "type": "PipelineExpr",
+              "stages": [
+                {
+                  "type": "Identifier",
+                  "name": "proj"
+                },
+                {
+                  "type": "GroupByTransform",
+                  "groupColumns": ["cidade"]
+                }
+              ]
+            }
+          },
+          {
+            "type": "LetDecl",
+            "name": "grupos_cidade",
+            "typeAnnotation":             {"kind": "Int"},
+            "initializer":             {
+              "type": "CallExpr",
+              "callee":               {
+                "type": "Identifier",
+                "name": "count"
+              },
+              "args": [
+                {
+                  "type": "Identifier",
+                  "name": "agrupado_por_cidade"
+                }
+              ]
+            }
+          },
+          {
+            "type": "PrintStmt",
+            "args": [
+              {
+                "type": "Literal",
+                "literalType": "String",
+                "value": "Linhas após groupby(cidade):"
+              },
+              {
+                "type": "Identifier",
+                "name": "grupos_cidade"
+              }
+            ]
+          },
+          {
+            "type": "PrintStmt",
+            "args": [
+              {
+                "type": "Literal",
+                "literalType": "String",
+                "value": "DataFrame agrupado por cidade:"
+              }
+            ]
+          },
+          {
+            "type": "PrintStmt",
+            "args": [
+              {
+                "type": "Identifier",
+                "name": "agrupado_por_cidade"
+              }
+            ]
+          },
+          {
+            "type": "IfStmt",
+            "condition":             {
+              "type": "BinaryExpr",
+              "op": "<=",
+              "left":               {
+                "type": "Identifier",
+                "name": "grupos_cidade"
+              },
+              "right":               {
+                "type": "Literal",
+                "literalType": "Int",
+                "value": 0
+              }
+            },
+            "then":             {
+              "type": "Block",
+              "statements": [
+                {
+                  "type": "PrintStmt",
+                  "args": [
+                    {
+                      "type": "Literal",
+                      "literalType": "String",
+                      "value": "test_dataframe_operations: FAIL (groupby(cidade) retornou 0 grupos)"
+                    }
+                  ]
+                },
+                {
+                  "type": "ReturnStmt",
+                  "value":                   {
+                    "type": "Literal",
+                    "literalType": "Int",
+                    "value": 1
+                  }
+                }
+              ]
+            },
+            "else": null
+          },
+          {
+            "type": "IfStmt",
+            "condition":             {
+              "type": "BinaryExpr",
+              "op": ">",
+              "left":               {
+                "type": "Identifier",
+                "name": "grupos_cidade"
+              },
+              "right":               {
+                "type": "Identifier",
+                "name": "proj_rows"
+              }
+            },
+            "then":             {
+              "type": "Block",
+              "statements": [
+                {
+                  "type": "PrintStmt",
+                  "args": [
+                    {
+                      "type": "Literal",
+                      "literalType": "String",
+                      "value": "test_dataframe_operations: FAIL (mais grupos do que linhas)"
+                    }
+                  ]
+                },
+                {
+                  "type": "ReturnStmt",
+                  "value":                   {
+                    "type": "Literal",
+                    "literalType": "Int",
+                    "value": 1
+                  }
+                }
+              ]
+            },
+            "else": null
+          },
+          {
+            "type": "LetDecl",
+            "name": "adultos_com_faixa",
+            "typeAnnotation":             {"kind": "DataFrame"},
+            "initializer":             {
+              "type": "Identifier",
+              "name": "adultos"
+            }
+          },
+          {
+            "type": "LetDecl",
+            "name": "agrupado_multi",
+            "typeAnnotation":             {"kind": "DataFrame"},
+            "initializer":             {
+              "type": "PipelineExpr",
+              "stages": [
+                {
+                  "type": "Identifier",
+                  "name": "adultos_com_faixa"
+                },
+                {
+                  "type": "GroupByTransform",
+                  "groupColumns": ["cidade"]
+                }
+              ]
+            }
+          },
+          {
+            "type": "LetDecl",
+            "name": "grupos_multi",
+            "typeAnnotation":             {"kind": "Int"},
+            "initializer":             {
+              "type": "CallExpr",
+              "callee":               {
+                "type": "Identifier",
+                "name": "count"
+              },
+              "args": [
+                {
+                  "type": "Identifier",
+                  "name": "agrupado_multi"
+                }
+              ]
+            }
+          },
+          {
+            "type": "PrintStmt",
+            "args": [
+              {
+                "type": "Literal",
+                "literalType": "String",
+                "value": "Linhas após groupby(cidade) em adultos_com_faixa:"
+              },
+              {
+                "type": "Identifier",
+                "name": "grupos_multi"
+              }
+            ]
+          },
+          {
+            "type": "PrintStmt",
+            "args": [
+              {
+                "type": "Literal",
+                "literalType": "String",
+                "value": "DataFrame agrupado (múltiplo conceitual):"
+              }
+            ]
+          },
+          {
+            "type": "PrintStmt",
+            "args": [
+              {
+                "type": "Identifier",
+                "name": "agrupado_multi"
+              }
+            ]
+          },
+          {
+            "type": "IfStmt",
+            "condition":             {
+              "type": "BinaryExpr",
+              "op": "<=",
+              "left":               {
+                "type": "Identifier",
+                "name": "grupos_multi"
+              },
+              "right":               {
+                "type": "Literal",
+                "literalType": "Int",
+                "value": 0
+              }
+            },
+            "then":             {
+              "type": "Block",
+              "statements": [
+                {
+                  "type": "PrintStmt",
+                  "args": [
+                    {
+                      "type": "Literal",
+                      "literalType": "String",
+                      "value": "test_dataframe_operations: FAIL (groupby múltiplo retornou 0 grupos)"
+                    }
+                  ]
+                },
+                {
+                  "type": "ReturnStmt",
+                  "value":                   {
+                    "type": "Literal",
+                    "literalType": "Int",
+                    "value": 1
+                  }
+                }
+              ]
+            },
+            "else": null
+          },
+          {
+            "type": "LetDecl",
+            "name": "total_salario_ajustado",
+            "typeAnnotation":             {"kind": "Float"},
+            "initializer":             {
+              "type": "PipelineExpr",
+              "stages": [
+                {
+                  "type": "Identifier",
+                  "name": "df"
+                },
+                {
+                  "type": "FilterTransform",
+                  "predicate":                   {
+                    "type": "LambdaExpr",
+                    "params": [
+                      {
+                        "type": "Param",
+                        "name": "row",
+                        "paramType":                         {"kind": "Row"}
+                      }
+                    ],
+                    "body":                     {
+                      "type": "BinaryExpr",
+                      "op": ">=",
+                      "left":                       {
+                        "type": "MemberExpr",
+                        "object":                         {
+                          "type": "Identifier",
+                          "name": "row"
+                        },
+                        "member": "idade"
+                      },
+                      "right":                       {
+                        "type": "Literal",
+                        "literalType": "Int",
+                        "value": 18
+                      }
+                    }
+                  }
+                },
+                {
+                  "type": "MapTransform",
+                  "mapper":                   {
+                    "type": "LambdaExpr",
+                    "params": [
+                      {
+                        "type": "Param",
+                        "name": "row",
+                        "paramType":                         {"kind": "Row"}
+                      }
+                    ],
+                    "body":                     {
+                      "type": "BinaryExpr",
+                      "op": "*",
+                      "left":                       {
+                        "type": "MemberExpr",
+                        "object":                         {
+                          "type": "Identifier",
+                          "name": "row"
+                        },
+                        "member": "salario"
+                      },
+                      "right":                       {
+                        "type": "Literal",
+                        "literalType": "Float",
+                        "value": 1.100000
+                      }
+                    }
+                  }
+                },
+                {
+                  "type": "ReduceTransform",
+                  "initial":                   {
+                    "type": "Literal",
+                    "literalType": "Float",
+                    "value": 0.000000
+                  },
+                  "reducer":                   {
+                    "type": "LambdaExpr",
+                    "params": [
+                      {
+                        "type": "Param",
+                        "name": "acc",
+                        "paramType":                         {"kind": "Float"}
+                      },
+                      {
+                        "type": "Param",
+                        "name": "val",
+                        "paramType":                         {"kind": "Float"}
+                      }
+                    ],
+                    "body":                     {
+                      "type": "BinaryExpr",
+                      "op": "+",
+                      "left":                       {
+                        "type": "Identifier",
+                        "name": "acc"
+                      },
+                      "right":                       {
+                        "type": "Identifier",
+                        "name": "val"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "type": "PrintStmt",
+            "args": [
+              {
+                "type": "Literal",
+                "literalType": "String",
+                "value": "Total de salários ajustados (+10% para adultos):"
+              },
+              {
+                "type": "Identifier",
+                "name": "total_salario_ajustado"
+              }
+            ]
+          },
+          {
+            "type": "IfStmt",
+            "condition":             {
+              "type": "BinaryExpr",
+              "op": "&&",
+              "left":               {
+                "type": "BinaryExpr",
+                "op": ">",
+                "left":                 {
+                  "type": "Identifier",
+                  "name": "adultos_rows"
+                },
+                "right":                 {
+                  "type": "Literal",
+                  "literalType": "Int",
+                  "value": 0
+                }
+              },
+              "right":               {
+                "type": "BinaryExpr",
+                "op": "<=",
+                "left":                 {
+                  "type": "Identifier",
+                  "name": "total_salario_ajustado"
+                },
+                "right":                 {
+                  "type": "Literal",
+                  "literalType": "Float",
+                  "value": 0.000000
+                }
+              }
+            },
+            "then":             {
+              "type": "Block",
+              "statements": [
+                {
+                  "type": "PrintStmt",
+                  "args": [
+                    {
+                      "type": "Literal",
+                      "literalType": "String",
+                      "value": "test_dataframe_operations: FAIL (total_salario_ajustado <= 0 com adultos > 0)"
+                    }
+                  ]
+                },
+                {
+                  "type": "ReturnStmt",
+                  "value":                   {
+                    "type": "Literal",
+                    "literalType": "Int",
+                    "value": 1
+                  }
+                }
+              ]
+            },
+            "else": null
+          },
+          {
+            "type": "ExprStmt",
+            "expression":             {
+              "type": "SaveExpr",
+              "data":               {
+                "type": "Identifier",
+                "name": "proj"
+              },
+              "path": "employees_proj.csv"
+            }
+          },
+          {
+            "type": "PrintStmt",
+            "args": [
+              {
+                "type": "Literal",
+                "literalType": "String",
+                "value": "DataFrame proj salvo em employees_proj.csv"
+              }
+            ]
+          },
+          {
+            "type": "PrintStmt",
+            "args": [
+              {
+                "type": "Identifier",
+                "name": "proj"
+              }
+            ]
+          },
+          {
+            "type": "ExprStmt",
+            "expression":             {
+              "type": "SaveExpr",
+              "data":               {
+                "type": "Identifier",
+                "name": "agrupado_por_cidade"
+              },
+              "path": "employees_grouped_by_city.csv"
+            }
+          },
+          {
+            "type": "PrintStmt",
+            "args": [
+              {
+                "type": "Literal",
+                "literalType": "String",
+                "value": "DataFrame agrupado_por_cidade salvo em employees_grouped_by_city.csv"
+              }
+            ]
+          },
+          {
+            "type": "PrintStmt",
+            "args": [
+              {
+                "type": "Identifier",
+                "name": "agrupado_por_cidade"
+              }
+            ]
+          },
+          {
+            "type": "ExprStmt",
+            "expression":             {
+              "type": "SaveExpr",
+              "data":               {
+                "type": "Identifier",
+                "name": "agrupado_multi"
+              },
+              "path": "employees_grouped_multi.csv"
+            }
+          },
+          {
+            "type": "PrintStmt",
+            "args": [
+              {
+                "type": "Literal",
+                "literalType": "String",
+                "value": "DataFrame agrupado_multi salvo em employees_grouped_multi.csv"
+              }
+            ]
+          },
+          {
+            "type": "PrintStmt",
+            "args": [
+              {
+                "type": "Identifier",
+                "name": "agrupado_multi"
+              }
+            ]
+          },
+          {
+            "type": "PrintStmt",
+            "args": [
+              {
+                "type": "Literal",
+                "literalType": "String",
+                "value": "test_dataframe_operations: OK"
+              }
+            ]
+          },
+          {
+            "type": "ReturnStmt",
+            "value":             {
+              "type": "Literal",
+              "literalType": "Int",
+              "value": 0
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "FnDecl",
+      "name": "run_all_tests",
+      "params": [
+
+      ],
+      "returnType":       {"kind": "Int"},
+      "body":       {
+        "type": "Block",
+        "statements": [
+          {
+            "type": "PrintStmt",
+            "args": [
+              {
+                "type": "Literal",
+                "literalType": "String",
+                "value": "== Rodando exemplo_avancado.datalang - Testes == "
+              }
+            ]
+          },
+          {
+            "type": "LetDecl",
+            "name": "f1",
+            "typeAnnotation":             {"kind": "Int"},
+            "initializer":             {
+              "type": "CallExpr",
+              "callee":               {
+                "type": "Identifier",
+                "name": "test_basicos"
+              },
+              "args": [
+
+              ]
+            }
+          },
+          {
+            "type": "LetDecl",
+            "name": "f2",
+            "typeAnnotation":             {"kind": "Int"},
+            "initializer":             {
+              "type": "CallExpr",
+              "callee":               {
+                "type": "Identifier",
+                "name": "test_operacoes_aritmeticas"
+              },
+              "args": [
+
+              ]
+            }
+          },
+          {
+            "type": "LetDecl",
+            "name": "f3",
+            "typeAnnotation":             {"kind": "Int"},
+            "initializer":             {
+              "type": "CallExpr",
+              "callee":               {
+                "type": "Identifier",
+                "name": "test_comparacao_logica"
+              },
+              "args": [
+
+              ]
+            }
+          },
+          {
+            "type": "LetDecl",
+            "name": "f4",
+            "typeAnnotation":             {"kind": "Int"},
+            "initializer":             {
+              "type": "CallExpr",
+              "callee":               {
+                "type": "Identifier",
+                "name": "test_funcoes_simples"
+              },
+              "args": [
+
+              ]
+            }
+          },
+          {
+            "type": "LetDecl",
+            "name": "f5",
+            "typeAnnotation":             {"kind": "Int"},
+            "initializer":             {
+              "type": "CallExpr",
+              "callee":               {
+                "type": "Identifier",
+                "name": "test_loops_arrays"
+              },
+              "args": [
+
+              ]
+            }
+          },
+          {
+            "type": "LetDecl",
+            "name": "f6",
+            "typeAnnotation":             {"kind": "Int"},
+            "initializer":             {
+              "type": "CallExpr",
+              "callee":               {
+                "type": "Identifier",
+                "name": "test_pessoa_e_escopo"
+              },
+              "args": [
+
+              ]
+            }
+          },
+          {
+            "type": "LetDecl",
+            "name": "f7",
+            "typeAnnotation":             {"kind": "Int"},
+            "initializer":             {
+              "type": "CallExpr",
+              "callee":               {
+                "type": "Identifier",
+                "name": "test_recursao"
+              },
+              "args": [
+
+              ]
+            }
+          },
+          {
+            "type": "LetDecl",
+            "name": "f8",
+            "typeAnnotation":             {"kind": "Int"},
+            "initializer":             {
+              "type": "CallExpr",
+              "callee":               {
+                "type": "Identifier",
+                "name": "test_pipeline_dataframe"
+              },
+              "args": [
+
+              ]
+            }
+          },
+          {
+            "type": "LetDecl",
+            "name": "f9",
+            "typeAnnotation":             {"kind": "Int"},
+            "initializer":             {
+              "type": "CallExpr",
+              "callee":               {
+                "type": "Identifier",
+                "name": "test_dataframe_operations"
+              },
+              "args": [
+
+              ]
+            }
+          },
+          {
+            "type": "LetDecl",
+            "name": "totalFailures",
+            "typeAnnotation":             {"kind": "Int"},
+            "initializer":             {
+              "type": "BinaryExpr",
+              "op": "+",
+              "left":               {
+                "type": "BinaryExpr",
+                "op": "+",
+                "left":                 {
+                  "type": "BinaryExpr",
+                  "op": "+",
+                  "left":                   {
+                    "type": "BinaryExpr",
+                    "op": "+",
+                    "left":                     {
+                      "type": "BinaryExpr",
+                      "op": "+",
+                      "left":                       {
+                        "type": "BinaryExpr",
+                        "op": "+",
+                        "left":                         {
+                          "type": "BinaryExpr",
+                          "op": "+",
+                          "left":                           {
+                            "type": "BinaryExpr",
+                            "op": "+",
+                            "left":                             {
+                              "type": "Identifier",
+                              "name": "f1"
+                            },
+                            "right":                             {
+                              "type": "Identifier",
+                              "name": "f2"
+                            }
+                          },
+                          "right":                           {
+                            "type": "Identifier",
+                            "name": "f3"
+                          }
+                        },
+                        "right":                         {
+                          "type": "Identifier",
+                          "name": "f4"
+                        }
+                      },
+                      "right":                       {
+                        "type": "Identifier",
+                        "name": "f5"
+                      }
+                    },
+                    "right":                     {
+                      "type": "Identifier",
+                      "name": "f6"
+                    }
+                  },
+                  "right":                   {
+                    "type": "Identifier",
+                    "name": "f7"
+                  }
+                },
+                "right":                 {
+                  "type": "Identifier",
+                  "name": "f8"
+                }
+              },
+              "right":               {
+                "type": "Identifier",
+                "name": "f9"
+              }
+            }
+          },
+          {
+            "type": "PrintStmt",
+            "args": [
+              {
+                "type": "Literal",
+                "literalType": "String",
+                "value": "Resultados individuais:"
+              }
+            ]
+          },
+          {
+            "type": "PrintStmt",
+            "args": [
+              {
+                "type": "Literal",
+                "literalType": "String",
+                "value": "f1:"
+              },
+              {
+                "type": "Identifier",
+                "name": "f1"
+              },
+              {
+                "type": "Literal",
+                "literalType": "String",
+                "value": "f2:"
+              },
+              {
+                "type": "Identifier",
+                "name": "f2"
+              },
+              {
+                "type": "Literal",
+                "literalType": "String",
+                "value": "f3:"
+              },
+              {
+                "type": "Identifier",
+                "name": "f3"
+              },
+              {
+                "type": "Literal",
+                "literalType": "String",
+                "value": "f4:"
+              },
+              {
+                "type": "Identifier",
+                "name": "f4"
+              }
+            ]
+          },
+          {
+            "type": "PrintStmt",
+            "args": [
+              {
+                "type": "Literal",
+                "literalType": "String",
+                "value": "f5:"
+              },
+              {
+                "type": "Identifier",
+                "name": "f5"
+              },
+              {
+                "type": "Literal",
+                "literalType": "String",
+                "value": "f6:"
+              },
+              {
+                "type": "Identifier",
+                "name": "f6"
+              },
+              {
+                "type": "Literal",
+                "literalType": "String",
+                "value": "f7:"
+              },
+              {
+                "type": "Identifier",
+                "name": "f7"
+              },
+              {
+                "type": "Literal",
+                "literalType": "String",
+                "value": "f8:"
+              },
+              {
+                "type": "Identifier",
+                "name": "f8"
+              }
+            ]
+          },
+          {
+            "type": "PrintStmt",
+            "args": [
+              {
+                "type": "Literal",
+                "literalType": "String",
+                "value": "f9:"
+              },
+              {
+                "type": "Identifier",
+                "name": "f9"
+              }
+            ]
+          },
+          {
+            "type": "IfStmt",
+            "condition":             {
+              "type": "BinaryExpr",
+              "op": "==",
+              "left":               {
+                "type": "Identifier",
+                "name": "totalFailures"
+              },
+              "right":               {
+                "type": "Literal",
+                "literalType": "Int",
+                "value": 0
+              }
+            },
+            "then":             {
+              "type": "Block",
+              "statements": [
+                {
+                  "type": "PrintStmt",
+                  "args": [
+                    {
+                      "type": "Literal",
+                      "literalType": "String",
+                      "value": "=== SUCESSO: todos os testes do exemplo_avancado passaram. ==="
                     }
                   ]
                 }
@@ -304,7 +5020,16 @@
                     {
                       "type": "Literal",
                       "literalType": "String",
-                      "value": "Status da turma (media = 70.0): REPROVADA"
+                      "value": "=== ERRO: existem"
+                    },
+                    {
+                      "type": "Identifier",
+                      "name": "totalFailures"
+                    },
+                    {
+                      "type": "Literal",
+                      "literalType": "String",
+                      "value": "falhas no exemplo_avancado. ==="
                     }
                   ]
                 }
@@ -314,9 +5039,43 @@
           {
             "type": "ReturnStmt",
             "value":             {
-              "type": "Literal",
-              "literalType": "Int",
-              "value": 0
+              "type": "Identifier",
+              "name": "totalFailures"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "FnDecl",
+      "name": "main",
+      "params": [
+
+      ],
+      "returnType":       {"kind": "Int"},
+      "body":       {
+        "type": "Block",
+        "statements": [
+          {
+            "type": "LetDecl",
+            "name": "total",
+            "typeAnnotation":             {"kind": "Int"},
+            "initializer":             {
+              "type": "CallExpr",
+              "callee":               {
+                "type": "Identifier",
+                "name": "run_all_tests"
+              },
+              "args": [
+
+              ]
+            }
+          },
+          {
+            "type": "ReturnStmt",
+            "value":             {
+              "type": "Identifier",
+              "name": "total"
             }
           }
         ]

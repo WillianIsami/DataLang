@@ -1,4 +1,5 @@
 # DataLang
+[![CI](https://github.com/WillianIsami/DataLang/actions/workflows/ci.yml/badge.svg)](https://github.com/WillianIsami/DataLang/actions/workflows/ci.yml)
 
 Linguagem de programação especializada em processamento de dados, desenvolvida como parte do projeto de Compiladores e Linguagens Formais.
 
@@ -210,6 +211,8 @@ clang -Wno-override-module output.ll src/codegen/runtime.c -o programa -lm
   `./bin/datalang examples/exemplo_completo.datalang --verify --verify-cmd "verify/run_verifier.sh"`.
 - Use o atalho completo: `make verify-full` (compila o compilador, o verificador Idris e roda no exemplo completo).
 - Em caso de falha, o verificador lista invariantes violadas (tipos indefinidos, funções sem retorno, chamadas incompatíveis, etc.). Consulte [docs/verify-idris.md](docs/verify-idris.md) para detalhes.
+- Integração contínua: o workflow de CI roda `make`, `make verify-idris` e `make verify-run FILE=examples/exemplo_01.datalang`.
+- Rodar localmente um arquivo específico com verificação: `make verify-run FILE=examples/seuarquivo.datalang`.
 
 ---
 
